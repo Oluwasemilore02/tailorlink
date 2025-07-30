@@ -1,0 +1,1436 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>TailorLink🔗 – Book a Tailor Near You</title>
+
+    <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
+
+
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: "Inter", "Segoe UI", sans-serif;
+        background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+        color: #2c3e50;
+        line-height: 1.6;
+        overflow-x: hidden;
+      }
+
+      /* Animations */
+      @keyframes slideInLeft {
+        from {
+          opacity: 0;
+          transform: translateX(-50px);
+        }
+        to {
+          opacity: 1;
+          transform: translateX(0);
+        }
+      }
+
+      @keyframes slideInRight {
+        from {
+          opacity: 0;
+          transform: translateX(50px);
+        }
+        to {
+          opacity: 1;
+          transform: translateX(0);
+        }
+      }
+
+      @keyframes slideInUp {
+        from {
+          opacity: 0;
+          transform: translateY(30px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+        }
+        to {
+          opacity: 1;
+        }
+      }
+
+      @keyframes float {
+        0%,
+        100% {
+          transform: translateY(0px);
+        }
+        50% {
+          transform: translateY(-10px);
+        }
+      }
+
+      /* Navbar */
+      .navbar {
+        background: rgba(23, 145, 29, 0.95);
+        backdrop-filter: blur(10px);
+        padding: 1rem 2rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        position: fixed;
+        top: 0;
+        width: 100%;
+        z-index: 1000;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+        animation: slideInUp 0.8s ease-out;
+      }
+
+      .logo {
+        font-size: 1.5rem;
+        font-weight: 700;
+        color: white;
+      }
+
+      .logo-main {
+        text-decoration: none;
+        color: rgb(255, 255, 255);
+      }
+
+      .logo-span {
+        margin-left: 4px;
+      }
+
+      .nav-links {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+      }
+
+      .nav-links a {
+        color: white;
+        text-decoration: none;
+        font-weight: 500;
+        transition: all 0.3s ease;
+        position: relative;
+        padding: 0.5rem 1rem;
+        border-radius: 25px;
+        font-size: 15px;
+      }
+
+      .nav-home {
+        background: rgba(255, 255, 255, 0.1);
+        text-decoration: underline;
+      }
+
+      .nav-links a:hover {
+        background: rgba(255, 255, 255, 0.1);
+        transform: translateY(-2px);
+      }
+
+      .welcome-user {
+        font-weight: 600;
+        margin-right: 1rem;
+        background-color: rgb(255, 255, 255);
+        padding: 0.5rem 1rem;
+        border-radius: 25px;
+        transition: all 0.3s ease;
+        color: #17911d;
+
+      }
+
+      .btn {
+        display: inline-block;
+        padding: 0.7rem 1.5rem;
+        background: linear-gradient(45deg, #17911d, #27ae60);
+        color: white;
+        text-decoration: none;
+        border-radius: 25px;
+        font-weight: 500;
+        transition: all 0.3s ease;
+        border: none;
+        cursor: pointer;
+        box-shadow: 0 4px 15px rgba(23, 145, 29, 0.3);
+      }
+
+      .btn:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 8px 25px rgba(23, 145, 29, 0.4);
+        color: #17911d;
+        background: #fff;
+      }
+
+      .btn-small {
+        padding: 0.5rem 1rem;
+        font-size: 0.9rem;
+      }
+
+      /* Hero Section */
+      /* Hero Section - UPDATED */
+      .hero {
+        display: flex;
+        flex-direction: column; /* Changed to column to stack elements */
+        align-items: center;
+        justify-content: center; /* Center content vertically */
+        padding: 8rem 2rem 4rem; /* Keep existing padding, might need adjustment */
+        min-height: 80vh;
+        position: relative;
+        overflow: hidden;
+
+        /* New: Background image properties */
+        background: url("./img/two-african-dressmaker-woman-sews-clothes-sewing-machine-tailor-office-black-seamstress-girls.jpg")
+          no-repeat center center / cover; /* This is the key change */
+        color: white; /* Text color will now be white for contrast */
+        text-align: center; /* Center the text */
+      }
+
+      /* Optional: Add an overlay to ensure text readability over the image */
+      .hero::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(0, 0, 0, 0.4); /* Dark overlay for text contrast */
+        z-index: 1; /* Ensure overlay is below text but above image */
+      }
+
+      /* Hero Text - Adjustments for full-width background */
+      .hero-text {
+        flex: none; /* No longer a flex item taking 1/2 width */
+        max-width: 700px; /* Constrain text width for readability */
+        margin-bottom: 2rem;
+        animation: slideInLeft 1s ease-out; /* Keep animation */
+        position: relative;
+        z-index: 2; /* Ensure text is above overlay */
+        color: white; /* Ensure text color is white for contrast against dark overlay */
+        background: rgba(255, 255, 255, 0.15);
+        backdrop-filter: blur(4px);
+        border-radius: 15px; /* Optional: Rounded corners for text box */
+        padding: 2% 2rem; /* Padding for text box */
+      }
+
+      .hero-text h1 {
+        font-size: 3.5rem; /* Larger, more impactful heading */
+        margin-bottom: 1rem;
+        font-weight: 700;
+        /* Use solid white or a subtle gradient for text that pops on a dark overlay */
+        background: none; /* Remove previous gradient if it makes text hard to read */
+        -webkit-background-clip: unset;
+        -webkit-text-fill-color: unset;
+        background-clip: unset;
+        color: rgb(255, 255, 255); /* Ensure white text */
+        line-height: 1.2;
+      }
+
+      .hero-text p {
+        margin-bottom: 2rem;
+        font-size: 1.2rem; /* Slightly larger for readability */
+        text-wrap: balance; /* Modern property for better text wrapping */
+        opacity: 1; /* Full opacity */
+        color: rgba(255, 255, 255, 0.9); /* Lighter color for description */
+      }
+
+      .hero-text input {
+        /* Keep existing styles, they are good for the search input */
+        padding: 1rem 1.5rem;
+        width: 100%;
+        max-width: 450px;
+        border: none;
+        border-radius: 50px;
+        font-size: 1rem;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        transition: all 0.3s ease;
+      }
+
+      /* Remove or greatly minimize the hero-img styling if it's no longer a separate element */
+      .hero-img {
+        display: none; /* Hide the img tag as the background handles the image */
+      }
+
+      /* Mobile adjustments (example) */
+      @media (max-width: 768px) {
+        .hero {
+          padding: 6rem 1rem 3rem; /* Adjust padding for smaller screens */
+          min-height: 70vh;
+        }
+        .hero-text h1 {
+          font-size: 2.5rem; /* Adjust font size for mobile */
+        }
+        .hero-text p {
+          font-size: 1rem;
+        }
+      }
+
+      /* Stats Section */
+      .stats-section {
+        padding: 4rem 2rem;
+        background: white;
+        animation: slideInUp 0.8s ease-out;
+      }
+
+      .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 2rem;
+        max-width: 1200px;
+        margin: 0 auto;
+      }
+
+      .stat-card {
+        text-align: center;
+        padding: 2rem;
+        border-radius: 15px;
+        background: linear-gradient(45deg, #27ae60 0%, #5cf557 100%);
+        color: white;
+        transform: translateY(20px);
+        opacity: 0;
+        animation: slideInUp 0.8s ease-out forwards;
+        animation-delay: var(--delay);
+      }
+
+      .stat-number {
+        font-size: 3rem;
+        font-weight: 700;
+        margin-bottom: 0.5rem;
+      }
+
+      .stat-label {
+        font-size: 1.1rem;
+        opacity: 0.9;
+      }
+
+      /* Features Section */
+      .features-section {
+        padding: 4rem 2rem;
+        background: linear-gradient(135deg, #e3e3e3 0%, #efefef 100%);
+      }
+
+      .features-section h2 {
+        text-align: center;
+        font-size: 2.5rem;
+        margin-bottom: 3rem;
+        color: #2c3e50;
+        animation: slideInUp 0.8s ease-out;
+      }
+
+      .features-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 2rem;
+        max-width: 1200px;
+        margin: 0 auto;
+      }
+
+      .feature-card {
+        background: white;
+        padding: 2rem;
+        border-radius: 20px;
+        text-align: center;
+        box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+        transition: all 0.3s ease;
+        transform: translateY(20px);
+        opacity: 0;
+        animation: slideInUp 0.8s ease-out forwards;
+        animation-delay: var(--delay);
+      }
+
+      .feature-card:hover {
+        transform: translateY(-10px);
+        box-shadow: 0 25px 50px rgba(0, 0, 0, 0.15);
+      }
+
+      .feature-icon {
+        font-size: 3rem;
+        margin-bottom: 1rem;
+        animation: float 3s ease-in-out infinite;
+      }
+
+      .feature-card h3 {
+        color: #17911d;
+        margin-bottom: 1rem;
+        font-size: 1.5rem;
+      }
+
+      /* Tailor Section */
+      .tailor-section {
+        padding: 4rem 2rem;
+        background: white;
+      }
+
+      .tailor-section h2 {
+        margin-bottom: 3rem;
+        font-size: 2.5rem;
+        text-align: center;
+        color: #2c3e50;
+        animation: slideInUp 0.8s ease-out;
+      }
+
+      .tailor-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 2rem;
+        max-width: 1200px;
+        margin: 0 auto;
+      }
+
+      .tailor-card {
+        background: white;
+        border-radius: 20px;
+        padding: 1.5rem;
+        box-shadow: 0 15px 35px rgba(0, 0, 0, 0.08);
+        text-align: center;
+        transition: all 0.4s ease;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: space-between;
+        border: 2px solid transparent;
+        transform: translateY(30px);
+        opacity: 0;
+        animation: slideInUp 0.8s ease-out forwards;
+        animation-delay: var(--delay);
+      }
+
+      .tailor-card:hover {
+        transform: translateY(-15px);
+        box-shadow: 0 25px 50px rgba(23, 145, 29, 0.15);
+      }
+
+      .tailor-card img {
+        width: 100%;
+        height: 250px;
+        object-fit: cover;
+        border-radius: 15px;
+        margin-bottom: 1rem;
+        transition: all 0.5s ease;
+      }
+
+      .tailor-card img:hover {
+        transform: scale(1.05);
+      }
+
+      .tailor-card h3 {
+        margin: 1rem 0 0.5rem;
+        color: #2c3e50;
+        font-size: 1.3rem;
+      }
+
+      .tailor-card .location {
+        color: #666;
+        font-size: 0.95rem;
+        margin-bottom: 0.5rem;
+        font-weight: 500;
+      }
+
+      .tailor-card .services {
+        font-size: 1rem;
+        margin-bottom: 1.5rem;
+        color: #555;
+      }
+
+      /* --- Testimonial Section Styles --- */
+.testimonials-section {
+  padding: 80px 5%;
+  background-color: var(--background-color); /* Matches your body background */
+  text-align: center;
+}
+
+body.dark-mode .testimonials-section {
+  background-color: var(--dark-background-color);
+}
+
+.testimonials-section h2 {
+  font-family: "Poppins", sans-serif;
+  font-size: 2.5rem;
+  color: var(--primary-color);
+  margin-bottom: 50px;
+}
+
+.testimonial-slider-container {
+  max-width: 900px; /* Adjust width as needed */
+  margin: 0 auto;
+  overflow: hidden; /* Crucial for hiding cards outside view */
+  position: relative;
+  border-radius: var(--border-radius-large);
+  box-shadow: var(--shadow-medium);
+  background-color: var(--card-background);
+}
+
+body.dark-mode .testimonial-slider-container {
+  background-color: var(--dark-card-background);
+  box-shadow: none; /* Often looks better in dark mode */
+  border: 1px solid var(--dark-input-border-color);
+}
+
+.testimonial-slider {
+  display: flex; /* Arranges cards horizontally */
+  transition: transform 0.5s ease-in-out; /* Smooth sliding animation */
+}
+
+.testimonial-card {
+  flex-shrink: 0; /* Prevents cards from shrinking */
+  width: 100%; /* Each card takes up 100% of the container width */
+  padding: 40px;
+  box-sizing: border-box; /* Include padding in width calculation */
+  text-align: center;
+}
+
+.testimonial-card img {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  object-fit: cover;
+  margin-bottom: 20px;
+  border: 3px solid var(--primary-color);
+  box-shadow: var(--shadow-light);
+}
+
+.testimonial-card p.quote {
+  font-size: 1.15rem;
+  font-style: italic;
+  color: var(--text-color);
+  margin-bottom: 25px;
+  line-height: 1.8;
+}
+
+body.dark-mode .testimonial-card p.quote {
+  color: var(--dark-text-color);
+}
+
+.testimonial-card p.author {
+  font-weight: 600;
+  color: var(--primary-color);
+  font-size: 1rem;
+}
+
+.testimonial-card p.role {
+  font-size: 0.9rem;
+  color: var(--text-muted);
+  margin-top: 5px;
+}
+
+body.dark-mode .testimonial-card p.role {
+  color: var(--dark-text-muted);
+}
+
+/* Slider Navigation Arrows (Optional, but good for manual control) */
+.slider-nav-btn {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  background-color: rgba(0, 0, 0, 0.5);
+  color: white;
+  border: none;
+  padding: 10px 15px;
+  font-size: 1.5rem;
+  cursor: pointer;
+  z-index: 10;
+  border-radius: var(--border-radius-small);
+  transition: background-color 0.3s;
+}
+
+body.dark-mode .slider-nav-btn {
+  background-color: rgba(255, 255, 255, 0.2);
+}
+
+.slider-nav-btn:hover {
+  background-color: rgba(0, 0, 0, 0.7);
+}
+
+body.dark-mode .slider-nav-btn:hover {
+  background-color: rgba(255, 255, 255, 0.3);
+}
+
+.prev-slide {
+  left: 10px;
+}
+
+.next-slide {
+  right: 10px;
+}
+
+/* Media Queries for Responsiveness */
+@media (max-width: 768px) {
+  .testimonials-section {
+    padding: 60px 4%;
+  }
+  .testimonials-section h2 {
+    font-size: 2rem;
+    margin-bottom: 30px;
+  }
+  .testimonial-card {
+    padding: 30px 20px;
+  }
+  .testimonial-card img {
+    width: 70px;
+    height: 70px;
+  }
+  .testimonial-card p.quote {
+    font-size: 1rem;
+  }
+  .slider-nav-btn {
+    padding: 8px 12px;
+    font-size: 1.2rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .testimonials-section {
+    padding: 40px 3%;
+  }
+  .testimonials-section h2 {
+    font-size: 1.8rem;
+  }
+  .testimonial-card {
+    padding: 20px 15px;
+  }
+}
+
+      /* CTA Section */
+      .cta-section {
+        padding: 4rem 2rem;
+        background: linear-gradient(
+          45deg,
+          #ffffff 0%,
+          #f5f5f5 50%,
+          #ffffff 100%
+        );
+        text-align: center;
+        animation: slideInUp 0.8s ease-out;
+      }
+
+      .cta-section h2 {
+        font-size: 2.5rem;
+        margin-bottom: 1rem;
+        color: #2c3e50;
+      }
+
+      .cta-section p {
+        font-size: 1.2rem;
+        margin-bottom: 2rem;
+        color: #555;
+      }
+
+      .cta-buttons {
+        display: flex;
+        gap: 1rem;
+        justify-content: center;
+        flex-wrap: wrap;
+      }
+
+      /* Footer */
+      .footer {
+        background: linear-gradient(135deg, #2c3e50 0%, #17911d 100%);
+        color: white;
+        padding: 3rem 2rem 1rem;
+        animation: fadeIn 1s ease-out;
+      }
+
+      .footer-content {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-between;
+        gap: 2rem;
+        max-width: 1200px;
+        margin: 0 auto;
+      }
+
+      .footer-brand h3 {
+        font-size: 1.8rem;
+        margin-bottom: 1rem;
+        background: linear-gradient(45deg, #fff, #a8e6cf);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+      }
+
+      .footer-content h4 {
+        margin-bottom: 1rem;
+        color: #a8e6cf;
+      }
+
+      .footer-content ul {
+        list-style: none;
+        padding: 0;
+      }
+
+      .footer-content ul li {
+        margin-bottom: 0.5rem;
+      }
+
+      .footer-content ul li a {
+        color: white;
+        text-decoration: none;
+        transition: color 0.3s ease;
+      }
+
+      .footer-content ul li a:hover {
+        color: #a8e6cf;
+      }
+
+      .footer-bottom {
+        text-align: center;
+        margin-top: 2rem;
+        padding-top: 2rem;
+        border-top: 1px solid rgba(255, 255, 255, 0.2);
+        font-size: 0.9rem;
+      }
+
+      /* Dark Mode */
+      body.dark-mode {
+        background: linear-gradient(135deg, #1a1a1a 0%, #2d3748 100%);
+        color: #e2e8f0;
+      }
+
+      .dark-mode .navbar {
+        background: rgba(26, 26, 26, 0.95);
+      }
+
+      .dark-mode .hero {
+        background: linear-gradient(135deg, #2d3748 0%, #4a5568 100%);
+      }
+
+      .dark-mode .stats-section,
+      .dark-mode .tailor-section {
+        background: #2d3748;
+      }
+
+      .dark-mode .features-section {
+        background: linear-gradient(135deg, #4a5568 0%, #2d3748 100%);
+      }
+
+      .dark-mode .tailor-card,
+      .dark-mode .feature-card,
+      .dark-mode .stat-card {
+        background: #1a202c;
+        color: #e2e8f0;
+      }
+
+      .dark-mode .cta-section {
+        background: linear-gradient(45deg, #4a5568 0%, #2d3748 100%);
+      }
+
+      /* Responsive Design */
+      @media (max-width: 768px) {
+        .hero-text h1 {
+          font-size: 2.5rem;
+        }
+
+        .hero {
+          flex-direction: column;
+          text-align: center;
+          padding: 6rem 1rem 3rem;
+        }
+
+        .hero-img {
+          margin-top: 2rem;
+          max-width: 350px;
+        }
+
+        .navbar {
+          flex-direction: column;
+          align-items: center;
+          height: 40%;
+        }
+
+        .nav-links {
+          flex-wrap: wrap;
+          justify-content: center;
+          gap: 1rem;
+
+        }
+
+        .testimonial-card {
+          padding: 2rem 1rem; 
+        }
+
+        .prev,
+        .next {
+          left: 10px;
+          right: 10px;
+        }
+
+        .cta-buttons {
+          flex-direction: column;
+          align-items: center;
+        }
+      }
+
+      /* Animation delays */
+      .stat-card:nth-child(1) {
+        --delay: 0.1s;
+      }
+      .stat-card:nth-child(2) {
+        --delay: 0.2s;
+      }
+      .stat-card:nth-child(3) {
+        --delay: 0.3s;
+      }
+      .stat-card:nth-child(4) {
+        --delay: 0.4s;
+      }
+
+      .feature-card:nth-child(1) {
+        --delay: 0.1s;
+      }
+      .feature-card:nth-child(2) {
+        --delay: 0.2s;
+      }
+      .feature-card:nth-child(3) {
+        --delay: 0.3s;
+      }
+
+      .tailor-card:nth-child(1) {
+        --delay: 0.1s;
+      }
+      .tailor-card:nth-child(2) {
+        --delay: 0.2s;
+      }
+      .tailor-card:nth-child(3) {
+        --delay: 0.3s;
+      }
+    </style>
+  </head>
+  <body>
+    <header class="navbar">
+      <a href="index.html" class="logo-main" style="text-decoration: none">
+        <div class="logo">
+          Tailor<span class="logo-span" style="color: #0e6bf7">Link🔗</span>
+        </div>
+      </a>
+
+      <nav class="nav-links" id="authenticated-nav" style="display: none">
+                <span class="welcome-user" id="welcome-message">Welcome There👋, User!</span>
+        <a href="index.html" class="nav-home">Home</a>
+        <a href="about.html" class="nav-about">About</a>
+        <a href="customer-bookings.html" class="nav-bookings">View My Bookings</a>
+        <a href="explore.html" class="nav-view">View Tailors</a>
+        <button id="logout-btn" class="btn btn-small">Logout</button>
+        <button id="toggleDarkMode" class="btn btn-small">🌓</button>
+      </nav>
+
+      <nav
+        class="nav-links"
+        id="visitor-nav"
+        style="display: flex; align-items: center"
+      >
+        <a href="index.html" class="nav-home">Home</a>
+        <a href="about.html" class="nav-about">About</a>
+        <a href="explore.html" class="nav-view">View Tailors</a>
+        <a href="login.html" class="btn btn-small">Login</a>
+        <a href="signup.html" class="btn btn-small">Sign Up</a>
+        <button id="toggleDarkModeVisitor" class="btn btn-small">🌓</button>
+      </nav>
+    </header>
+
+    <section class="hero">
+      <div class="hero-text">
+        <h1>Find Trusted Tailors Near You</h1>
+        <p>
+          Book fittings, custom wears, and more—fast & easy with professional
+          tailors in your area.
+        </p>
+<div class="cta-buttons">
+        <a href="explore.html" class="btn" style="background: #ffffff; color: #17911d; ">Browse Tailors</a>
+        <a href="login.html" class="btn">Sign Up Now</a>
+      </div>      </div>
+    </section>
+
+    <section class="stats-section">
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-number">500+</div>
+          <div class="stat-label">Verified Tailors</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-number">10k+</div>
+          <div class="stat-label">Happy Customers</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-number">25+</div>
+          <div class="stat-label">Cities Covered</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-number">98%</div>
+          <div class="stat-label">Satisfaction Rate</div>
+        </div>
+      </div>
+    </section>
+
+    <section id="features-section" class="features-section">
+      <h2>Why Choose TailorLink🔗?</h2>
+      <div class="features-grid">
+        <div class="feature-card">
+          <div class="feature-icon">🔍</div>
+          <h3>Easy Search</h3>
+          <p>
+            Find qualified tailors in your area with our advanced search
+            filters. Browse by location, specialty, and ratings.
+          </p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">⭐</div>
+          <h3>Verified Professionals</h3>
+          <p>
+            All our tailors are verified and rated by real customers. Quality
+            and reliability guaranteed.
+          </p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">📱</div>
+          <h3>Instant Booking</h3>
+          <p>
+            Book appointments instantly with real-time availability. No more
+            phone calls or waiting.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <section
+      style="background-color: #f9faf9; padding: 60px 20px; text-align: center "
+    >
+      <h2 style="font-size: 32px; font-weight: 700; color: #1a1a1a">
+        How TailorLink🔗 Works
+      </h2>
+      <p
+        style="
+          font-size: 18px;
+          color: #4a4a4a;
+          margin-top: 10px;
+          margin-bottom: 50px;
+        "
+      >
+        Connecting with the perfect tailor has never been easier. Just follow
+        these simple steps to bring your outfit ideas to life.
+      </p>
+
+      <div
+        style="
+          display: flex;
+          flex-wrap: wrap;
+          justify-content: center;
+          gap: 30px;
+
+          
+        "
+      >
+        <div
+          style="
+            background: white;
+            border: 1px solid #e0e0e0;
+            border-radius: 10px;
+            padding: 40px 20px;
+            width: 300px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.03);
+            position: relative;
+          "
+        >
+          <div
+            style="
+              background: green;
+              border-radius: 50%;
+              width: 80px;
+              height: 80px;
+              margin: 0 auto;
+              display: flex;
+              align-items: center;
+              justify-content: center;
+            "
+          >
+            <img
+              src="https://img.icons8.com/ios-filled/50/ffffff/search--v1.png"
+              alt="Search Icon"
+              style="width: 40px; height: 40px"
+            />
+          </div>
+          <div
+            style="
+              position: absolute;
+              top: 20px;
+              right: 20px;
+              background: orange;
+              color: white;
+              border-radius: 50%;
+              width: 30px;
+              height: 30px;
+              display: flex;
+              align-items: center;
+              justify-content: center;
+              font-weight: bold;
+            "
+          >
+            01
+          </div>
+          <h3 style="margin-top: 20px; font-size: 20px; color: #1a1a1a">
+            Search Tailors
+          </h3>
+          <p style="margin-top: 10px; font-size: 15px; color: #555">
+            Discover verified tailors by location, specialty, or outfit
+            category. Browse profiles instantly.
+          </p>
+        </div>
+
+        <div
+          style="
+            background: white;
+            border: 1px solid #e0e0e0;
+            border-radius: 10px;
+            padding: 40px 20px;
+            width: 300px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.03);
+            position: relative;
+          "
+        >
+          <div
+            style="
+              background: green;
+              border-radius: 50%;
+              width: 80px;
+              height: 80px;
+              margin: 0 auto;
+              display: flex;
+              align-items: center;
+              justify-content: center;
+            "
+          >
+            <img
+              src="https://img.icons8.com/ios-filled/50/ffffff/user-group-man-man.png"
+              alt="Tailor Icon"
+              style="width: 40px; height: 40px"
+            />
+          </div>
+          <div
+            style="
+              position: absolute;
+              top: 20px;
+              right: 20px;
+              background: orange;
+              color: white;
+              border-radius: 50%;
+              width: 30px;
+              height: 30px;
+              display: flex;
+              align-items: center;
+              justify-content: center;
+              font-weight: bold;
+            "
+          >
+            02
+          </div>
+          <h3 style="margin-top: 20px; font-size: 20px; color: #1a1a1a">
+            View Profile & Reviews
+          </h3>
+          <p style="margin-top: 10px; font-size: 15px; color: #555">
+            Check each tailor’s ratings, completed projects, pricing, and
+            customer reviews before making a choice.
+          </p>
+        </div>
+
+        <div
+          style="
+            background: white;
+            border: 1px solid #e0e0e0;
+            border-radius: 10px;
+            padding: 40px 20px;
+            width: 300px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.03);
+            position: relative;
+          "
+        >
+          <div
+            style="
+              background: green;
+              border-radius: 50%;
+              width: 80px;
+              height: 80px;
+              margin: 0 auto;
+              display: flex;
+              align-items: center;
+              justify-content: center;
+            "
+          >
+            <img
+              src="https://img.icons8.com/ios-filled/50/ffffff/communication.png"
+              alt="Chat Icon"
+              style="width: 40px; height: 40px"
+            />
+          </div>
+          <div
+            style="
+              position: absolute;
+              top: 20px;
+              right: 20px;
+              background: orange;
+              color: white;
+              border-radius: 50%;
+              width: 30px;
+              height: 30px;
+              display: flex;
+              align-items: center;
+              justify-content: center;
+              font-weight: bold;
+            "
+          >
+            03
+          </div>
+          <h3 style="margin-top: 20px; font-size: 20px; color: #1a1a1a">
+            Book & Chat
+          </h3>
+          <p style="margin-top: 10px; font-size: 15px; color: #555">
+            Book your preferred tailor, discuss your design ideas via chat, and
+            track your project through the dashboard.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <section class="tailor-section" id="tailor">
+      <h2>Featured Tailors</h2>
+      <div class="tailor-grid">
+        <div class="tailor-card">
+          <img
+            src="img/beautiful-curly-brunette-dark-skinned-fashion-designer-poses-office-leans-table.jpg"
+            alt="Tailor A"
+          />
+          <h3>Grace Couture</h3>
+          <p class="location">📍 Lagos, Nigeria</p>
+          <p class="services">Custom gowns, Bridal fittings, alterations</p>
+          <a href="explore.html" class="btn">View Profile</a>
+        </div>
+
+        <div class="tailor-card">
+          <img
+            src="img/medium-shot-man-repairing-fashion-goods (1).jpg"
+            alt="Tailor B"
+          />
+          <h3>Daniel Threads</h3>
+          <p class="location">📍 Abuja, Nigeria</p>
+          <p class="services">Native wears, Agbada, Trouser fitting</p>
+          <a href="explore.html" class="btn">View Profile</a>
+        </div>
+
+        <div class="tailor-card">
+          <img
+            src="img/medium-shot-black-woman-running-small-business.jpg"
+            alt="Tailor C"
+          />
+          <h3>Sophie's Stitch</h3>
+          <p class="location">📍 Ibadan, Nigeria</p>
+          <p class="services">Kidswear, casuals, repairs</p>
+          <a href="explore.html" class="btn">View Profile</a>
+        </div>
+      </div>
+    </section>
+
+    <section class="testimonials-section">
+  <h2>What Our Customers Say</h2>
+
+  <div class="testimonial-slider-container">
+    <div class="testimonial-slider" id="testimonialSlider">
+      <div class="testimonial-card">
+        <img
+          src="data:image/png;base64,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"
+          alt="Customer 1"
+        />
+        <p class="quote">
+          "TailorLink has revolutionized how I get my clothes fitted. Finding a
+          skilled tailor nearby used to be a hassle, but now it's just a few
+          clicks away. The quality is consistently excellent!"
+        </p>
+        <p class="author">Jane Doe</p>
+        <p class="role">Fashion Enthusiast</p>
+      </div>
+
+      <div class="testimonial-card">
+        <img
+          src="data:image/png;base64,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"
+          alt="Customer 2"
+        />
+        <p class="quote">
+          "As a busy professional, I appreciate the convenience TailorLink
+          offers. Booking appointments is super easy, and my tailor always
+          delivers on time. Highly recommend their services!"
+        </p>
+        <p class="author">John Smith</p>
+        <p class="role">Project Manager</p>
+      </div>
+
+      <div class="testimonial-card">
+        <img
+          src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAJ4AAACUCAMAAABVwGAvAAAAZlBMVEX///8AAADc3Nz5+fn8/PxBQUG3t7dmZmbl5eVNTU3X19cWFhbU1NR9fX2xsbH09PQtLS3s7Oxzc3PFxcU2NjZbW1unp6eHh4e9vb2dnZ1UVFRsbGyOjo4ODg7MzMxhYWEmJiYfHx8czBAsAAAGaElEQVR4nO1caZeqOhBk1SibgKwq6v//k++qswFZukLC+M6Z+nynbxnSS6o7cZw//OF/jSDImDeU7WbTloPHsiD4bUYfyLwybbZh5I4QhdsmLb3sd7l5adIfXSGOfZJ6v8MsYGVxFzP7xr0o2dqf2i8TyarNVjEp/fW4BawDuH0w7FZawqBMUG4vJKV9gkFZXfTYue6lskzQL3e63F7Y2dyE++sycg9c95bIeafl5B44WQmF6cEMO9c9pMbJ5Qa+6zeuuVl2GzjQyXHcGCTnn82Se+BszIW93jw71+0NeUgc2mDnumFsgl1th9wD9VuzW84vsOAUP3FelIRts1vIzzq7f/z02TX22bluo8vOqld8Q9M/0nXYua5WhRCvxc51NeKzZylX8BDC+S2zkmdF6FE5YRWn/Qbovqu5xScg92DGCncqDgygt+rGe6Gns1spHo9Bjs7e6p/2gQM1umgeyg59kTRNUvSav+5KY6eVLnbdwHL/X3UU+DkbOi2tg5Q8fNwvdt3M75gGw55yeGtRq4eae6jOa/gjt2p2GfirL4nwN/sJqLXt1Lltg1m8lTJj5Q2zptQOAmzxdopgz0BzqpMHtvO2Sikn30IGFbvPL6AfSxCacmj9Crnz7hFbPUkGy6FAJddOoZMjMQt5iE3pudKP1Aa+QM7hSIURyb4u4hhbcgGeIe4hcY4AcIwLcLyKgfBciGMLUkmd6OwcB9D0JXUVkjGgsylSBIkzB7BHKkga9iu65a3QCLBFQGEEcN6L6IcDn+AG6g4xUBuITHd0E4TSZwSkTOsENgD/KjB2jgOELEFMyAHRR/QLhQC+TMhP5cj+IJTdYwD5SLCvkagHK15IXcCPfMD6u4gi8gQDjHN3ToBMMMANzxwwnvDSLhLZ7a4eNyNlSMsWHghAyvAjL6jmSClq03PdiLd1kOW3Gvf4Wwc6BdnMGvytMyAGbOZc1x04FiD14s6zIMFwR6zz4jImxoObD9p6XJkeE5RD6OtmWIuJV+uCerdUmZqixGwboFch9JCEZIYesnzg4nHpoX2qiq4SgIvHdQ1QFgWmAOCJBF5ggcLyE8TYZ8YwlNSeOJJqZg8fXuMlNagkeIHSRtRpbvLMQgXVB3olP6bR3OQWVFA5+omDYv8NOv01bjkKFfNfiKRt7FTjiwiKeego9NOY8AMzrR8sOAqBVcU3ojPXg72z1tK5omoIjstfOCazLTggNxIm4B/DERFjhnvS7lmWBUGWsX2b3BeYEogYiATEQxRW26LYVtOLOSgEEhAioNmESFTX9Q3DEJ0TVpw5k0Ek3gbgponC6+kayvTy5z9ArQr7LlDvNeq8PPOzfN8I/v+oidnjH3gdRFDYOEAiX/iz4G6vs5h0u/6UYWogKIjbLvSm1WQyxI/r7Y+PfNnW8ThvMrLbSZpW1JbfiZdmfVam9flcpyXjpXRGDFuSlh9N5tK9rEK7LiOT5ijt5p32RQaPoANJ282EQ1Wz4BqIrx75lB//lOehetkMvvKsL1eFFYMiN1i0naKVl0WKQRG5cyANehHkjXvVz5cNKaFdUgE/yfoph5QkmSMCFVERBnF4UF8PE6vAi/fdJ4QbiKJYi/7Y4M1BkRhGWQDBcOaCWylz8MMraTiTX5VCYqga3BMw0fM4g8E0MYoOnmxFHAzm1VWQ0E3BXM8lj1XPZWa4R6XGLD0BkzET74CuAxAx1f2Akf7p35q/jexMowu2AqO/vVm5zO3dFqzAqDJTjf/qYDwyjN6lG19lwubNKBiLnfBVpslFMPWAMobxODN+EWyaPCgjygC7cd2hVaiNo59Yo8UxUXU1L0mO+UXGMkcZmWA3vUsXGbjK/UA9Zqd9AXZW+JhwkOmM/5JCbXr5Olxczw8TMcjw5fBu0dtN2VQJWsbOmVcvx1bbYtBOqzwDuzmdHkxPmg++7Kca1cVIqTF/dCLRiKPxrCdm5tEJ3pMd9wZMQ15zn9ow9WQH/8GTqiRHmbzknHzMPXji8J+LCbuB8F/4Q8cRlo0+F+MIHtuJwqTMJBT9rEy4fQPTj+04Yu217zZxPuPo5/GmEzTqLTxV5MgeerrtquJct8PeY8zbD219LqqdUIiy89CT8+bPZDnv/siY8+ZPtL0IvvEDd0+C7/w84BPv/LjiE4+nKUmN0OgXnqb8wPs+7PmJd34W9Qtv+6jsH/6gif8AdzJjiNWTDM4AAAAASUVORK5CYII="
+          alt="Customer 3"
+        />
+        <p class="quote">
+          "I needed an urgent alteration for an event, and TailorLink came to
+          the rescue! Found a local tailor instantly who did an amazing job. The
+          platform is user-friendly and truly a game-changer."
+        </p>
+        <p class="author">Sarah Johnson</p>
+        <p class="role">Event Planner</p>
+      </div>
+
+      </div>
+
+    <button class="slider-nav-btn prev-slide" onclick="moveSlide(-1)">
+      &#10094;
+    </button>
+    <button class="slider-nav-btn next-slide" onclick="moveSlide(1)">
+      &#10095;
+    </button>
+  </div>
+</section>
+
+    <section class="cta-section">
+      <h2>Ready to Get Started?</h2>
+      <p>
+        Join thousands of satisfied customers who found their perfect tailor
+        through TailorLink🔗
+      </p>
+      <div class="cta-buttons">
+        <a href="explore.html" class="btn">Browse Tailors</a>
+        <a href="login.html" class="btn">Sign Up Now</a>
+      </div>
+    </section>
+
+    <footer class="footer">
+      <div class="footer-content">
+        <div class="footer-brand">
+          <h3>TailorLink🔗</h3>
+          <p>
+            Connecting you with trusted tailors – fast, easy, and local. Your
+            perfect fit is just a click away.
+          </p>
+        </div>
+        <div class="footer-links">
+          <h4>Quick Links</h4>
+          <ul>
+            <li><a href="index.html">Home</a></li>
+            <li><a href="explore.html">Find Tailors</a></li>
+            <li><a href="about.html">About</a></li>
+            <li><a href="booking.html">Book Now</a></li>
+          </ul>
+        </div>
+        <div class="footer-contact">
+          <h4>Contact</h4>
+          <p>Website by Atitebi Oluwasemilore</p>
+          <p>Email: semioreatitebi@gmail.com</p>
+          <p>Phone: +234 912 0236 106</p>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p>&copy; 2025 TailorLink🔗. All rights reserved.</p>
+      </div>
+    </footer>
+
+    <script>
+      // Your Firebase configuration
+      const firebaseConfig = {
+        apiKey: "AIzaSyBVjsT4eVkdZaWaYfkgz_hoK00ZgmLWNR4",
+        authDomain: "tailorlink-571d5.firebaseapp.com",
+        projectId: "tailorlink-571d5",
+        storageBucket: "tailorlink-571d5.appspot.com",
+        messagingSenderId: "367154563836",
+        appId: "1:367154563836:web:14e41712a32c2865955684",
+      };
+
+      // Initialize Firebase
+      firebase.initializeApp(firebaseConfig);
+      const auth = firebase.auth();
+      const db = firebase.firestore();
+
+      // Get elements
+      // Get elements (already correct)
+const authenticatedNav = document.getElementById("authenticated-nav");
+const visitorNav = document.getElementById("visitor-nav");
+const welcomeMessage = document.getElementById("welcome-message");
+const logoutBtn = document.getElementById("logout-btn");
+const toggleDarkModeBtn = document.getElementById("toggleDarkMode");
+const toggleDarkModeVisitorBtn = document.getElementById("toggleDarkModeVisitor");
+
+
+// --- Authentication State Listener ---
+auth.onAuthStateChanged(async (user) => {
+  console.log("onAuthStateChanged triggered. User:", user); // Add this log
+
+  if (user) {
+    // User is signed in.
+    console.log("User is logged in (inside if block)."); // Add this log
+    authenticatedNav.style.display = "flex";
+    visitorNav.style.display = "none";
+    console.log("authenticatedNav display after login:", authenticatedNav.style.display); // Add this log
+    console.log("visitorNav display after login:", visitorNav.style.display); // Add this log
+
+
+    // Fetch username from Firestore if available
+    try {
+      const docRef = db.collection("users").doc(user.uid);
+      const docSnap = await docRef.get();
+
+      if (docSnap.exists) {
+        const userData = docSnap.data();
+        if (userData.username) {
+          welcomeMessage.textContent = `Welcome There👋, ${userData.username}!`;
+          console.log("Welcome message set from Firestore username:", userData.username);
+        } else if (user.displayName) {
+          welcomeMessage.textContent = `Welcome There👋, ${user.displayName}!`;
+          console.log("Welcome message set from Firebase displayName:", user.displayName);
+        } else if (user.email) {
+          welcomeMessage.textContent = `Welcome There👋, ${user.email}!`;
+          console.log("Welcome message set from Firebase email:", user.email);
+        } else {
+          welcomeMessage.textContent = `Welcome, User!`;
+          console.log("Welcome message set to default 'User!'");
+        }
+      } else {
+        console.log("User document not found in Firestore."); // Add this log
+        // Document does not exist for the user, use email or default
+        if (user.displayName) {
+          welcomeMessage.textContent = `Welcome, ${user.displayName}!`;
+          console.log("Welcome message set from Firebase displayName (no Firestore doc):", user.displayName);
+        } else if (user.email) {
+          welcomeMessage.textContent = `Welcome, ${user.email}!`;
+          console.log("Welcome message set from Firebase email (no Firestore doc):", user.email);
+        } else {
+          welcomeMessage.textContent = `Welcome, User!`;
+          console.log("Welcome message set to default 'User!' (no Firestore doc or display name)");
+        }
+      }
+    } catch (error) {
+      console.error("Error fetching user data:", error);
+      // Fallback for welcome message in case of error
+      if (user.displayName) {
+        welcomeMessage.textContent = `Welcome, ${user.displayName}!`;
+      } else if (user.email) {
+        welcomeMessage.textContent = `Welcome, ${user.email}!`;
+      } else {
+        welcomeMessage.textContent = `Welcome, User!`;
+      }
+    }
+  } else {
+    // User is signed out.
+    console.log("User is logged out (inside else block)."); // Add this log
+    authenticatedNav.style.display = "none";
+    visitorNav.style.display = "flex";
+    console.log("authenticatedNav display after logout:", authenticatedNav.style.display); // Add this log
+    console.log("visitorNav display after logout:", visitorNav.style.display); // Add this log
+  }
+});
+
+      // --- Logout Functionality ---
+      logoutBtn.addEventListener("click", async () => {
+        try {
+          await auth.signOut();
+          console.log("User signed out successfully.");
+          // No need to manually update navs here, onAuthStateChanged will handle it.
+          // Optionally, redirect to login page or home after logout:
+          // window.location.href = 'login.html';
+        } catch (error) {
+          console.error("Error signing out:", error.message);
+          alert("Failed to log out. Please try again.");
+        }
+      });
+
+      // --- Dark Mode Toggle ---
+      function toggleDarkMode() {
+        document.body.classList.toggle("dark-mode");
+        // Save user preference to localStorage
+        if (document.body.classList.contains("dark-mode")) {
+          localStorage.setItem("darkMode", "enabled");
+        } else {
+          localStorage.setItem("darkMode", "disabled");
+        }
+      }
+
+      toggleDarkModeBtn.addEventListener("click", toggleDarkMode);
+      toggleDarkModeVisitorBtn.addEventListener("click", toggleDarkMode);
+
+      // Apply dark mode preference on page load
+      document.addEventListener("DOMContentLoaded", () => {
+        if (localStorage.getItem("darkMode") === "enabled") {
+          document.body.classList.add("dark-mode");
+        }
+      });
+
+      // --- Testimonial Slider Logic ---
+  let slideIndex = 0;
+  const testimonialSlider = document.getElementById("testimonialSlider");
+  const testimonialCards = document.querySelectorAll(".testimonial-card");
+  const totalSlides = testimonialCards.length;
+
+  function showSlide(index) {
+    if (!testimonialSlider || testimonialCards.length === 0) {
+      console.warn("Testimonial slider elements not found. Skipping slide logic.");
+      return;
+    }
+
+    if (index >= totalSlides) {
+      slideIndex = 0;
+    } else if (index < 0) {
+      slideIndex = totalSlides - 1;
+    } else {
+      slideIndex = index;
+    }
+    testimonialSlider.style.transform = `translateX(-${slideIndex * 100}%)`;
+  }
+
+  function moveSlide(n) {
+    showSlide(slideIndex + n);
+  }
+
+  // Initial display on DOM content loaded (best practice)
+  document.addEventListener("DOMContentLoaded", () => {
+    showSlide(slideIndex); // Show the first slide
+  });
+
+  // Autoplay functionality
+  let autoSlideInterval = null; // Initialize to null
+
+  function startAutoSlide() {
+    // Clear any existing interval to prevent duplicates
+    clearInterval(autoSlideInterval);
+    autoSlideInterval = setInterval(() => {
+      moveSlide(1);
+    }, 5000); // Change slide every 5 seconds
+  }
+
+  function pauseAutoSlide() {
+    clearInterval(autoSlideInterval);
+  }
+
+  // Start auto-slide when the page loads
+  document.addEventListener("DOMContentLoaded", startAutoSlide);
+
+  // Pause/Resume auto-slide on hover
+  // Ensure testimonialSlider.parentElement exists before adding event listeners
+  const sliderContainer = testimonialSlider ? testimonialSlider.parentElement : null;
+  if (sliderContainer) {
+    sliderContainer.addEventListener('mouseover', pauseAutoSlide);
+    sliderContainer.addEventListener('mouseleave', startAutoSlide);
+  } else {
+    console.warn("Testimonial slider container not found for hover events.");
+  }
+
+  // Attach manual navigation to buttons (if they exist)
+  const prevButton = document.querySelector('.prev-slide');
+  const nextButton = document.querySelector('.next-slide');
+
+  if (prevButton) {
+      prevButton.addEventListener('click', () => moveSlide(-1));
+  }
+  if (nextButton) {
+      nextButton.addEventListener('click', () => moveSlide(1));
+  }
+    </script>
+  </body>
+</html>

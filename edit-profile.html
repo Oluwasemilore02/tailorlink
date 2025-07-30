@@ -1,0 +1,952 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Edit Profile | TailorLink</title>
+
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Poppins:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
+    />
+
+    <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-storage-compat.js"></script>
+
+    <style>
+      /* --- Root Variables & Base Styles --- */
+      :root {
+        --primary-color: #17911d;
+        --primary-dark: #0f6e16;
+        --background-color: #f0f2f5;
+        --card-background: #ffffff;
+        --text-color: #333;
+        --text-muted: #666;
+        --input-border-color: #e0e0e0;
+        --focus-border-color: var(--primary-color);
+        --error-color: #e74c3c;
+        --shadow-light: 0 4px 12px rgba(0, 0, 0, 0.08);
+        --shadow-medium: 0 8px 25px rgba(0, 0, 0, 0.1);
+        --border-radius-soft: 8px;
+        --border-radius-round: 50%; /* For profile image */
+      }
+
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: "Inter", sans-serif;
+        background-color: var(--background-color);
+        color: var(--text-color);
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        padding: 20px;
+      }
+
+      /* --- Navigation Bar --- */
+      .navbar {
+        width: 100%;
+        max-width: 800px; /* Aligns with wrapper max-width */
+        background-color: var(--card-background);
+        box-shadow: var(--shadow-light);
+        border-radius: var(--border-radius-soft);
+        padding: 15px 25px;
+        margin-bottom: 20px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+
+      .navbar .logo {
+        font-family: "Poppins", sans-serif;
+        font-weight: 700;
+        font-size: 1.5rem;
+        color: var(--primary-color);
+        text-decoration: none;
+      }
+
+      .navbar .nav-links a {
+        color: var(--primary-color);
+        text-decoration: none;
+        font-weight: 500;
+        padding: 8px 15px;
+        border-radius: var(--border-radius-soft);
+        transition: background-color 0.2s ease;
+      }
+
+      .navbar .nav-links a:hover {
+        background-color: rgba(23, 145, 29, 0.1);
+      }
+
+      /* --- Wrapper / Form Container --- */
+      .wrapper {
+        width: 100%;
+        max-width: 800px;
+        background-color: var(--card-background);
+        box-shadow: var(--shadow-medium);
+        border-radius: var(--border-radius-soft);
+        padding: 40px;
+        text-align: center;
+      }
+
+      h1 {
+        font-family: "Poppins", sans-serif;
+        font-size: 2.2rem;
+        font-weight: 700;
+        color: var(--text-color);
+        margin-bottom: 0.5rem;
+      }
+
+      .subtitle {
+        font-size: 1rem;
+        color: var(--text-muted);
+        margin-bottom: 2rem;
+      }
+
+      /* --- Profile Image Section --- */
+      .profile-image-section {
+        margin-bottom: 2rem;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 15px;
+      }
+
+      .profile-image-container {
+        width: 120px;
+        height: 120px;
+        border-radius: var(--border-radius-round);
+        overflow: hidden;
+        border: 3px solid var(--primary-color);
+        box-shadow: var(--shadow-light);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        background-color: #f0f0f0; /* Placeholder background */
+      }
+
+      .profile-image-container img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        display: block;
+      }
+
+      .image-upload-label {
+        background-color: var(--primary-color);
+        color: white;
+        padding: 10px 20px;
+        border-radius: var(--border-radius-soft);
+        cursor: pointer;
+        font-size: 0.9rem;
+        font-weight: 500;
+        transition: background-color 0.2s ease;
+      }
+
+      .image-upload-label:hover {
+        background-color: var(--primary-dark);
+      }
+
+      #profile-image-upload {
+        display: none; /* Hide the actual file input */
+      }
+
+      /* --- Form Styling --- */
+      form {
+        display: grid;
+        grid-template-columns: 1fr; /* Single column by default */
+        gap: 1rem; /* Space between input groups */
+        align-items: stretch;
+      }
+
+      @media (min-width: 600px) {
+        form {
+          grid-template-columns: 1fr 1fr; /* Two columns on larger screens */
+          gap: 1.5rem;
+        }
+        .full-width {
+          grid-column: 1 / -1; /* Span full width for specific fields */
+        }
+      }
+
+      .input-group {
+        width: 100%;
+        position: relative;
+        text-align: left; /* Align labels/inputs left */
+      }
+
+      .input-group label {
+        display: block;
+        font-size: 0.9rem;
+        color: var(--text-color);
+        margin-bottom: 5px;
+        font-weight: 500;
+      }
+
+      input,
+      textarea {
+        width: 100%;
+        padding: 12px 15px;
+        border: 1px solid var(--input-border-color);
+        border-radius: var(--border-radius-soft);
+        font-size: 1rem;
+        font-family: "Inter", sans-serif;
+        color: var(--text-color);
+        transition: border-color 0.3s ease, box-shadow 0.3s ease;
+        outline: none;
+        background-color: var(--card-background);
+      }
+
+      textarea {
+        min-height: 80px;
+        resize: vertical; /* Allow vertical resizing */
+      }
+
+      input:focus,
+      textarea:focus {
+        border-color: var(--focus-border-color);
+        box-shadow: 0 0 0 3px rgba(23, 145, 29, 0.2);
+      }
+
+      input::placeholder,
+      textarea::placeholder {
+        color: var(--text-muted);
+        opacity: 0.8;
+      }
+
+      /* Password toggle icon */
+      .password-toggle {
+        position: absolute;
+        right: 15px;
+        top: 50%; /* Adjusted for label */
+        transform: translateY(20%); /* Adjusted for label */
+        cursor: pointer;
+        color: var(--text-muted);
+        font-size: 0.9rem;
+      }
+      .input-group.incorrect .password-toggle {
+        color: var(--error-color); /* Match error color */
+      }
+
+      /* --- Button Styles --- */
+      .btn-submit {
+        width: 100%;
+        padding: 12px;
+        background-color: var(--primary-color);
+        color: white;
+        border: none;
+        border-radius: var(--border-radius-soft);
+        font-size: 1.1rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: background-color 0.3s ease, box-shadow 0.3s ease,
+          transform 0.3s ease;
+        margin-top: 1rem;
+        grid-column: 1 / -1; /* Span full width on grid */
+      }
+
+      .btn-submit:hover:not(:disabled) {
+        background-color: var(--primary-dark);
+        box-shadow: 0 6px 15px rgba(23, 145, 29, 0.35);
+        transform: translateY(-2px);
+      }
+
+      .btn-submit:disabled {
+        background-color: #a0a0a0;
+        cursor: not-allowed;
+        box-shadow: none;
+        transform: none;
+      }
+
+      /* --- Error Message --- */
+      #error-message {
+        color: var(--error-color);
+        font-size: 0.9rem;
+        margin-bottom: 1rem;
+        text-align: left;
+        width: 100%;
+        grid-column: 1 / -1; /* Span full width on grid */
+      }
+
+      /* --- Input Validation Styling --- */
+      .input-group.incorrect input,
+      .input-group.incorrect textarea {
+        border-color: var(--error-color);
+        box-shadow: 0 0 0 3px rgba(231, 76, 60, 0.2);
+      }
+
+      /* --- Loader Overlay --- */
+      .loader-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(255, 255, 255, 0.8);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        z-index: 1000;
+        backdrop-filter: blur(5px);
+        -webkit-backdrop-filter: blur(5px);
+        display: none; /* Hidden by default */
+      }
+
+      .loader {
+        border: 6px solid #f3f3f3;
+        border-top: 6px solid var(--primary-color);
+        border-radius: 50%;
+        width: 50px;
+        height: 50px;
+        animation: spin 1s linear infinite;
+      }
+
+      @keyframes spin {
+        0% {
+          transform: rotate(0deg);
+        }
+        100% {
+          transform: rotate(360deg);
+        }
+      }
+
+      /* --- Responsive Adjustments --- */
+      @media (max-width: 600px) {
+        body {
+          padding: 15px;
+        }
+        .navbar {
+          padding: 10px 15px;
+        }
+        .navbar .logo {
+          font-size: 1.2rem;
+        }
+        .navbar .nav-links a {
+          padding: 6px 10px;
+          font-size: 0.9rem;
+        }
+        .wrapper {
+          padding: 25px;
+        }
+        h1 {
+          font-size: 1.8rem;
+        }
+        .subtitle {
+          font-size: 0.9rem;
+          margin-bottom: 1.5rem;
+        }
+        .profile-image-container {
+          width: 100px;
+          height: 100px;
+        }
+        .image-upload-label {
+          padding: 8px 15px;
+          font-size: 0.8rem;
+        }
+        .input-group label {
+          font-size: 0.85rem;
+        }
+        input,
+        textarea {
+          padding: 10px 12px;
+          font-size: 0.9rem;
+        }
+        .btn-submit {
+          font-size: 1rem;
+          padding: 10px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div id="loader-overlay" class="loader-overlay">
+      <div class="loader"></div>
+    </div>
+
+    <nav class="navbar">
+      <a href="javascript:void(0);" class="logo" id="dashboard-link"
+        >TailorLink🔗</a
+      >
+      <div class="nav-links">
+        <a href="javascript:void(0);" id="logout-btn">Logout</a>
+      </div>
+    </nav>
+
+
+    <div class="wrapper">
+    <a href="dashboard-tailors.html" class="btn btn-primary" style="text-decoration: none; color: #ffffff; background-color: #0f6e16; border-radius: 10px; padding: 0.5rem; margin-right: 33rem;">🔙Back to Dashboard</a>
+      <h1>Edit Your Profile</h1>
+      <p class="subtitle">Update your personal and professional information</p>
+      <p id="error-message"></p>
+
+      <form id="editProfileForm">
+        <div class="profile-image-section full-width">
+          <div class="profile-image-container">
+            <img
+              id="profile-img-preview"
+              src="https://via.placeholder.com/120?text=Profile"
+              alt="Profile Image"
+            />
+          </div>
+          <label for="profile-image-upload" class="image-upload-label">
+            <i class="fas fa-camera"></i> Upload New Image
+          </label>
+          <input type="file" id="profile-image-upload" accept="image" />
+        </div>
+
+        <div class="input-group">
+          <label for="fullName">Full Name</label>
+          <input
+            type="text"
+            id="fullName"
+            placeholder="Your Full Name"
+            required
+            autocomplete="name"
+          />
+        </div>
+        <div class="input-group">
+          <label for="email">Email Address</label>
+          <input
+            type="email"
+            id="email"
+            placeholder="Your Email Address"
+            required
+            autocomplete="email"
+            disabled
+          />
+          </div>
+        <div class="input-group">
+          <label for="phone">Phone Number</label>
+          <input
+            type="tel"
+            id="phone"
+            placeholder="e.g., +2348012345678"
+            autocomplete="tel"
+          />
+        </div>
+        <div class="input-group">
+          <label for="location">Location</label>
+          <input
+            type="text"
+            id="location"
+            placeholder="City, State / Country"
+            autocomplete="address-level2"
+          />
+        </div>
+
+        <div class="input-group full-width">
+          <label for="currentPassword">Current Password (for changes)</label>
+          <input
+            type="password"
+            id="currentPassword"
+            placeholder="Enter current password if changing"
+            autocomplete="current-password"
+          />
+          <span class="password-toggle" id="toggleCurrentPassword">
+            <i class="fa fa-eye-slash" aria-hidden="true"></i>
+          </span>
+        </div>
+        <div class="input-group">
+          <label for="newPassword">New Password</label>
+          <input
+            type="password"
+            id="newPassword"
+            placeholder="Leave blank if not changing"
+            minlength="6"
+            autocomplete="new-password"
+          />
+          <span class="password-toggle" id="toggleNewPassword">
+            <i class="fa fa-eye-slash" aria-hidden="true"></i>
+          </span>
+        </div>
+        <div class="input-group">
+          <label for="confirmNewPassword">Confirm New Password</label>
+          <input
+            type="password"
+            id="confirmNewPassword"
+            placeholder="Confirm new password"
+            minlength="6"
+            autocomplete="new-password"
+          />
+          <span class="password-toggle" id="toggleConfirmNewPassword">
+            <i class="fa fa-eye-slash" aria-hidden="true"></i>
+          </span>
+        </div>
+
+        <div id="tailorSpecificFields" class="full-width" style="display: none">
+          <hr style="border: none; border-top: 1px solid #eee; margin: 20px 0" />
+          <h2 style="font-size: 1.5rem; margin-bottom: 1.5rem">
+            Tailor Information
+          </h2>
+          <div class="input-group">
+            <label for="bio">Biography / Description</label>
+            <textarea
+              id="bio"
+              placeholder="Tell clients about yourself and your tailoring style (max 500 characters)"
+              maxlength="500"
+            ></textarea>
+          </div>
+          <div class="input-group">
+            <label for="experience">Years of Experience</label>
+            <input
+              type="text"
+              id="experience"
+              placeholder="e.g., 5 years, 10+ years. Note: Honest is the best policy 😉"
+                pattern="^\d+(\+\d+)?\s*years?$"
+            />
+          </div>
+          <div class="input-group">
+            <label for="services">Services Offered (Comma Separated)</label>
+            <input
+              type="text"
+              id="services"
+              placeholder="e.g., Suits, Dresses, Alterations, Embroidery"
+            />
+          </div>
+          <div class="input-group">
+            <label for="price">Pricing Model</label>
+            <input
+              type="text"
+              id="price"
+              placeholder="e.g., NGN 5,000+, Price on request"
+            />
+          </div>
+        </div>
+
+        <button type="submit" class="btn-submit">Save Changes</button>
+      </form>
+    </div>
+
+    <script>
+      // Firebase Configuration (REPLACE WITH YOUR ACTUAL CONFIG)
+        const firebaseConfig = {
+        apiKey: "AIzaSyBVjsT4eVkdZaWaYfkgz_hoK00ZgmLWNR4",
+        authDomain: "tailorlink-571d5.firebaseapp.com",
+        projectId: "tailorlink-571d5",
+        storageBucket: "tailorlink-571d5.appspot.com",
+        messagingSenderId: "685008238153",
+        appId: "1:685008238153:web:8625d73d9511fde3f2b198",
+        measurementId: "G-H9RNR0LLKF",
+      };
+
+      // Initialize Firebase
+      firebase.initializeApp(firebaseConfig);
+      const auth = firebase.auth();
+      const db = firebase.firestore();
+      const storage = firebase.storage();
+
+      // --- DOM Elements ---
+      const loaderOverlay = document.getElementById("loader-overlay");
+      const dashboardLink = document.getElementById("dashboard-link");
+      const logoutBtn = document.getElementById("logout-btn");
+      const editProfileForm = document.getElementById("editProfileForm");
+      const profileImgPreview = document.getElementById("profile-img-preview");
+      const profileImageUpload = document.getElementById("profile-image-upload");
+      const fullNameInput = document.getElementById("fullName");
+      const emailInput = document.getElementById("email"); // Disabled, but good to have reference
+      const phoneInput = document.getElementById("phone");
+      const locationInput = document.getElementById("location");
+      const currentPasswordInput = document.getElementById("currentPassword");
+      const newPasswordInput = document.getElementById("newPassword");
+      const confirmNewPasswordInput = document.getElementById("confirmNewPassword");
+      const tailorSpecificFields = document.getElementById("tailorSpecificFields");
+      const bioInput = document.getElementById("bio");
+      const experienceInput = document.getElementById("experience");
+      const servicesInput = document.getElementById("services");
+      const priceInput = document.getElementById("price");
+      const errorMessageDisplay = document.getElementById("error-message");
+      const submitButton = document.querySelector(".btn-submit");
+
+      // Password Toggle Elements
+      const toggleCurrentPassword = document.getElementById("toggleCurrentPassword");
+      const toggleNewPassword = document.getElementById("toggleNewPassword");
+      const toggleConfirmNewPassword = document.getElementById("toggleConfirmNewPassword");
+
+      let currentUser = null; // To store the authenticated user object
+      let userRole = null; // To store the user's role (customer/tailor)
+
+      // Default profile image URL (REPLACE WITH YOUR OWN UPLOADED DEFAULT IMAGE URL)
+      const defaultProfileImageUrl =
+        "https://firebasestorage.googleapis.com/v0/b/tailorlink-571d5.appspot.com/o/tailor-default-profile.png?alt=media&token=YOUR_DEFAULT_IMAGE_TOKEN";
+        // To get a token: Upload a default image to Firebase Storage. Click on the image, and copy the "Access token" or "Download URL".
+
+      // --- Helper Functions ---
+      function showLoader() {
+        loaderOverlay.style.display = "flex";
+      }
+
+      function hideLoader() {
+        loaderOverlay.style.display = "none";
+      }
+
+      function markInputIncorrect(inputElement) {
+        if (inputElement) {
+          inputElement.closest(".input-group").classList.add("incorrect");
+        }
+      }
+
+      function clearInputError(inputElement) {
+        if (inputElement) {
+          inputElement.closest(".input-group").classList.remove("incorrect");
+        }
+      }
+
+      function clearAllInputErrors() {
+        document.querySelectorAll(".input-group.incorrect").forEach((group) => {
+          group.classList.remove("incorrect");
+        });
+      }
+
+      function displayErrorMessage(message) {
+        errorMessageDisplay.textContent = message;
+      }
+
+      // --- Password Toggle Logic ---
+      function setupPasswordToggle(toggleBtn, inputField) {
+        toggleBtn.addEventListener("click", function () {
+          const type =
+            inputField.getAttribute("type") === "password" ? "text" : "password";
+          inputField.setAttribute("type", type);
+          this.querySelector("i").classList.toggle("fa-eye");
+          this.querySelector("i").classList.toggle("fa-eye-slash");
+        });
+      }
+
+      setupPasswordToggle(toggleCurrentPassword, currentPasswordInput);
+      setupPasswordToggle(toggleNewPassword, newPasswordInput);
+      setupPasswordToggle(toggleConfirmNewPassword, confirmNewPasswordInput);
+
+      // --- Populate Form with User Data ---
+      async function populateProfileData(user) {
+        showLoader();
+        try {
+          const userDoc = await db.collection("users").doc(user.uid).get();
+          if (!userDoc.exists) {
+            console.error("User document not found in Firestore.");
+            throw new Error("User profile not found. Please log in again.");
+          }
+
+          const userData = userDoc.data();
+          currentUser = user; // Store user object globally
+          userRole = userData.role; // Store role globally
+
+          fullNameInput.value = userData.fullName || "";
+          emailInput.value = userData.email || ""; // Email is disabled
+          phoneInput.value = userData.phone || "";
+          locationInput.value = userData.location || "";
+
+          // Set profile image (from Firestore, or default if not set/fails)
+          profileImgPreview.src = userData.profileImage || defaultProfileImageUrl;
+          profileImgPreview.onerror = () => {
+            profileImgPreview.src = defaultProfileImageUrl;
+          };
+
+          // Show tailor-specific fields if role is 'tailor'
+          if (userRole === "tailor") {
+            tailorSpecificFields.style.display = "block";
+            const tailorDoc = await db.collection("tailors").doc(user.uid).get();
+            if (tailorDoc.exists) {
+              const tailorData = tailorDoc.data();
+              bioInput.value = tailorData.bio || "";
+              experienceInput.value = tailorData.experience || "";
+              servicesInput.value = (tailorData.services || []).join(", ");
+              priceInput.value = tailorData.price || "";
+            }
+          } else {
+            tailorSpecificFields.style.display = "none";
+          }
+
+          // Adjust dashboard link based on role
+          if (userRole === "customer") {
+            dashboardLink.href = "explore.html";
+          } else if (userRole === "tailor") {
+            dashboardLink.href = "dashboard-tailors.html";
+          } else if (userRole === "admin") {
+            dashboardLink.href = "dashboard-admin.html";
+          } else {
+            dashboardLink.href = "#"; // Fallback
+          }
+        } catch (error) {
+          console.error("Error populating profile data:", error);
+          displayErrorMessage(
+            "Failed to load profile data. Please refresh or log in again."
+          );
+          auth.signOut(); // Force sign out on critical data load error
+          window.location.href = "login.html";
+        } finally {
+          hideLoader();
+        }
+      }
+
+      // --- Handle Profile Image Upload ---
+      profileImageUpload.addEventListener("change", async (event) => {
+        const file = event.target.files[0];
+        if (!file) return;
+
+        if (!currentUser) {
+          displayErrorMessage("Please log in to upload an image.");
+          return;
+        }
+
+        showLoader();
+        try {
+          // Validate file type
+          const allowedTypes = ["image/jpeg", "image/png", "image/gif"];
+          if (!allowedTypes.includes(file.type)) {
+            displayErrorMessage("Only JPEG, PNG, and GIF images are allowed.");
+            hideLoader();
+            return;
+          }
+
+          // Validate file size (e.g., max 2MB)
+          const maxSize = 2 * 1024 * 1024; // 2MB
+          if (file.size > maxSize) {
+            displayErrorMessage("Image file size must be less than 2MB.");
+            hideLoader();
+            return;
+          }
+
+          const storageRef = storage.ref();
+          const imageRef = storageRef.child(`profile_images/${currentUser.uid}/${file.name}`);
+          const uploadTask = imageRef.put(file);
+
+          uploadTask.on(
+            "state_changed",
+            (snapshot) => {
+              // Observe state change events such as progress, pause, and resume
+              const progress =
+                (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+              console.log("Upload is " + progress + "% done");
+              // You could update a progress bar here
+            },
+            (error) => {
+              // Handle unsuccessful uploads
+              console.error("Image upload error:", error);
+              displayErrorMessage("Failed to upload image. Please try again.");
+              hideLoader();
+            },
+            async () => {
+              // Handle successful uploads on complete
+              const downloadURL = await imageRef.getDownloadURL();
+              profileImgPreview.src = downloadURL; // Update preview
+
+              // Update Firestore with new image URL
+              await db.collection("users").doc(currentUser.uid).update({
+                profileImage: downloadURL,
+              });
+              if (userRole === "tailor") {
+                await db.collection("tailors").doc(currentUser.uid).update({
+                  profileImage: downloadURL,
+                });
+              }
+              displayErrorMessage("Profile image updated successfully!");
+              hideLoader();
+            }
+          );
+        } catch (error) {
+          console.error("Error uploading image:", error);
+          displayErrorMessage("Failed to upload image.");
+          hideLoader();
+        }
+      });
+
+      // --- Handle Form Submission (Save Changes) ---
+      editProfileForm.addEventListener("submit", async (e) => {
+        e.preventDefault();
+
+        // Show loader and disable button
+        showLoader();
+        submitButton.textContent = "Saving...";
+        submitButton.disabled = true;
+        displayErrorMessage(""); // Clear previous errors
+        clearAllInputErrors();
+
+        const fullName = fullNameInput.value.trim();
+        const phone = phoneInput.value.trim();
+        const location = locationInput.value.trim();
+        const currentPassword = currentPasswordInput.value;
+        const newPassword = newPasswordInput.value;
+        const confirmNewPassword = confirmNewPasswordInput.value;
+
+        // Validation
+        const errors = [];
+
+        if (!fullName) {
+          errors.push("Full Name is required.");
+          markInputIncorrect(fullNameInput);
+        }
+
+        if (newPassword && newPassword.length < 6) {
+          errors.push("New password must be at least 6 characters long.");
+          markInputIncorrect(newPasswordInput);
+        }
+        if (newPassword && newPassword !== confirmNewPassword) {
+          errors.push("New passwords do not match.");
+          markInputIncorrect(newPasswordInput);
+          markInputIncorrect(confirmNewPasswordInput);
+        }
+        // If new password is provided, current password is required
+        if (newPassword && !currentPassword) {
+          errors.push("Current password is required to change password.");
+          markInputIncorrect(currentPasswordInput);
+        }
+
+        // Tailor-specific validation and data
+        let bio = "";
+        let experience = "";
+        let services = [];
+        let price = "";
+
+        if (userRole === "tailor") {
+          bio = bioInput.value.trim();
+          experience = experienceInput.value.trim();
+          price = priceInput.value.trim();
+          
+          const servicesRaw = servicesInput.value.trim();
+          if (!servicesRaw) {
+             errors.push("Services Offered are required for tailors.");
+             markInputIncorrect(servicesInput);
+          } else {
+            services = servicesRaw
+              .split(",")
+              .map((s) => s.trim())
+              .filter((s) => s !== "");
+            if (services.length === 0) {
+              errors.push("Please enter at least one service offered.");
+              markInputIncorrect(servicesInput);
+            }
+          }
+        }
+
+        if (errors.length > 0) {
+          displayErrorMessage(errors.join(" "));
+          hideLoader();
+          submitButton.textContent = "Save Changes";
+          submitButton.disabled = false;
+          return;
+        }
+
+        try {
+          // 1. Update Firebase Authentication Profile
+          if (currentUser) {
+            // Update display name (if changed)
+            if (currentUser.displayName !== fullName) {
+              await currentUser.updateProfile({ displayName: fullName });
+            }
+
+            // Update password if new password is provided
+            if (newPassword) {
+              const credential = firebase.auth.EmailAuthProvider.credential(
+                currentUser.email,
+                currentPassword
+              );
+              await currentUser.reauthenticateWithCredential(credential); // Re-authenticate first
+              await currentUser.updatePassword(newPassword);
+              displayErrorMessage("Password updated successfully.");
+              // Clear password fields after successful update
+              currentPasswordInput.value = "";
+              newPasswordInput.value = "";
+              confirmNewPasswordInput.value = "";
+              // Reset password toggle icons
+              toggleCurrentPassword.querySelector('i').className = 'fa fa-eye-slash';
+              toggleNewPassword.querySelector('i').className = 'fa fa-eye-slash';
+              toggleConfirmNewPassword.querySelector('i').className = 'fa fa-eye-slash';
+            }
+          }
+
+          // 2. Update Firestore User Data
+          const userUpdateData = {
+            fullName: fullName,
+            phone: phone || null,
+            location: location || null,
+            updatedAt: firebase.firestore.FieldValue.serverTimestamp(),
+          };
+          await db.collection("users").doc(currentUser.uid).update(userUpdateData);
+
+          // 3. Update Firestore Tailor Data (if applicable)
+          if (userRole === "tailor") {
+            const tailorUpdateData = {
+              name: fullName, // Update name in tailors collection too
+              phone: phone || null,
+              location: location || null,
+              bio: bio || null,
+              experience: experience || null,
+              services: services,
+              price: price || null,
+              updatedAt: firebase.firestore.FieldValue.serverTimestamp(),
+            };
+            await db.collection("tailors").doc(currentUser.uid).update(tailorUpdateData);
+          }
+
+          displayErrorMessage("Profile updated successfully!");
+          // Optional: Redirect back to dashboard or show success message for a duration
+          // setTimeout(() => window.location.href = dashboardLink.href, 1500);
+
+        } catch (error) {
+          console.error("Error saving profile:", error);
+          let userFacingMessage = "Failed to save profile. Please try again.";
+
+          if (error.code === 'auth/requires-recent-login') {
+            userFacingMessage = "Please log out and log in again to update your password.";
+            markInputIncorrect(currentPasswordInput);
+          } else if (error.code === 'auth/wrong-password') {
+            userFacingMessage = "Incorrect current password.";
+            markInputIncorrect(currentPasswordInput);
+          } else if (error.code === 'auth/weak-password') {
+            userFacingMessage = "The new password is too weak. Please choose a stronger one.";
+            markInputIncorrect(newPasswordInput);
+          } else if (error.code === 'auth/invalid-email') {
+              userFacingMessage = 'Invalid email format (though email is disabled, useful for other contexts).';
+          }
+          displayErrorMessage(userFacingMessage);
+        } finally {
+          hideLoader();
+          submitButton.textContent = "Save Changes";
+          submitButton.disabled = false;
+        }
+      });
+
+      // --- Authentication State Listener ---
+      auth.onAuthStateChanged((user) => {
+        if (user) {
+          populateProfileData(user);
+        } else {
+          // User is signed out, redirect to login page
+          window.location.href = "login.html";
+        }
+      });
+
+      // --- Logout Logic ---
+      logoutBtn.addEventListener("click", async () => {
+        showLoader();
+        try {
+          await auth.signOut();
+          // Redirection handled by onAuthStateChanged listener
+        } catch (error) {
+          console.error("Error signing out:", error);
+          displayErrorMessage("Failed to log out. Please try again.");
+        } finally {
+          hideLoader();
+        }
+      });
+
+      // Initial clear of password fields on page load for security
+      document.addEventListener("DOMContentLoaded", () => {
+          currentPasswordInput.value = "";
+          newPasswordInput.value = "";
+          confirmNewPasswordInput.value = "";
+      });
+    </script>
+  </body>
+</html>

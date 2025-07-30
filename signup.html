@@ -1,0 +1,774 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Join TailorLink🔗</title>
+
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Poppins:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
+    />
+
+    <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
+
+    <style>
+      /* Root variables for colors */
+      :root {
+        --primary-color: #17911d; /* Your specified primary color */
+        --primary-light: #27ae60;
+        --primary-dark: #0f6e16;
+        --background-color: #f0f2f5; /* Light subtle background */
+        --card-background: #ffffff;
+        --text-color: #333;
+        --text-muted: #666;
+        --input-border-color: #e0e0e0;
+        --focus-border-color: var(--primary-color);
+        --shadow-light: 0 4px 12px rgba(0, 0, 0, 0.08);
+        --shadow-medium: 0 8px 25px rgba(0, 0, 0, 0.1);
+        --border-radius-soft: 8px;
+        --border-radius-round: 25px;
+      }
+
+      /* Basic Reset & Body Styling */
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: "Inter", sans-serif; /* Primary font */
+        background-color: var(--background-color);
+        color: var(--text-color);
+        min-height: 100vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding: 20px; /* Padding for smaller screens */
+      }
+
+      /* Wrapper for the form card */
+      .wrapper {
+        width: 100%;
+        max-width: 480px; /* Adjusted max-width to match screenshot better */
+        background-color: var(--card-background);
+        box-shadow: var(--shadow-medium);
+        border-radius: var(--border-radius-soft);
+        padding: 40px; /* More generous padding */
+        text-align: center; /* Center content */
+      }
+
+      h1 {
+        font-family: "Poppins", sans-serif; /* Heading font */
+        font-size: 2.2rem;
+        font-weight: 700;
+        color: var(--text-color);
+        margin-bottom: 0.5rem;
+      }
+
+      .subtitle {
+        font-size: 1rem;
+        color: var(--text-muted);
+        margin-bottom: 2rem;
+      }
+
+      /* Form Styling */
+      form {
+        display: flex;
+        flex-direction: column;
+        gap: 1rem; /* Space between input groups */
+        align-items: stretch; /* Stretch items to full width */
+      }
+
+      .input-group {
+        width: 100%; /* Ensure groups take full width */
+        position: relative;
+        text-align: left; /* Align labels/inputs left */
+      }
+
+      input,
+      select {
+        width: 100%;
+        padding: 12px 15px; /* More padding for inputs */
+        border: 1px solid var(--input-border-color);
+        border-radius: var(--border-radius-soft);
+        font-size: 1rem;
+        font-family: "Inter", sans-serif;
+        color: var(--text-color);
+        transition: border-color 0.3s ease, box-shadow 0.3s ease;
+        outline: none;
+        background-color: var(--card-background); /* Ensure white background */
+      }
+
+      input:focus,
+      select:focus {
+        border-color: var(--focus-border-color);
+        box-shadow: 0 0 0 3px rgba(23, 145, 29, 0.2); /* Subtle focus ring */
+      }
+
+      input::placeholder {
+        color: var(--text-muted);
+        opacity: 0.8;
+      }
+
+      /* Password toggle icon */
+      .password-toggle {
+        position: absolute;
+        right: 15px;
+        top: 50%;
+        transform: translateY(-50%);
+        cursor: pointer;
+        color: var(--text-muted);
+        font-size: 0.9rem;
+      }
+      .input-group.incorrect .password-toggle {
+        color: #e74c3c; /* Match error color */
+      }
+
+      /* Role Selection */
+      .role-selection {
+        display: flex;
+        gap: 10px;
+        margin-bottom: 1.5rem; /* Space after role selection */
+        width: 100%;
+      }
+
+      .role-btn {
+        flex: 1;
+        padding: 20px 15px; /* Larger padding for role buttons */
+        border: 2px solid var(--input-border-color);
+        border-radius: var(--border-radius-soft);
+        background-color: var(--background-color);
+        cursor: pointer;
+        font-family: "Poppins", sans-serif;
+        font-weight: 600;
+        color: var(--text-color);
+        transition: all 0.3s ease;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 8px; /* Space between icon and text */
+      }
+
+      .role-btn i {
+        font-size: 1.8rem; /* Larger icons */
+        color: var(--text-muted);
+        transition: color 0.3s ease;
+      }
+
+      .role-btn small {
+        font-size: 0.85rem;
+        color: var(--text-muted);
+      }
+
+      .role-btn.selected {
+        border-color: var(--primary-color);
+        box-shadow: 0 0 0 3px rgba(23, 145, 29, 0.3);
+        background-color: var(--card-background);
+      }
+
+      .role-btn.selected i {
+        color: var(--primary-color);
+      }
+
+      .role-btn:not(.selected):hover {
+        background-color: #f8f9fa;
+        border-color: #c9c9c9;
+      }
+
+      /* Submit Button */
+      .btn-submit {
+        width: 100%;
+        padding: 12px;
+        background-color: var(--primary-color);
+        color: white;
+        border: none;
+        border-radius: var(--border-radius-soft);
+        font-size: 1.1rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: background-color 0.3s ease, box-shadow 0.3s ease,
+          transform 0.3s ease;
+        margin-top: 1rem; /* Space above submit button */
+      }
+
+      .btn-submit:hover:not(:disabled) {
+        background-color: var(--primary-dark);
+        box-shadow: 0 6px 15px rgba(23, 145, 29, 0.35);
+        transform: translateY(-2px);
+      }
+
+      .btn-submit:disabled {
+        background-color: #a0a0a0;
+        cursor: not-allowed;
+        box-shadow: none;
+        transform: none;
+      }
+
+      /* Link to Login */
+      .login-link-text {
+        font-size: 0.9rem;
+        color: var(--text-muted);
+        margin-top: 1rem;
+      }
+
+      .login-link-text a {
+        color: var(--primary-color);
+        text-decoration: none;
+        font-weight: 600;
+        transition: color 0.3s ease;
+      }
+
+      .login-link-text a:hover {
+        color: var(--primary-dark);
+        text-decoration: underline;
+      }
+
+      /* Error Message */
+      #error-message {
+        color: #e74c3c;
+        font-size: 0.9rem;
+        margin-bottom: 1rem;
+        text-align: left;
+        width: 100%;
+        padding: 0 10px; /* Align with input padding */
+      }
+
+      /* Input validation styling */
+      .input-group.incorrect input,
+      .input-group.incorrect select {
+        border-color: #e74c3c;
+        box-shadow: 0 0 0 3px rgba(231, 76, 60, 0.2);
+      }
+
+      /* Loader Overlay (from style.css if external, otherwise keep here) */
+      .loader-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(255, 255, 255, 0.8);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        z-index: 1000;
+        backdrop-filter: blur(5px);
+        -webkit-backdrop-filter: blur(5px);
+        display: none; /* Hidden by default */
+      }
+
+      .loader {
+        border: 6px solid #f3f3f3;
+        border-top: 6px solid var(--primary-color);
+        border-radius: 50%;
+        width: 50px;
+        height: 50px;
+        animation: spin 1s linear infinite;
+      }
+
+      @keyframes spin {
+        0% {
+          transform: rotate(0deg);
+        }
+        100% {
+          transform: rotate(360deg);
+        }
+      }
+
+      /* Message Styling (for success/error notifications) */
+      #message-container {
+        margin-bottom: 1rem; /* Space between messages and form */
+      }
+
+      .message {
+        padding: 12px 20px;
+        margin: 1rem 0; /* Adjust margin to prevent double-spacing with message-container */
+        border-radius: var(--border-radius-soft);
+        font-size: 1rem;
+        font-weight: 500;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        text-align: left;
+      }
+
+      .message.success {
+        background-color: rgba(39, 174, 96, 0.1); /* Green with alpha */
+        color: #27ae60;
+        border: 1px solid #27ae60;
+      }
+
+      .message.error-message { /* Renamed to avoid conflict with #error-message */
+        background-color: rgba(231, 76, 60, 0.1); /* Red with alpha */
+        color: #e74c3c;
+        border: 1px solid #e74c3c;
+      }
+
+      .message .close-btn {
+        background: none;
+        border: none;
+        font-size: 1.2rem;
+        cursor: pointer;
+        color: inherit;
+        margin-left: auto;
+        opacity: 0.7;
+        transition: opacity 0.2s ease;
+      }
+
+      .message .close-btn:hover {
+        opacity: 1;
+      }
+
+      /* Responsive adjustments */
+      @media (max-width: 600px) {
+        body {
+          padding: 15px;
+        }
+        .wrapper {
+          padding: 25px;
+        }
+        h1 {
+          font-size: 1.8rem;
+        }
+        .role-btn {
+          padding: 15px 10px;
+        }
+        .role-btn i {
+          font-size: 1.5rem;
+        }
+        .btn-submit {
+          font-size: 1rem;
+          padding: 10px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div id="loader-overlay" class="loader-overlay">
+      <div class="loader"></div>
+    </div>
+
+    <div class="wrapper">
+      <h1>Join TailorLink🔗</h1>
+      <p class="subtitle">Create your account to get started</p>
+      <div id="message-container"></div>
+      <form id="signupForm">
+        <div class="role-selection">
+          <button
+            type="button"
+            id="customerRoleBtn"
+            class="role-btn selected"
+            data-role="customer"
+          >
+            <i class="fas fa-user"></i>
+            <span>Customer</span>
+            <small>Find tailors</small>
+          </button>
+          <button
+            type="button"
+            id="tailorRoleBtn"
+            class="role-btn"
+            data-role="tailor"
+          >
+            <i class="fas fa-cut"></i>
+            <span>Tailor</span>
+            <small>Offer services</small>
+          </button>
+        </div>
+
+        <div class="input-group">
+          <input
+            type="text"
+            id="fullName"
+            placeholder="Full Name"
+            required
+            autocomplete="name"
+          />
+        </div>
+        <div class="input-group">
+          <input
+            type="email"
+            id="email"
+            placeholder="Email Address"
+            required
+            autocomplete="email"
+          />
+        </div>
+        <div class="input-group">
+          <input
+            type="tel"
+            id="phone"
+            placeholder="Phone Number (Optional)"
+            autocomplete="tel"
+          />
+        </div>
+        <div class="input-group">
+          <input
+            type="text"
+            id="location"
+            placeholder="City, State / Country (Optional)"
+            autocomplete="address-level2"
+          />
+        </div>
+
+        <div class="input-group">
+          <input
+            type="password"
+            id="password"
+            placeholder="Create a password"
+            required
+            minlength="6"
+            autocomplete="new-password"
+          />
+          <span class="password-toggle" id="togglePassword">
+            <i class="fa fa-eye-slash" aria-hidden="true"></i>
+          </span>
+        </div>
+        <div class="input-group">
+          <input
+            type="password"
+            id="confirmPassword"
+            placeholder="Confirm password"
+            required
+            minlength="6"
+            autocomplete="new-password"
+          />
+          <span class="password-toggle" id="toggleConfirmPassword">
+            <i class="fa fa-eye-slash" aria-hidden="true"></i>
+          </span>
+        </div>
+
+        <div id="tailorSpecificFields" style="display: none">
+          <div class="input-group">
+            <input
+              type="text"
+              id="services"
+              placeholder="Services Offered (e.g., Suits, Dresses, Alterations)"
+            />
+            <small style="color: var(--text-muted); font-size: 0.8em; margin-top: 5px; display: block;">
+              Comma-separated, e.g., Suits, Dresses, Alterations
+            </small>
+          </div>
+        </div>
+
+        <button type="submit" class="btn-submit" id="signupSubmitBtn">
+          Sign Up
+        </button>
+        <p class="login-link-text">
+          Already have an account? <a href="login.html">Login</a>
+        </p>
+      </form>
+    </div>
+
+    <script>
+      // Firebase Configuration
+      const firebaseConfig = {
+        apiKey: "AIzaSyBVjsT4eVkdZaWaYfkgz_hoK00ZgmLWNR4",
+        authDomain: "tailorlink-571d5.firebaseapp.com",
+        projectId: "tailorlink-571d5",
+        storageBucket: "tailorlink-571d5.appspot.com",
+        messagingSenderId: "685008238153",
+        appId: "1:685008238153:web:8625d73d9511fde3f2b198",
+        measurementId: "G-H9RNR0LLKF",
+      };
+
+      // Initialize Firebase
+      firebase.initializeApp(firebaseConfig);
+      const auth = firebase.auth();
+      const db = firebase.firestore();
+
+      // DOM Elements
+      const loaderOverlay = document.getElementById("loader-overlay");
+      const signupForm = document.getElementById("signupForm");
+      const fullNameInput = document.getElementById("fullName");
+      const emailInput = document.getElementById("email");
+      const phoneInput = document.getElementById("phone");
+      const locationInput = document.getElementById("location");
+      const passwordInput = document.getElementById("password");
+      const confirmPasswordInput = document.getElementById("confirmPassword");
+      const customerRoleBtn = document.getElementById("customerRoleBtn");
+      const tailorRoleBtn = document.getElementById("tailorRoleBtn");
+      const tailorSpecificFields = document.getElementById(
+        "tailorSpecificFields"
+      );
+      const servicesInput = document.getElementById("services");
+      const messageContainer = document.getElementById("message-container"); // For success/error messages
+      const signupSubmitBtn = document.getElementById("signupSubmitBtn"); // Reference to the submit button
+      const togglePassword = document.getElementById("togglePassword");
+      const toggleConfirmPassword = document.getElementById(
+        "toggleConfirmPassword"
+      );
+
+      let currentRole = "customer"; // Default role
+
+      // --- Loader Functions ---
+      function showLoader() {
+        loaderOverlay.style.display = "flex";
+      }
+
+      function hideLoader() {
+        loaderOverlay.style.display = "none";
+      }
+
+      // --- Message Display Function ---
+      function displayMessage(type, message) {
+        const messageDiv = document.createElement("div");
+        messageDiv.className = `message ${type}-message`; // Using -message suffix for consistency
+        messageDiv.innerHTML = `
+          <i class="fas fa-${type === 'success' ? 'check-circle' : 'exclamation-triangle'}"></i>
+          <span>${message}</span>
+          <button class="close-btn"><i class="fas fa-times"></i></button>
+        `;
+        messageContainer.innerHTML = ""; // Clear previous messages
+        messageContainer.appendChild(messageDiv);
+
+        messageDiv.querySelector(".close-btn").addEventListener("click", () => {
+          messageDiv.remove();
+        });
+
+        // Auto-hide success messages after 5 seconds
+        if (type === "success") {
+          setTimeout(() => {
+            messageDiv.remove();
+          }, 5000);
+        }
+      }
+
+      // --- Input Validation Styling Functions ---
+      function markInputIncorrect(inputElement) {
+        inputElement.closest(".input-group").classList.add("incorrect");
+      }
+
+      function clearInputError(inputElement) {
+        inputElement.closest(".input-group").classList.remove("incorrect");
+      }
+
+      function clearAllInputErrors() {
+        document.querySelectorAll(".input-group.incorrect").forEach((group) => {
+          group.classList.remove("incorrect");
+        });
+      }
+
+      // --- Role Selection Logic ---
+      customerRoleBtn.addEventListener("click", () => {
+        currentRole = "customer";
+        customerRoleBtn.classList.add("selected");
+        tailorRoleBtn.classList.remove("selected");
+        tailorSpecificFields.style.display = "none";
+        // Clear services input and any error when switching to customer
+        servicesInput.value = "";
+        clearInputError(servicesInput);
+        messageContainer.innerHTML = ""; // Clear any role-specific messages
+      });
+
+      tailorRoleBtn.addEventListener("click", () => {
+        currentRole = "tailor";
+        tailorRoleBtn.classList.add("selected");
+        customerRoleBtn.classList.remove("selected");
+        tailorSpecificFields.style.display = "block";
+        messageContainer.innerHTML = ""; // Clear any role-specific messages
+      });
+
+      // --- Password Toggle Logic ---
+      function setupPasswordToggle(toggleBtn, inputField) {
+        toggleBtn.addEventListener("click", function () {
+          const type =
+            inputField.getAttribute("type") === "password" ? "text" : "password";
+          inputField.setAttribute("type", type);
+          this.querySelector("i").classList.toggle("fa-eye");
+          this.querySelector("i").classList.toggle("fa-eye-slash");
+        });
+      }
+      setupPasswordToggle(togglePassword, passwordInput);
+      setupPasswordToggle(toggleConfirmPassword, confirmPasswordInput);
+
+      // --- Form Submission Logic ---
+      signupForm.addEventListener("submit", async (e) => {
+        e.preventDefault();
+
+        messageContainer.innerHTML = ""; // Clear previous messages
+        clearAllInputErrors(); // Clear previous error styles
+
+        const fullName = fullNameInput.value.trim();
+        const email = emailInput.value.trim();
+        const phone = phoneInput.value.trim();
+        const location = locationInput.value.trim();
+        const password = passwordInput.value;
+        const confirmPassword = confirmPasswordInput.value;
+
+        // Basic client-side validation
+        const errors = [];
+
+        if (!fullName) {
+          errors.push("Full Name is required.");
+          markInputIncorrect(fullNameInput);
+        }
+        if (!email) {
+          errors.push("Email Address is required.");
+          markInputIncorrect(emailInput);
+        } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+          errors.push("Please enter a valid email address.");
+          markInputIncorrect(emailInput);
+        }
+        if (!password) {
+          errors.push("Password is required.");
+          markInputIncorrect(passwordInput);
+        } else if (password.length < 6) {
+          errors.push("Password must be at least 6 characters long.");
+          markInputIncorrect(passwordInput);
+        }
+        if (password !== confirmPassword) {
+          errors.push("Passwords do not match.");
+          markInputIncorrect(passwordInput);
+          markInputIncorrect(confirmPasswordInput);
+        }
+
+        // Tailor-specific validation
+        let services = [];
+        if (currentRole === "tailor") {
+          const servicesRaw = servicesInput.value.trim();
+          if (!servicesRaw) {
+            errors.push("Services Offered are required for tailors.");
+            markInputIncorrect(servicesInput);
+          } else {
+            services = servicesRaw
+              .split(",")
+              .map((s) => s.trim())
+              .filter((s) => s !== "");
+            if (services.length === 0) {
+              errors.push("Please enter at least one service offered.");
+              markInputIncorrect(servicesInput);
+            }
+          }
+        }
+
+        if (errors.length > 0) {
+          displayMessage("error", errors.join(" "));
+          return;
+        }
+
+        // Disable button and show loader during submission
+        signupSubmitBtn.textContent = "Signing Up...";
+        signupSubmitBtn.disabled = true;
+        showLoader();
+
+        try {
+          // 1. Create user with Firebase Authentication
+          const userCredential = await auth.createUserWithEmailAndPassword(
+            email,
+            password
+          );
+          const user = userCredential.user;
+
+          // 2. Store user data in Firestore based on role
+          if (user) {
+            // Update user's profile display name in Firebase Auth
+            await user.updateProfile({ displayName: fullName });
+
+            // Store in 'users' collection for both customers and tailors
+            await db
+              .collection("users")
+              .doc(user.uid)
+              .set({
+                fullName: fullName,
+                email: email,
+                phone: phone || null, // Store as null if empty
+                location: location || null, // Store as null if empty
+                role: currentRole,
+                createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+              });
+
+            // If the user is a tailor, also add their data to the 'tailors' collection
+            if (currentRole === "tailor") {
+              await db
+                .collection("tailors")
+                .doc(user.uid)
+                .set({
+                  name: fullName,
+                  email: email,
+                  phone: phone || null,
+                  location: location || null,
+                  services: services, // Array of services from input
+                  isActive: true, // Tailors are active by default
+                  rating: 0, // Initial rating
+                  reviews: 0, // Initial review count
+                  profileImage:
+                    "https://firebasestorage.googleapis.com/v0/b/tailorlink-571d5.appspot.com/o/tailor-default-profile.png?alt=media&token=AIzaSyBVjsT4eVkdZaWaYfkgz_hoK00ZgmLWNR4", // Default image placeholder (replace with your actual image URL and token)
+                  bio: "A dedicated tailor ready to bring your ideas to life.", // Default bio
+                  experience: "0 years", // Default experience
+                  price: "Price on request", // Default price
+                  joinedAt: firebase.firestore.FieldValue.serverTimestamp(),
+                });
+            }
+
+            displayMessage("success", `Account created successfully! Redirecting to login...`);
+            setTimeout(() => {
+              window.location.href = "login.html"; // Redirect after a short delay
+            }, 2000); // 2-second delay
+          } else {
+            displayMessage("error", "User creation failed. Please try again.");
+          }
+        } catch (error) {
+          console.error("Signup error:", error);
+          let userFacingMessage = "An unexpected error occurred during signup. Please try again.";
+
+          // More specific error messages for Firebase Auth errors
+          if (error.code === "auth/email-already-in-use") {
+            userFacingMessage = "This email address is already registered. Please login or use a different email.";
+            markInputIncorrect(emailInput);
+          } else if (error.code === "auth/invalid-email") {
+            userFacingMessage = "The email address is not valid.";
+            markInputIncorrect(emailInput);
+          } else if (error.code === "auth/operation-not-allowed") {
+            userFacingMessage = "Email/password authentication is not enabled. Please contact support.";
+          } else if (error.code === "auth/weak-password") {
+            userFacingMessage = "The password is too weak. Please choose a stronger one (at least 6 characters).";
+            markInputIncorrect(passwordInput);
+          }
+          // Generic fallback for other errors
+          else if (error.message) {
+            userFacingMessage = `Error: ${error.message}`;
+          }
+
+          displayMessage("error", userFacingMessage);
+        } finally {
+          hideLoader();
+          signupSubmitBtn.textContent = "Sign Up";
+          signupSubmitBtn.disabled = false;
+        }
+      });
+
+      // Remove error styling when user starts typing
+      [
+        fullNameInput,
+        emailInput,
+        phoneInput,
+        locationInput,
+        passwordInput,
+        confirmPasswordInput,
+        servicesInput,
+      ].forEach((input) => {
+        input.addEventListener("input", () => {
+          clearInputError(input);
+          // Only clear the message container if the user is actively fixing an input
+          messageContainer.innerHTML = "";
+        });
+      });
+
+      // Initialize the role selection on page load
+      document.addEventListener("DOMContentLoaded", () => {
+        // Ensure customer is selected by default and tailor fields are hidden
+        customerRoleBtn.click();
+      });
+    </script>
+  </body>
+</html>

@@ -1,0 +1,1054 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>My Bookings – TailorLink🔗</title>
+
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Poppins:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
+    />
+
+    <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
+
+    <style>
+      /* Root variables for colors */
+      :root {
+        --primary-color: #17911d; /* Your specified primary color */
+        --primary-light: #27ae60;
+        --primary-dark: #0f6e16;
+        --background-color: #f0f2f5; /* Light subtle background */
+        --card-background: #ffffff;
+        --text-color: #333;
+        --text-muted: #666;
+        --input-border-color: #e0e0e0;
+        --focus-border-color: var(--primary-color);
+        --shadow-light: 0 4px 12px rgba(0, 0, 0, 0.08);
+        --shadow-medium: 0 8px 25px rgba(0, 0, 0, 0.1);
+        --border-radius-small: 5px;
+        --border-radius-soft: 8px;
+        --border-radius-medium: 12px;
+        --border-radius-large: 16px;
+        --border-radius-round: 25px;
+
+        /* Dark Mode Variables */
+        --dark-background-color: #1a1a1a;
+        --dark-card-background: #2c2c2c;
+        --dark-text-color: #e0e0e0;
+        --dark-text-muted: #b0b0b0;
+        --dark-input-border-color: #444;
+        --dark-hover-background: #3a3a3a;
+      }
+
+      /* Base Styles */
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: "Inter", sans-serif;
+        background-color: var(--background-color);
+        color: var(--text-color);
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+        line-height: 1.6;
+        transition: background-color 0.3s, color 0.3s;
+      }
+
+      /* Dark Mode Styles */
+      body.dark-mode {
+        background-color: var(--dark-background-color);
+        color: var(--dark-text-color);
+      }
+
+      body.dark-mode .navbar {
+        background-color: var(--dark-card-background);
+        border-bottom: 1px solid var(--dark-input-border-color);
+      }
+
+      body.dark-mode .navbar a {
+        color: var(--dark-text-color);
+      }
+
+      body.dark-mode .navbar a:hover {
+        background-color: var(--dark-hover-background);
+      }
+
+      body.dark-mode .bookings-list,
+      body.dark-mode .footer {
+        background-color: var(--dark-card-background);
+        box-shadow: none; /* Dark mode often looks better without heavy shadows */
+      }
+
+      body.dark-mode .booking-item-card {
+        background-color: var(--dark-background-color);
+        border-color: var(--dark-input-border-color);
+      }
+
+      body.dark-mode .booking-item-card:hover {
+        box-shadow: 0 4px 12px rgba(255, 255, 255, 0.15); /* Lighter shadow for dark mode */
+      }
+
+      body.dark-mode .no-bookings-message {
+        background-color: var(--dark-background-color);
+        border-color: var(--dark-input-border-color);
+        color: var(--dark-text-muted);
+      }
+
+      body.dark-mode .footer-brand,
+      body.dark-mode .footer-links h4,
+      body.dark-mode .footer-contact h4 {
+        color: var(--primary-color); /* Maintain primary color for emphasis */
+      }
+
+      body.dark-mode .footer-links a,
+      body.dark-mode .footer-contact p,
+      body.dark-mode .footer-bottom p {
+        color: var(--dark-text-muted);
+      }
+
+      /* Navbar */
+      .navbar {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 15px 5%;
+        background-color: var(--card-background);
+        box-shadow: var(--shadow-light);
+        border-bottom: 1px solid var(--input-border-color);
+      }
+
+      .navbar .logo {
+        font-family: "Poppins", sans-serif;
+        font-size: 1.8rem;
+        font-weight: 700;
+        color: var(--primary-color);
+      }
+
+      .navbar .logo span {
+        color: var(--text-color); /* Different color for 'Link' */
+        font-weight: 600;
+      }
+
+      body.dark-mode .navbar .logo span {
+        color: var(--dark-text-color);
+      }
+
+      .navbar .nav-links a {
+        color: var(--text-color);
+        text-decoration: none;
+        font-weight: 500;
+        padding: 8px 15px;
+        border-radius: var(--border-radius-soft);
+        transition: background-color 0.3s, color 0.3s;
+      }
+
+      .navbar .nav-links a:hover {
+        background-color: var(--background-color);
+        color: var(--primary-color);
+      }
+
+      .navbar .nav-links #nav-auth-link {
+        background-color: var(--primary-color);
+        color: white;
+        padding: 8px 18px;
+        margin-left: 15px;
+      }
+
+      .navbar .nav-links #nav-auth-link:hover {
+        background-color: var(--primary-dark);
+        color: white;
+      }
+
+      body.dark-mode .navbar .nav-links #nav-auth-link:hover {
+        background-color: var(--primary-dark);
+        color: white;
+      }
+
+      .navbar .nav-links button {
+        background: none;
+        border: none;
+        font-size: 1.5rem;
+        cursor: pointer;
+        margin-left: 10px;
+        color: var(--text-color);
+        transition: transform 0.2s;
+      }
+
+      .navbar .nav-links button:hover {
+        transform: scale(1.1);
+      }
+
+      body.dark-mode .navbar .nav-links button {
+        color: var(--dark-text-color);
+      }
+
+      /* Loader Overlay */
+      .loader-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(255, 255, 255, 0.8);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        z-index: 1000;
+        backdrop-filter: blur(5px);
+        -webkit-backdrop-filter: blur(5px);
+        display: none; /* Hidden by default */
+      }
+
+      body.dark-mode .loader-overlay {
+        background: rgba(0, 0, 0, 0.6);
+      }
+
+      .loader {
+        border: 6px solid #f3f3f3;
+        border-top: 6px solid var(--primary-color); /* Uses your primary color */
+        border-radius: 50%;
+        width: 50px;
+        height: 50px;
+        animation: spin 1s linear infinite;
+      }
+
+      @keyframes spin {
+        0% {
+          transform: rotate(0deg);
+        }
+        100% {
+          transform: rotate(360deg);
+        }
+      }
+
+      /* Message Styling (for success/error notifications) */
+      #message-container {
+        margin-bottom: 1rem;
+      }
+
+      .message {
+        padding: 12px 20px;
+        margin: 1rem 0;
+        border-radius: var(--border-radius-soft);
+        font-size: 1rem;
+        font-weight: 500;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        text-align: left;
+      }
+
+      .message.success {
+        background-color: rgba(39, 174, 96, 0.1); /* Light green with alpha */
+        color: #27ae60;
+        border: 1px solid #27ae60;
+      }
+
+      .message.error {
+        background-color: rgba(231, 76, 60, 0.1); /* Light red with alpha */
+        color: #e74c3c;
+        border: 1px solid #e74c3c;
+      }
+
+      body.dark-mode .message.success {
+        background-color: rgba(39, 174, 96, 0.2);
+        border-color: #27ae60;
+      }
+
+      body.dark-mode .message.error {
+        background-color: rgba(231, 76, 60, 0.2);
+        border-color: #e74c3c;
+      }
+
+      .message .close-btn {
+        background: none;
+        border: none;
+        font-size: 1.2rem;
+        cursor: pointer;
+        color: inherit;
+        margin-left: auto;
+        opacity: 0.7;
+        transition: opacity 0.2s ease;
+      }
+
+      .message .close-btn:hover {
+        opacity: 1;
+      }
+
+      /* Main Content Layout */
+      main.section {
+        flex: 1; /* Allows main content to grow and push footer down */
+        padding: 40px 20px; /* Adjust padding */
+      }
+
+      /* --- Booking List/Table Styles --- */
+      .bookings-list {
+        background-color: var(--card-background);
+        border-radius: var(--border-radius-large);
+        box-shadow: var(--shadow-medium);
+        padding: 30px;
+        max-width: 900px; /* Adjust as needed */
+        margin: 40px auto;
+      }
+
+      .bookings-list h2 {
+        margin-bottom: 25px;
+        color: var(--primary-color);
+        font-family: "Poppins", sans-serif;
+        font-size: 2rem;
+        text-align: center;
+      }
+
+      .booking-item-card {
+        border: 1px solid var(--input-border-color);
+        border-radius: var(--border-radius-medium);
+        padding: 20px;
+        margin-bottom: 15px;
+        background-color: var(--background-color);
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        position: relative;
+        transition: box-shadow 0.2s ease, transform 0.2s ease,
+          background-color 0.3s, border-color 0.3s;
+      }
+
+      body.dark-mode .booking-item-card {
+        background-color: var(--dark-background-color);
+        border-color: var(--dark-input-border-color);
+      }
+
+      .booking-item-card:hover {
+        box-shadow: var(--shadow-light);
+        transform: translateY(-2px);
+      }
+
+      body.dark-mode .booking-item-card:hover {
+        box-shadow: 0 4px 12px rgba(255, 255, 255, 0.15);
+      }
+
+      .booking-item-card h3 {
+        font-family: "Poppins", sans-serif;
+        font-size: 1.2rem;
+        color: var(--text-color);
+        margin-bottom: 10px;
+      }
+
+      body.dark-mode .booking-item-card h3 {
+        color: var(--dark-text-color);
+      }
+
+      .booking-info {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 10px 20px;
+        margin-bottom: 15px;
+      }
+
+      .booking-info div {
+        padding: 5px 0;
+        font-size: 0.95rem;
+      }
+
+      .booking-info span.label {
+        font-weight: 500;
+        color: var(--text-muted);
+        display: block;
+        margin-bottom: 3px;
+      }
+
+      body.dark-mode .booking-info span.label {
+        color: var(--dark-text-muted);
+      }
+
+      .booking-status {
+        position: absolute;
+        top: 15px;
+        right: 15px;
+        padding: 5px 10px;
+        border-radius: var(--border-radius-round);
+        font-weight: 600;
+        font-size: 0.85rem;
+        text-transform: capitalize;
+        white-space: nowrap; /* Prevent status from wrapping */
+      }
+
+      /* Status colors */
+      .status-pending {
+        background-color: #fff3cd; /* Light yellow */
+        color: #856404; /* Dark yellow */
+        border: 1px solid #ffeeba;
+      }
+      .status-confirmed {
+        background-color: #d4edda; /* Light green */
+        color: #155724; /* Dark green */
+        border: 1px solid #c3e6cb;
+      }
+      .status-completed {
+        background-color: #e2e3e5; /* Light gray */
+        color: #383d41; /* Dark gray */
+        border: 1px solid #d6d8db;
+      }
+      .status-cancelled {
+        background-color: #f8d7da; /* Light red */
+        color: #721c24; /* Dark red */
+        border: 1px solid #f5c6cb;
+      }
+
+      .booking-actions {
+        display: flex;
+        gap: 10px;
+        margin-top: 10px;
+        flex-wrap: wrap; /* Allow buttons to wrap */
+        justify-content: flex-end; /* Align buttons to the right */
+      }
+
+      .booking-actions .btn {
+        padding: 8px 15px;
+        font-size: 0.9rem;
+        border-radius: var(--border-radius-small);
+        cursor: pointer;
+        transition: background-color 0.2s ease, transform 0.2s ease;
+        border: none;
+        color: white;
+        font-weight: 500;
+      }
+
+      .booking-actions .btn:hover {
+        transform: translateY(-1px);
+      }
+
+      /* Customer-specific button colors */
+      .booking-actions .btn-cancel {
+        background-color: #dc3545; /* Red */
+      }
+      .booking-actions .btn-cancel:hover {
+        background-color: #c82333;
+      }
+      .booking-actions .btn-review {
+        background-color: #6c757d; /* Gray */
+      }
+      .booking-actions .btn-review:hover {
+        background-color: #5a6268;
+      }
+
+      .no-bookings-message {
+        text-align: center;
+        font-size: 1.1rem;
+        color: var(--text-muted);
+        margin-top: 30px;
+        padding: 20px;
+        border: 1px dashed var(--input-border-color);
+        border-radius: var(--border-radius-soft);
+        background-color: var(--background-color);
+        display: none; /* Hidden by default, shown by JS */
+      }
+
+      body.dark-mode .no-bookings-message {
+        background-color: var(--dark-background-color);
+        border-color: var(--dark-input-border-color);
+        color: var(--dark-text-muted);
+      }
+
+      /* Footer */
+      .footer {
+        background-color: var(--card-background);
+        padding: 40px 5%;
+        margin-top: 50px;
+        box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.05);
+        border-top: 1px solid var(--input-border-color);
+      }
+
+      body.dark-mode .footer {
+        background-color: var(--dark-card-background);
+        box-shadow: none;
+        border-top: 1px solid var(--dark-input-border-color);
+      }
+
+      .footer-content {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-between;
+        gap: 30px;
+        max-width: 1200px;
+        margin: 0 auto;
+      }
+
+      .footer-brand,
+      .footer-links,
+      .footer-contact {
+        flex: 1;
+        min-width: 200px;
+      }
+
+      .footer-brand h3 {
+        font-family: "Poppins", sans-serif;
+        font-size: 1.8rem;
+        color: var(--primary-color);
+        margin-bottom: 10px;
+      }
+
+      .footer-brand p {
+        font-size: 0.9rem;
+        color: var(--text-muted);
+      }
+
+      body.dark-mode .footer-brand p {
+        color: var(--dark-text-muted);
+      }
+
+      .footer-links h4,
+      .footer-contact h4 {
+        font-family: "Poppins", sans-serif;
+        font-size: 1.1rem;
+        color: var(--text-color);
+        margin-bottom: 15px;
+      }
+
+      body.dark-mode .footer-links h4,
+      body.dark-mode .footer-contact h4 {
+        color: var(--dark-text-color);
+      }
+
+      .footer-links ul {
+        list-style: none;
+      }
+
+      .footer-links ul li {
+        margin-bottom: 8px;
+      }
+
+      .footer-links ul li a {
+        color: var(--text-muted);
+        text-decoration: none;
+        font-size: 0.9rem;
+        transition: color 0.3s;
+      }
+
+      .footer-links ul li a:hover {
+        color: var(--primary-color);
+      }
+
+      body.dark-mode .footer-links ul li a {
+        color: var(--dark-text-muted);
+      }
+
+      body.dark-mode .footer-links ul li a:hover {
+        color: var(--primary-light);
+      }
+
+      .footer-contact p {
+        font-size: 0.9rem;
+        color: var(--text-muted);
+        margin-bottom: 5px;
+      }
+
+      body.dark-mode .footer-contact p {
+        color: var(--dark-text-muted);
+      }
+
+      .footer-bottom {
+        text-align: center;
+        margin-top: 30px;
+        padding-top: 20px;
+        border-top: 1px solid var(--input-border-color);
+      }
+
+      body.dark-mode .footer-bottom {
+        border-top: 1px solid var(--dark-input-border-color);
+      }
+
+      .footer-bottom p {
+        font-size: 0.85rem;
+        color: var(--text-muted);
+      }
+
+      body.dark-mode .footer-bottom p {
+        color: var(--dark-text-muted);
+      }
+
+      /* Responsive adjustments */
+      @media (max-width: 768px) {
+        .navbar {
+          flex-direction: column;
+          align-items: flex-start;
+          padding: 15px 4%;
+        }
+
+        .navbar .nav-links {
+          margin-top: 15px;
+          width: 100%;
+          display: flex;
+          flex-wrap: wrap;
+          justify-content: center;
+        }
+
+        .navbar .nav-links a,
+        .navbar .nav-links #nav-auth-link {
+          margin: 5px 8px;
+          padding: 6px 12px;
+        }
+
+        .navbar .nav-links #nav-auth-link {
+          margin-left: 0;
+        }
+
+        .bookings-list {
+          padding: 20px;
+          margin: 20px auto;
+        }
+        .booking-info {
+          grid-template-columns: 1fr; /* Stack columns on smaller screens */
+        }
+        .booking-status {
+          position: static; /* Place status within the flow */
+          margin-bottom: 10px;
+          text-align: center;
+        }
+        .booking-actions {
+          justify-content: center; /* Center buttons */
+        }
+        .footer-content {
+          flex-direction: column;
+          align-items: center;
+          text-align: center;
+        }
+        .footer-brand,
+        .footer-links,
+        .footer-contact {
+          min-width: unset;
+          width: 100%;
+          margin-bottom: 20px;
+        }
+        .footer-links ul {
+          padding-left: 0;
+        }
+      }
+
+      @media (max-width: 480px) {
+        .navbar .logo {
+          font-size: 1.5rem;
+        }
+        .booking-item-card {
+          padding: 15px;
+        }
+        .booking-actions .btn {
+          width: 100%; /* Full width buttons on very small screens */
+          margin-bottom: 5px; /* Space between stacked buttons */
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div id="loader-overlay" class="loader-overlay">
+      <div class="loader"></div>
+    </div>
+
+    <header class="navbar">
+      <div class="logo">Tailor<span>Link</span></div>
+      <nav class="nav-links">
+        <a href="index.html" class="nav-home">Home</a>
+        <a href="about.html" class="nav-about">About</a>
+        <a href="booking.html" class="nav-booking">Book Now</a>
+        <a href="login.html" id="nav-auth-link">Login</a>
+        <button id="toggleDarkMode" class="btn btn-small">🌓</button>
+      </nav>
+    </header>
+
+    <main class="section bookings-list">
+      <h2>My Bookings</h2>
+      <div id="message-container"></div>
+      <div id="bookings-container">
+        <p class="no-bookings-message" id="no-bookings-message">
+          <i class="fas fa-spinner fa-spin"></i> Loading your bookings...
+        </p>
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-content">
+        <div class="footer-brand">
+          <h3>TailorLink🔗</h3>
+          <p>Connecting you with trusted tailors – fast, easy, and local.</p>
+        </div>
+        <div class="footer-links">
+          <h4>Quick Links</h4>
+          <ul>
+            <li><a href="index.html">Home</a></li>
+            <li><a href="about.html">About</a></li>
+            <li><a href="booking.html">Book Now</a></li>
+            <li><a href="customer-dashboard.html">My Bookings</a></li>
+          </ul>
+        </div>
+        <div class="footer-contact">
+          <h4>Contact</h4>
+          <p>Email: support@tailorlink.com</p>
+          <p>Phone: +234 800 000 0000</p>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p>&copy; 2025 TailorLink🔗. All rights reserved.</p>
+      </div>
+    </footer>
+
+    <script>
+      // customer-dashboard.js (Embedded Script)
+
+      // --- Firebase Configuration ---
+      const firebaseConfig = {
+        apiKey: "AIzaSyBVjsT4eVkdZaWaYfkgz_hoK00ZgmLWNR4", // REPLACE WITH YOUR ACTUAL API KEY
+        authDomain: "tailorlink-571d5.firebaseapp.com",
+        projectId: "tailorlink-571d5",
+        storageBucket: "tailorlink-571d5.appspot.com",
+        messagingSenderId: "685008238153",
+        appId: "1:685008238153:web:8625d73d9511fde3f2b198",
+        measurementId: "G-H9RNR0LLKF",
+      };
+
+      // Initialize Firebase
+      firebase.initializeApp(firebaseConfig);
+      const auth = firebase.auth();
+      const db = firebase.firestore();
+
+      // --- DOM Elements ---
+      const loaderOverlay = document.getElementById("loader-overlay");
+      const navAuthLink = document.getElementById("nav-auth-link");
+      const messageContainer = document.getElementById("message-container");
+      const bookingsContainer = document.getElementById("bookings-container");
+      const noBookingsMessage = document.getElementById("no-bookings-message");
+      const toggleDarkModeBtn = document.getElementById("toggleDarkMode");
+
+      // --- Global Variables ---
+      let currentCustomerUser = null; // Changed from currentTailorUser
+
+      // --- Helper Functions ---
+      function showLoader() {
+        loaderOverlay.style.display = "flex";
+      }
+
+      function hideLoader() {
+        loaderOverlay.style.display = "none";
+      }
+
+      function displayMessage(type, message) {
+        const messageDiv = document.createElement("div");
+        messageDiv.className = `message ${type}`;
+        messageDiv.innerHTML = `
+          <i class="fas fa-${
+            type === "success" ? "check-circle" : "exclamation-triangle"
+          }"></i>
+          <span>${message}</span>
+          <button class="close-btn"><i class="fas fa-times"></i></button>
+        `;
+        messageContainer.innerHTML = ""; // Clear previous messages
+        messageContainer.appendChild(messageDiv);
+
+        messageDiv.querySelector(".close-btn").addEventListener("click", () => {
+          messageDiv.remove();
+        });
+
+        // Auto-hide messages after a delay
+        if (type === "success") {
+          setTimeout(() => {
+            messageDiv.remove();
+          }, 5000); // Hide success messages after 5 seconds
+        }
+      }
+
+      // --- Dark Mode Logic ---
+      const enableDarkMode = () => {
+        document.body.classList.add("dark-mode");
+        localStorage.setItem("theme", "dark");
+        toggleDarkModeBtn.textContent = "☀️";
+      };
+
+      const disableDarkMode = () => {
+        document.body.classList.remove("dark-mode");
+        localStorage.setItem("theme", "light");
+        toggleDarkModeBtn.textContent = "🌓";
+      };
+
+      // Apply theme on load
+      if (localStorage.getItem("theme") === "dark") {
+        enableDarkMode();
+      } else {
+        disableDarkMode(); // Explicitly set light mode if not dark
+      }
+
+      // Toggle dark mode on button click
+      toggleDarkModeBtn.addEventListener("click", () => {
+        if (document.body.classList.contains("dark-mode")) {
+          disableDarkMode();
+        } else {
+          enableDarkMode();
+        }
+      });
+
+      // --- Fetch and Display Customer Bookings ---
+      async function fetchAndDisplayCustomerBookings() {
+        if (!currentCustomerUser) {
+          // This case should ideally be handled by onAuthStateChanged already,
+          // but it's a good safeguard.
+          displayMessage(
+            "error",
+            "You must be logged in as a customer to view this page."
+          );
+          bookingsContainer.innerHTML = "";
+          noBookingsMessage.style.display = "block";
+          noBookingsMessage.innerHTML =
+            '<i class="fas fa-info-circle"></i> Please log in as a customer.';
+          hideLoader();
+          return;
+        }
+
+        showLoader();
+        bookingsContainer.innerHTML = ""; // Clear previous bookings
+        noBookingsMessage.style.display = "block"; // Show loading message
+        noBookingsMessage.innerHTML =
+          '<i class="fas fa-spinner fa-spin"></i> Loading your bookings...';
+
+        try {
+          // Query bookings where customerId matches the logged-in customer's UID
+          const bookingsSnapshot = await db
+            .collection("bookings")
+            .where("customerId", "==", currentCustomerUser.uid) // CRUCIAL CHANGE HERE
+            .orderBy("preferredDate", "desc") // Order by date
+            .orderBy("preferredTime", "desc") // Then by time
+            .get();
+
+          if (bookingsSnapshot.empty) {
+            noBookingsMessage.innerHTML =
+              '<i class="fas fa-calendar-alt"></i> You have no bookings yet.';
+            noBookingsMessage.style.display = "block";
+          } else {
+            noBookingsMessage.style.display = "none"; // Hide "no bookings" message
+            bookingsSnapshot.forEach((doc) => {
+              const booking = doc.data();
+              const bookingId = doc.id;
+              renderCustomerBookingCard(booking, bookingId); // Call customer-specific render
+            });
+          }
+        } catch (error) {
+          console.error("Error fetching customer bookings:", error);
+          displayMessage("error", "Failed to load bookings. Please try again.");
+          noBookingsMessage.innerHTML =
+            '<i class="fas fa-exclamation-triangle"></i> Error loading bookings.';
+          noBookingsMessage.style.display = "block";
+        } finally {
+          hideLoader();
+        }
+      }
+
+      // --- Render Single Customer Booking Card ---
+      function renderCustomerBookingCard(booking, bookingId) {
+        const bookingCard = document.createElement("div");
+        bookingCard.className = "booking-item-card";
+        bookingCard.dataset.bookingId = bookingId;
+
+        const displayDate = new Date(
+          booking.preferredDate + "T" + booking.preferredTime
+        ).toLocaleDateString("en-US", {
+          weekday: "long",
+          year: "numeric",
+          month: "long",
+          day: "numeric",
+        });
+        const displayTime = new Date(
+          "2000-01-01T" + booking.preferredTime
+        ).toLocaleTimeString("en-US", {
+          hour: "numeric",
+          minute: "2-digit",
+          hour12: true,
+        });
+
+        const bookedAtDate = booking.createdAt
+          ? booking.createdAt.toDate()
+          : new Date();
+
+        bookingCard.innerHTML = `
+          <span class="booking-status status-${booking.status}">${booking.status}</span>
+          <h3>Booking with <span style="color:var(--primary-color)">${
+            booking.tailorName || "Unknown Tailor" // Display tailor's name
+          }</span></h3>
+          <div class="booking-info">
+              <div><span class="label">Service:</span> ${
+                booking.serviceType
+              }</div>
+              <div><span class="label">Date:</span> ${displayDate}</div>
+              <div><span class="label">Time:</span> ${displayTime}</div>
+              <div><span class="label">Tailor Email:</span> ${
+                booking.tailorEmail || "N/A" // Display tailor's email
+              }</div>
+              ${
+                booking.notes
+                  ? `<div><span class="label">Notes:</span> ${booking.notes}</div>`
+                  : ""
+              }
+              <div><span class="label">Booked On:</span> ${bookedAtDate.toLocaleString()}</div>
+          </div>
+          <div class="booking-actions">
+              ${
+                // Customer can cancel if status is pending or confirmed
+                (booking.status === "pending" || booking.status === "confirmed")
+                  ? `<button class="btn btn-cancel" data-action="cancel">Cancel Booking</button>`
+                  : ""
+              }
+              ${
+                // Optional: Button to leave a review for completed bookings
+                booking.status === "completed"
+                  ? `<button class="btn btn-review" data-action="review">Leave Review</button>`
+                  : ""
+              }
+          </div>
+        `;
+
+        bookingsContainer.appendChild(bookingCard);
+
+        // Add event listeners for action buttons
+        const actionButtons = bookingCard.querySelectorAll(".booking-actions .btn");
+        actionButtons.forEach((button) => {
+          button.addEventListener("click", () =>
+            handleCustomerBookingAction(bookingId, button.dataset.action)
+          );
+        });
+      }
+
+      // --- Handle Customer Booking Status Actions ---
+      async function handleCustomerBookingAction(bookingId, action) {
+        if (!currentCustomerUser) {
+          displayMessage("error", "Authentication error. Please log in again.");
+          return;
+        }
+
+        let newStatus = "";
+        let confirmationMessage = "";
+
+        if (action === "cancel") {
+          newStatus = "cancelled";
+          confirmationMessage = "Are you sure you want to cancel this booking?";
+        } else if (action === "review") {
+          displayMessage("info", "Feature coming soon: Opening review form!");
+          // Here you'd implement logic to open a modal or navigate to a review page
+          // For now, it's just a placeholder message.
+          return; // Do not proceed to update status for 'review' action
+        } else {
+          console.warn("Unknown customer booking action:", action);
+          return;
+        }
+
+        if (!confirm(confirmationMessage)) {
+          return; // User cancelled the action
+        }
+
+        showLoader();
+        try {
+          await db.collection("bookings").doc(bookingId).update({
+            status: newStatus,
+            updatedAt: firebase.firestore.FieldValue.serverTimestamp(),
+          });
+          displayMessage("success", `Booking status updated to '${newStatus}'.`);
+          // Re-fetch and display bookings to update the UI
+          fetchAndDisplayCustomerBookings();
+        } catch (error) {
+          console.error(`Error updating booking status to ${newStatus}:`, error);
+          displayMessage("error", `Failed to update booking status. ${error.message}`);
+        } finally {
+          hideLoader();
+        }
+      }
+
+      // --- Authentication State Listener ---
+      auth.onAuthStateChanged(async (user) => {
+        if (user) {
+          try {
+            const userDoc = await db.collection("users").doc(user.uid).get();
+            if (userDoc.exists) {
+              const userRole = userDoc.data().role;
+              // If user is explicitly a customer, or if role is not defined (default to customer)
+              if (userRole === "customer" || !userRole) {
+                currentCustomerUser = user;
+                navAuthLink.textContent = "My Bookings"; // Link to this page itself
+                navAuthLink.href = "customer-dashboard.html";
+                fetchAndDisplayCustomerBookings(); // Fetch customer bookings
+              } else if (userRole === "tailor") {
+                // If logged in as a tailor, redirect them or show tailor-specific message
+                displayMessage(
+                  "info",
+                  "You are logged in as a tailor. Redirecting to your dashboard..."
+                );
+                window.location.href = "tailor-bookings.html"; // Redirect to tailor dashboard
+              } else {
+                // Unknown role, deny access
+                currentCustomerUser = null;
+                navAuthLink.textContent = "Login";
+                navAuthLink.href = "login.html";
+                displayMessage(
+                  "error",
+                  "Access Denied: Your account role is not recognized."
+                );
+                bookingsContainer.innerHTML = "";
+                noBookingsMessage.style.display = "block";
+                noBookingsMessage.innerHTML =
+                  '<i class="fas fa-exclamation-triangle"></i> Access Denied. Unknown user role.';
+                // Consider signing out auth.signOut();
+              }
+            } else {
+              // User document does not exist in 'users' collection
+              currentCustomerUser = null;
+              navAuthLink.textContent = "Login";
+              navAuthLink.href = "login.html";
+              displayMessage(
+                "error",
+                "User profile not found. Please complete your registration or log in again."
+              );
+              bookingsContainer.innerHTML = "";
+              noBookingsMessage.style.display = "block";
+              noBookingsMessage.innerHTML =
+                '<i class="fas fa-info-circle"></i> Please log in to view bookings.';
+            }
+          } catch (error) {
+            console.error("Error checking user role:", error);
+            displayMessage(
+              "error",
+              "Error verifying user. Please try logging in again."
+            );
+            currentCustomerUser = null;
+            navAuthLink.textContent = "Login";
+            navAuthLink.href = "login.html";
+            bookingsContainer.innerHTML = "";
+            noBookingsMessage.style.display = "block";
+            noBookingsMessage.innerHTML =
+              '<i class="fas fa-exclamation-triangle"></i> Error loading user data.';
+          } finally {
+            hideLoader(); // Hide loader after auth check completes
+          }
+        } else {
+          // No user is logged in
+          currentCustomerUser = null;
+          navAuthLink.textContent = "Login";
+          navAuthLink.href = "login.html";
+          displayMessage(
+            "error",
+            "You must be logged in to view your bookings."
+          );
+          bookingsContainer.innerHTML = "";
+          noBookingsMessage.style.display = "block";
+          noBookingsMessage.innerHTML =
+            '<i class="fas fa-info-circle"></i> Please log in to view bookings.';
+          hideLoader();
+        }
+      });
+    </script>
+  </body>
+</html>

@@ -1,0 +1,1151 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Explore Tailors - TailorLink🔗</title>
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css?family=Segoe+UI:400,600,700&display=swap"
+    />
+    <style>
+      :root {
+        --primary-color: #27ae60;
+        --primary-hover: #219150;
+        --color-muted: #666;
+        --background: #f7f7f7;
+        --white: #ffffff;
+        --text-dark: #333;
+        --shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        --border-radius: 12px;
+      }
+
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: "Segoe UI", sans-serif;
+        background: var(--background);
+        line-height: 1.6;
+      }
+
+      .navbar {
+        background: var(--primary-color);
+        color: white;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 1rem 2rem;
+        box-shadow: var(--shadow);
+        position: sticky;
+        top: 0;
+        z-index: 100;
+      }
+
+      .nav-logo {
+        font-size: 1.8rem;
+        font-weight: 700;
+      }
+
+      .nav-links {
+        list-style: none;
+        display: flex;
+        gap: 2rem;
+        align-items: center;
+      }
+
+      .nav-links li a,
+      .nav-links li span {
+        color: white;
+        text-decoration: none;
+        font-weight: 500;
+        transition: opacity 0.3s ease;
+      }
+
+      .nav-links li a:hover {
+        opacity: 0.8;
+      }
+
+      .hamburger {
+        display: none;
+        font-size: 1.8rem;
+        cursor: pointer;
+        color: white;
+      }
+
+      .container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 2rem;
+      }
+
+      .container h1 {
+        color: var(--text-dark);
+        font-size: 2.5rem;
+        margin-bottom: 0.5rem;
+        text-align: center;
+      }
+
+      .container > p {
+        text-align: center;
+        color: var(--color-muted);
+        font-size: 1.1rem;
+        margin-bottom: 2rem;
+      }
+
+      .filters {
+        display: flex;
+        gap: 1rem;
+        margin-bottom: 2rem;
+        flex-wrap: wrap;
+        align-items: center;
+        background: var(--white);
+        padding: 1.5rem;
+        border-radius: var(--border-radius);
+        box-shadow: var(--shadow);
+      }
+
+      .search-wrapper,
+      .filter-wrapper {
+        position: relative;
+        flex: 1;
+        min-width: 200px;
+      }
+
+      .search-wrapper input,
+      .filter-wrapper select {
+        width: 100%;
+        padding: 0.75rem 1rem;
+        padding-left: 2.5rem;
+        border: 2px solid #e0e0e0;
+        border-radius: 8px;
+        font-size: 1rem;
+        transition: border-color 0.3s ease;
+        background: var(--white);
+      }
+
+      .search-wrapper input:focus,
+      .filter-wrapper select:focus {
+        outline: none;
+        border-color: var(--primary-color);
+      }
+
+      .icon-search,
+      .icon-filter,
+      .icon-map {
+        position: absolute;
+        left: 0.75rem;
+        top: 50%;
+        transform: translateY(-50%);
+        width: 20px;
+        height: 20px;
+        color: var(--color-muted);
+        pointer-events: none;
+      }
+
+      .clear-btn {
+        background: #e74c3c;
+        color: white;
+        border: none;
+        padding: 0.75rem 1.5rem;
+        border-radius: 8px;
+        cursor: pointer;
+        font-weight: 600;
+        transition: background-color 0.3s ease;
+        white-space: nowrap;
+      }
+
+      .clear-btn:hover {
+        background: #c0392b;
+      }
+
+      .tailors-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+        gap: 2rem;
+        margin-bottom: 2rem;
+      }
+
+      .tailor-card {
+        background: var(--white);
+        border-radius: var(--border-radius);
+        padding: 2rem;
+        box-shadow: var(--shadow);
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        display: flex;
+        flex-direction: column;
+      }
+
+      .tailor-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+      }
+
+      .tailor-header {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        margin-bottom: 1rem;
+      }
+
+      .profile-image {
+        width: 60px;
+        height: 60px;
+        border-radius: 50%;
+        object-fit: cover;
+        border: 3px solid var(--primary-color);
+      }
+
+      .tailor-info h3 {
+        color: var(--text-dark);
+        font-size: 1.3rem;
+        margin-bottom: 0.25rem;
+      }
+
+      .location {
+        color: var(--color-muted);
+        display: flex;
+        align-items: center;
+        gap: 0.25rem;
+        font-size: 0.9rem;
+      }
+
+      .rating {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        margin: 1rem 0;
+      }
+
+      .stars {
+        color: #ffd700;
+        font-size: 1.1rem;
+      }
+
+      .rating-text {
+        color: var(--color-muted);
+        font-size: 0.9rem;
+      }
+
+      .services {
+        margin: 1rem 0;
+      }
+
+      .services h4 {
+        color: var(--text-dark);
+        margin-bottom: 0.5rem;
+        font-size: 1rem;
+      }
+
+      .service-tags {
+        display: flex;
+        gap: 0.5rem;
+        flex-wrap: wrap;
+      }
+
+      .service-tag {
+        background: #e8f5e8;
+        color: var(--primary-color);
+        padding: 0.25rem 0.5rem;
+        border-radius: 20px;
+        font-size: 0.8rem;
+        font-weight: 500;
+      }
+
+      .price-range {
+        color: var(--primary-color);
+        font-weight: 600;
+        font-size: 1.1rem;
+        margin: 1rem 0;
+      }
+
+      .card-actions {
+        display: flex;
+        gap: 0.75rem;
+        margin-top: auto;
+      }
+
+      .btn {
+        flex: 1;
+        padding: 0.75rem 1rem;
+        border: none;
+        border-radius: 8px;
+        cursor: pointer;
+        font-weight: 600;
+        transition: all 0.3s ease;
+        text-align: center;
+        text-decoration: none;
+        display: inline-block;
+      }
+
+      .btn-primary {
+        background: var(--primary-color);
+        color: white;
+      }
+
+      .btn-primary:hover {
+        background: var(--primary-hover);
+      }
+
+      .btn-secondary {
+        background: transparent;
+        color: var(--primary-color);
+        border: 2px solid var(--primary-color);
+      }
+
+      .btn-secondary:hover {
+        background: var(--primary-color);
+        color: white;
+      }
+
+      .no-results {
+        text-align: center;
+        padding: 4rem 2rem;
+        background: var(--white);
+        border-radius: var(--border-radius);
+        box-shadow: var(--shadow);
+      }
+
+      .no-results .emoji {
+        font-size: 4rem;
+        margin-bottom: 1rem;
+      }
+
+      .no-results h3 {
+        color: var(--text-dark);
+        margin-bottom: 0.5rem;
+      }
+
+      .no-results p {
+        color: var(--color-muted);
+        margin-bottom: 2rem;
+      }
+
+      #resultsCount {
+        color: var(--color-muted);
+        margin-bottom: 1rem;
+        font-weight: 500;
+      }
+
+      @media (max-width: 768px) {
+        .nav-links {
+          position: fixed;
+          top: 70px;
+          left: 0;
+          right: 0;
+          background: var(--primary-color);
+          flex-direction: column;
+          padding: 1rem;
+          display: none;
+          box-shadow: var(--shadow);
+        }
+
+        .nav-links.show {
+          display: flex;
+        }
+
+        .hamburger {
+          display: block;
+        }
+
+        .container {
+          padding: 1rem;
+        }
+
+        .container h1 {
+          font-size: 2rem;
+        }
+
+        .filters {
+          flex-direction: column;
+          align-items: stretch;
+        }
+
+        .search-wrapper,
+        .filter-wrapper {
+          min-width: auto;
+        }
+
+        .tailors-grid {
+          grid-template-columns: 1fr;
+          gap: 1.5rem;
+        }
+
+        .card-actions {
+          flex-direction: column;
+        }
+      }
+
+:root {
+    --primary-color: #17991d; /* A slightly adjusted primary green for better contrast on gradients */
+    --primary-dark: #0f6e16;
+    --accent-color-light: #a8e6cf; /* Lighter green for accents */
+    --text-color-light: #ffffff; /* White text for dark backgrounds */
+    --text-color-muted-light: rgba(255, 255, 255, 0.7); /* Lighter muted text */
+    --gradient-dark-blue: #2c3e50; /* For the dark part of the footer gradient */
+    --border-color-dark-alpha: rgba(255, 255, 255, 0.2); /* Subtle white border for dark backgrounds */
+    --shadow-light: 0 4px 12px rgba(0, 0, 0, 0.08);
+    --border-radius-soft: 8px;
+    --border-radius-round: 50px; /* For buttons and tags */
+}
+
+.footer {
+    background: #0f6e16; /* Dark green background */
+    color: var(--text-color-light);
+    padding: 3rem 2rem 1rem; /* Top, sides, bottom padding */
+    animation: fadeIn 1s ease-out; /* Assumes @keyframes fadeIn is defined */
+    max-width: 100%;
+}
+
+.footer-content {
+    display: flex;
+    flex-wrap: wrap; /* Allows columns to wrap on smaller screens */
+    justify-content: space-between; /* Distributes space between columns */
+    gap: 2.5rem; /* Increased gap for better spacing between sections */
+    max-width: 1200px; /* Max width to contain the content */
+    margin: 0 auto; /* Center the content */
+    align-items: flex-start; /* Align items to the top of the row */
+    background-color: #0f6e16;
+    padding: 2rem; /* Padding inside the footer content */
+    border-radius: var(--border-radius-soft);
+}
+
+/* Individual Footer Column/Section Styles */
+.footer-brand,
+.footer-links,
+.footer-contact,
+.footer-social {
+    flex: 1; /* Allow columns to grow and shrink */
+    min-width: 200px; /* Minimum width before wrapping */
+    margin-bottom: 1.5rem; /* Space below columns when they wrap */
+}
+
+/* Brand/Logo Section */
+.footer-brand h3 {
+    font-family: 'Poppins', sans-serif; /* Assuming Poppins for headings */
+    font-size: 1.8rem;
+    font-weight: 700;
+    margin-bottom: 0.8rem;
+    /* Text gradient effect */
+}
+.footer-brand p {
+    font-size: 0.95rem;
+    line-height: 1.5;
+    color: var(--text-color-muted-light);
+}
+
+/* Section Headings within Footer Content (e.g., Contact, Quick Links) */
+.footer-content h4 {
+    font-family: 'Poppins', sans-serif;
+    font-size: 1.15rem;
+    font-weight: 600;
+    margin-bottom: 1.2rem;
+    color: var(--accent-color-light); /* Lighter green for subheadings */
+    position: relative; /* For the underline effect */
+    padding-bottom: 0.5rem; /* Space for underline */
+}
+/* Subtle underline effect for headings */
+.footer-content h4::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    width: 40px; /* Short underline */
+    height: 3px;
+    background-color: var(--primary-light); /* Or accent-color-light */
+    border-radius: 5px;
+}
+
+
+/* List Styles (for Quick Links, Services, Social) */
+.footer-content ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.footer-content ul li {
+    margin-bottom: 0.8rem; /* Space between list items */
+}
+
+.footer-content ul li a {
+    color: var(--text-color-light);
+    text-decoration: none;
+    font-size: 0.95rem;
+    transition: color 0.3s ease, transform 0.2s ease;
+    display: inline-block; /* Allows transform to work properly */
+}
+
+.footer-content ul li a:hover {
+    color: var(--accent-color-light);
+    transform: translateX(5px); /* Subtle slide effect on hover */
+}
+/* If you use Font Awesome icons in links */
+.footer-content ul li a i {
+    margin-right: 8px;
+    color: var(--accent-color-light);
+    transition: color 0.3s ease;
+}
+.footer-content ul li a:hover i {
+    color: var(--text-color-light);
+}
+
+
+/* Contact Information */
+.footer-contact p {
+    font-size: 0.95rem;
+    line-height: 1.6;
+    color: var(--text-color-muted-light);
+    margin-bottom: 0.5rem;
+}
+
+/* Bottom Copyright Section */
+.footer-bottom {
+    text-align: center;
+    margin-top: 3rem; /* More space above copyright */
+    padding-top: 2rem;
+    border-top: 1px solid var(--border-color-dark-alpha); /* Subtle border */
+    font-size: 0.9rem;
+    color: var(--text-color-muted-light);
+}
+.footer-bottom p {
+    margin: 0; /* Remove default paragraph margin */
+}
+
+
+/* ======================================= */
+/* ====== RESPONSIVENESS ======== */
+/* ======================================= */
+
+@media (max-width: 768px) {
+    .footer {
+        padding: 2.5rem 1.5rem 1rem;
+    }
+    .footer-content {
+        flex-direction: column; /* Stack columns vertically */
+        align-items: center; /* Center items when stacked */
+        gap: 2rem; /* Reduce gap slightly when stacked */
+    }
+
+    .footer-brand,
+    .footer-links,
+    .footer-contact,
+    .footer-social {
+        min-width: unset; /* Remove min-width to allow full width */
+        width: 100%; /* Take full width */
+        text-align: center; /* Center content within each stacked column */
+        margin-bottom: 1rem; /* Adjust margin between stacked columns */
+    }
+
+    /* Adjust heading underline for centered text */
+    .footer-content h4::after {
+        left: 50%;
+        transform: translateX(-50%);
+    }
+
+    .footer-content ul {
+        text-align: center; /* Center list items */
+    }
+    .footer-content ul li a {
+        transform: none; /* Remove slide effect on small screens */
+    }
+    .footer-content ul li a:hover {
+        transform: none;
+    }
+}
+
+@media (max-width: 480px) {
+    .footer {
+        padding: 2rem 1rem 0.8rem;
+    }
+    .footer-brand h3 {
+        font-size: 1.6rem;
+    }
+    .footer-content h4 {
+        font-size: 1rem;
+    }
+    .footer-brand p,
+    .footer-contact p,
+    .footer-content ul li a {
+        font-size: 0.9rem;
+    }
+    .footer-bottom {
+        margin-top: 2rem;
+        padding-top: 1.5rem;
+        font-size: 0.85rem;
+    }
+}
+
+/* ======================================= */
+/* ====== ANIMATIONS ======== */
+/* ======================================= */
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+    </style>
+  </head>
+  <body>
+    <!-- Navbar -->
+    <nav class="navbar">
+      <div class="nav-logo">TailorLink🔗</div>
+      <ul class="nav-links" id="navLinks">
+        <li
+          id="nav-welcome"
+          style="
+            display: none;
+            left: auto;
+            background-color: #cecccc5d;
+            padding: 0.5rem;
+            border-radius: 0.8rem;
+          "
+        >
+          <span>Welcome There👋, <span id="username">User</span></span>
+        </li>
+        <li><a href="index.html">Home</a></li>
+        <li><a href="explore.html">Explore</a></li>
+        <li id="nav-login"><a href="login.html">Login</a></li>
+        <li id="nav-signup"><a href="signup.html">Sign Up</a></li>
+        <li id="nav-logout" style="display: none">
+          <a href="javascript:void(0)">Logout</a>
+        </li>
+      </ul>
+      <div class="hamburger" onclick="toggleMobileMenu()">☰</div>
+    </nav>
+
+    <div class="container">
+      <h1>Explore Talented Tailors</h1>
+      <p>
+        Find the perfect tailor for your needs from our verified professionals
+      </p>
+
+      <div class="filters">
+        <div class="search-wrapper">
+          <svg
+            class="icon-search"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <circle cx="11" cy="11" r="7"></circle>
+            <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+          </svg>
+          <input
+            id="searchInput"
+            type="text"
+            placeholder="Search tailors or services..."
+            autocomplete="off"
+          />
+        </div>
+
+        <div class="filter-wrapper">
+          <select id="serviceSelect" aria-label="Filter by service">
+            <option value="">All Services</option>
+          </select>
+          <svg
+            class="icon-filter"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <polygon points="3 4 21 4 14 14 14 19 10 21 10 14 3 4"></polygon>
+          </svg>
+        </div>
+
+        <div class="filter-wrapper">
+          <select id="locationSelect" aria-label="Filter by location">
+            <option value="">All Locations</option>
+          </select>
+          <svg
+            class="icon-map"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <path d="M21 10c0 6-9 12-9 12s-9-6-9-12a9 9 0 1 1 18 0z"></path>
+            <circle cx="12" cy="10" r="3"></circle>
+          </svg>
+        </div>
+
+        <button
+          id="clearFiltersBtn"
+          class="clear-btn"
+          aria-label="Clear all filters"
+        >
+          Clear Filters
+        </button>
+      </div>
+
+      <p id="resultsCount">Showing 0 of 0 tailors</p>
+
+      <div id="tailorsGrid" class="tailors-grid"></div>
+
+      <div id="noResults" class="no-results" style="display: none">
+        <div class="emoji">🔍</div>
+        <h3>No tailors found</h3>
+        <p>Try adjusting your search criteria filters or Check your internet connection</p>
+        <button id="clearFiltersBtn2" class="clear-btn">
+          Clear All Filters
+        </button>
+      </div>
+    </div>
+
+     <div class="footer-content">
+    <div class="footer-brand">
+        <h3>TailorLink🔗</h3>
+        <p>Your ultimate link to skilled tailors.</p>
+    </div>
+    <div class="footer-links">
+        <h4>Quick Links</h4>
+        <ul>
+            <li><a href="index.html">Home</a></li>
+            <li><a href="about.html">About Us</a></li>
+            <li><a href="index.html#features-section">How It Works</a></li>
+        </ul>
+    </div>
+    <div class="footer-contact">
+        <h4>Contact</h4>
+        <p>Website by Atitebi Oluwasemilore</p>
+        <p>Email: semioreatitebi@gmail.com</p>
+        <p>Phone: +234 912 0236 106</p>
+    </div>
+    <div class="footer-social">
+        <h4>Follow Us</h4>
+        <ul>
+            <li><a href="#"><i class="fas fa-facebook-f"></i> Facebook</a></li>
+            <li><a href="#"><i class="fas fa-twitter"></i> Twitter</a></li>
+            <li><a href="#"><i class="fas fa-instagram"></i> Instagram</a></li>
+        </ul>
+    </div>
+</div>
+
+    <!-- Firebase v8 SDK (Compatible) -->
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
+
+    <script>
+      // Firebase Configuration
+      const firebaseConfig = {
+        apiKey: "AIzaSyBVjsT4eVkdZaWaYfkgz_hoK00ZgmLWNR4",
+        authDomain: "tailorlink-571d5.firebaseapp.com",
+        projectId: "tailorlink-571d5",
+        storageBucket: "tailorlink-571d5.appspot.com",
+        messagingSenderId: "685008238153",
+        appId: "1:685008238153:web:8625d73d9511fde3f2b198",
+        measurementId: "G-H9RNR0LLKF",
+      };
+
+      firebase.initializeApp(firebaseConfig);
+
+      const auth = firebase.auth();
+      const db = firebase.firestore();
+
+      // Global variables
+      let tailors = [];
+      let isLoading = true;
+
+      // Initialize filteredTailors after tailors is defined, though it will be re-assigned later
+      let filteredTailors = [...tailors];
+      let currentUser = null;
+
+      // Fetch tailors from Firestore
+      async function fetchTailors() {
+        try {
+          isLoading = true;
+          showLoadingState();
+
+          const snapshot = await db
+            .collection("tailors")
+            .where("isActive", "==", true)
+            .get();
+
+          tailors = [];
+          snapshot.forEach((doc) => {
+            const data = doc.data(); // This line is now correctly positioned and initialized
+
+            // --- START FIX: Ensure services is always an array ---
+            let servicesArray = [];
+            if (Array.isArray(data.services)) {
+              servicesArray = data.services;
+            } else if (
+              typeof data.services === "string" &&
+              data.services.trim() !== ""
+            ) {
+              servicesArray = [data.services.trim()];
+            } else if (
+              data.specialty &&
+              typeof data.specialty === "string" &&
+              data.specialty.trim() !== ""
+            ) {
+              servicesArray = [data.specialty.trim()];
+            } else {
+              servicesArray = ["General Tailoring"]; // Default fallback
+            }
+            // --- END FIX ---
+
+            tailors.push({
+              id: doc.id,
+              name: data.name || "Unknown Tailor",
+              phone: data.phone || "Phone Number Not Provided",
+              location: data.location || "Location not specified",
+              rating: data.rating || data.ratings || 0, // Handle both field names
+              profileImage:
+                data.profileImage ||
+                "https://via.placeholder.com/400x400?text=No+Image",
+              services: servicesArray, // Use the now-guaranteed array
+              price: data.price || "Price on request",
+              reviews: data.reviews || 0,
+              bio: data.bio || "",
+              experience: data.experience || 0,
+            });
+          });
+
+          // Sort by rating after fetching (client-side)
+          tailors.sort((a, b) => b.rating - a.rating);
+
+          isLoading = false;
+          populateFilters();
+          filterTailors();
+
+          console.log("Fetched tailors:", tailors); // Debug log
+        } catch (error) {
+          console.error("Error fetching tailors:", error);
+          isLoading = false;
+          showErrorState();
+        }
+      } // Correct closing brace for fetchTailors function
+
+      // Show loading state
+      function showLoadingState() {
+        const grid = document.getElementById("tailorsGrid");
+        const resultsCount = document.getElementById("resultsCount");
+
+        resultsCount.textContent = "Loading tailors...";
+        grid.innerHTML = `
+        <div style="grid-column: 1 / -1; text-align: center; padding: 4rem;">
+          <div style="font-size: 3rem; margin-bottom: 1rem;">⏳</div>
+          <h3>Loading talented tailors...</h3>
+          <p style="color: var(--color-muted);">Please wait while we fetch the latest profiles</p>
+        </div>
+      `;
+      }
+
+      // Show error state
+      function showErrorState() {
+        const grid = document.getElementById("tailorsGrid");
+        const resultsCount = document.getElementById("resultsCount");
+
+        resultsCount.textContent = "Error loading tailors";
+        grid.innerHTML = `
+        <div style="grid-column: 1 / -1; text-align: center; padding: 4rem;">
+          <div style="font-size: 3rem; margin-bottom: 1rem;">❌</div>
+          <h3>Failed to load tailors</h3>
+          <p style="color: var(--color-muted); margin-bottom: 2rem;">There was an error loading the tailor profiles</p>
+          <button class="btn btn-primary" onclick="fetchTailors()">Try Again</button>
+        </div>
+      `;
+      }
+
+      // Firebase Authentication State Listener
+      auth.onAuthStateChanged(async (user) => {
+        const usernameDisplay = document.getElementById("username"); // This targets your <span> element
+        const login = document.getElementById("nav-login");
+        const signup = document.getElementById("nav-signup");
+        const welcome = document.getElementById("nav-welcome");
+        const logout = document.getElementById("nav-logout");
+
+        if (user) {
+          currentUser = user;
+          welcome.style.display = "block";
+          login.style.display = "none";
+          signup.style.display = "none";
+          logout.style.display = "block";
+
+          try {
+            // Attempt to fetch user data from Firestore
+            const doc = await db.collection("users").doc(user.uid).get();
+            const data = doc.data();
+
+            let displayUserName = "User"; // Default fallback
+
+            if (data && data.name) {
+              displayUserName = data.name; // Use name from Firestore
+            } else if (user.displayName) {
+              displayUserName = user.displayName; // Use display name from Firebase Auth
+            } else if (user.email) {
+              // Fallback to email if no name or display name is available
+              displayUserName = user.email;
+              // Optional: If you only want the part before '@' for email, use:
+              // displayUserName = user.email.split('@')[0];
+            }
+
+            usernameDisplay.textContent = displayUserName;
+          } catch (err) {
+            console.error("User data fetch error from Firestore:", err);
+            // Fallback if Firestore fetch fails
+            usernameDisplay.textContent =
+              user.displayName || user.email || "User";
+          }
+        } else {
+          currentUser = null;
+          welcome.style.display = "none";
+          login.style.display = "block";
+          signup.style.display = "block";
+          logout.style.display = "none";
+        }
+
+        // Always fetch tailors regardless of auth state
+        await fetchTailors();
+      });
+
+      // Initialize the page
+      function init() {
+        setupEventListeners();
+        // Tailors will be fetched after auth state is determined by onAuthStateChanged
+      }
+
+      // Populate filter dropdowns
+      function populateFilters() {
+        const serviceSelect = document.getElementById("serviceSelect");
+        const locationSelect = document.getElementById("locationSelect");
+
+        // Clear existing options (except "All" options)
+        serviceSelect.innerHTML = '<option value="">All Services</option>';
+        locationSelect.innerHTML = '<option value="">All Locations</option>';
+
+        // Get unique services
+        const allServices = new Set();
+        tailors.forEach((tailor) => {
+          // This check is good defensive programming, but the fix in fetchTailors makes it less critical here.
+          const services = Array.isArray(tailor.services)
+            ? tailor.services
+            : tailor.services
+            ? [tailor.services]
+            : [];
+
+          services.forEach((service) => {
+            if (service && service.trim()) {
+              allServices.add(service.trim());
+            }
+          });
+        });
+
+        // Sort and add service options
+        Array.from(allServices)
+          .sort()
+          .forEach((service) => {
+            const option = document.createElement("option");
+            option.value = service;
+            option.textContent = service;
+            serviceSelect.appendChild(option);
+          });
+
+        // Get unique locations
+        const allLocations = new Set();
+        tailors.forEach((tailor) => {
+          if (tailor.location && tailor.location.trim()) {
+            allLocations.add(tailor.location.trim());
+          }
+        });
+
+        // Sort and add location options
+        Array.from(allLocations)
+          .sort()
+          .forEach((location) => {
+            const option = document.createElement("option");
+            option.value = location;
+            option.textContent = location;
+            locationSelect.appendChild(option);
+          });
+      }
+
+      // Render tailors
+      function renderTailors(tailorsToRender) {
+        const grid = document.getElementById("tailorsGrid");
+        const resultsCount = document.getElementById("resultsCount");
+        const noResults = document.getElementById("noResults");
+
+        resultsCount.textContent = `Showing ${tailorsToRender.length} of ${tailors.length} tailors`;
+
+        if (tailorsToRender.length === 0) {
+          grid.innerHTML = "";
+          noResults.style.display = "block";
+          return;
+        }
+
+        noResults.style.display = "none";
+
+        grid.innerHTML = tailorsToRender
+          .map(
+            (tailor) => `
+        <div class="tailor-card">
+          <div class="tailor-header">
+            <img src="${tailor.profileImage}" alt="${
+              tailor.name
+            }" class="profile-image" />
+            <div class="tailor-info">
+              <h3>${tailor.name}</h3>
+              <div class="location">
+                📍 ${tailor.location}
+              </div>
+            </div>
+          </div>
+          
+          <div class="rating">
+            <div class="stars">${generateStars(tailor.rating)}</div>
+            <span class="rating-text">${tailor.rating} (${
+              tailor.reviews
+            } reviews)</span>
+          </div>
+
+          <div class="services">
+            <h4>Services:</h4>
+            <div class="service-tags">
+              ${tailor.services
+                .map((service) => `<span class="service-tag">${service}</span>`)
+                .join("")}
+            </div>
+          </div>
+
+          <div class="price-range">${tailor.price}</div>
+
+          <div class="card-actions">
+<button class="btn btn-primary">
+  <a href="https://wa.me/${tailor.phone}?text=Hi+${tailor.name}+I+Saw+Your+Profile+On+TailorLink" target='_blank' style="color:#fff; text-decoration:none;">
+    Chat Tailor
+  </a>
+</button>
+            <button class="btn btn-secondary" onclick="handleAction('book', '${
+              tailor.id
+            }')">Book Now</button>
+          </div>
+        </div>
+      `
+          )
+          .join("");
+      }
+
+      // Generate star rating
+      function generateStars(rating) {
+        const fullStars = Math.floor(rating);
+        const hasHalfStar = rating % 1 !== 0;
+        let stars = "★".repeat(fullStars);
+        if (hasHalfStar) stars += "☆";
+        return stars;
+      }
+
+      // Handle tailor actions
+      function handleAction(action, tailorId) {
+        if (!currentUser) {
+          alert(`Please log in to ${action} a tailor.`);
+          window.location.href = "login.html";
+          return;
+        }
+
+        const tailor = tailors.find((t) => t.id === tailorId);
+        if (action === "message") {
+          // Redirect to chat page with tailor ID
+          window.location.href = `chat.html?tailorId=${tailorId}`;
+        } else if (action === "book") {
+          // Redirect to booking page with tailor ID
+          window.location.href = `booking.html?tailorId=${tailorId}`;
+        }
+      }
+
+      // Filter tailors
+      function filterTailors() {
+        const searchTerm = document
+          .getElementById("searchInput")
+          .value.toLowerCase();
+        const selectedService = document.getElementById("serviceSelect").value;
+        const selectedLocation =
+          document.getElementById("locationSelect").value;
+
+        filteredTailors = tailors.filter((tailor) => {
+          const matchesSearch =
+            !searchTerm ||
+            tailor.name.toLowerCase().includes(searchTerm) ||
+            (Array.isArray(tailor.services) &&
+              tailor.services.some((service) =>
+                service.toLowerCase().includes(searchTerm)
+              ));
+
+          const matchesService =
+            !selectedService ||
+            (Array.isArray(tailor.services) &&
+              tailor.services.includes(selectedService));
+
+          const matchesLocation =
+            !selectedLocation || tailor.location === selectedLocation;
+
+          return matchesSearch && matchesService && matchesLocation;
+        });
+
+        renderTailors(filteredTailors);
+      }
+
+      // Clear all filters
+      function clearFilters() {
+        document.getElementById("searchInput").value = "";
+        document.getElementById("serviceSelect").value = "";
+        document.getElementById("locationSelect").value = "";
+        filteredTailors = [...tailors];
+        renderTailors(filteredTailors);
+      }
+
+      // Setup event listeners
+      function setupEventListeners() {
+        document
+          .getElementById("searchInput")
+          .addEventListener("input", filterTailors);
+        document
+          .getElementById("serviceSelect")
+          .addEventListener("change", filterTailors);
+        document
+          .getElementById("locationSelect")
+          .addEventListener("change", filterTailors);
+        document
+          .getElementById("clearFiltersBtn")
+          .addEventListener("click", clearFilters);
+        document
+          .getElementById("clearFiltersBtn2")
+          .addEventListener("click", clearFilters);
+
+        document
+          .getElementById("nav-logout")
+          .addEventListener("click", async (e) => {
+            e.preventDefault();
+            try {
+              await auth.signOut();
+              alert("Logged out successfully!");
+            } catch (error) {
+              console.error("Logout error:", error);
+              alert("Error logging out. Please try again.");
+            }
+          });
+      }
+
+      // Toggle mobile menu
+      function toggleMobileMenu() {
+        document.getElementById("navLinks").classList.toggle("show");
+      }
+
+      // Initialize when DOM is loaded
+      document.addEventListener("DOMContentLoaded", init);
+    </script>
+  </body>
+</html>

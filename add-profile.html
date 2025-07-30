@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Create / Edit Profile</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        max-width: 400px;
+        margin: 30px auto;
+        padding: 20px;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+      }
+      label {
+        display: block;
+        margin-top: 15px;
+      }
+      input,
+      select {
+        width: 100%;
+        padding: 8px;
+        margin-top: 5px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+      }
+      button {
+        margin-top: 20px;
+        padding: 10px;
+        width: 100%;
+        font-size: 16px;
+        background-color: #2e86de;
+        color: white;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+      }
+      button:disabled {
+        background-color: #ccc;
+        cursor: not-allowed;
+      }
+      #message {
+        margin-top: 15px;
+        color: green;
+      }
+    </style>
+
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
+  </head>
+  <body>
+    <h2>Create / Edit Profile</h2>
+
+    <form id="profile-form">
+      <label for="name">Full Name:</label>
+      <input
+        type="text"
+        id="name"
+        style="text-transform: capitalize"
+        required
+      />
+
+      <label for="email">Email (read-only):</label>
+      <input type="email" id="email" readonly />
+
+      <label for="phone">Phone Number:</label>
+      <input type="tel" id="phone" placeholder="+2348012345678" />
+
+      <label for="role">Role:</label>
+      <select id="role" required>
+        <option value="" disabled selected>Select role</option>
+        <option value="customer">Customer</option>
+        <option value="tailor">Tailor</option>
+        <option value="admin">Admin</option>
+      </select>
+
+      <button type="submit">Save Profile</button>
+    </form>
+
+    <div id="message"></div>
+
+    <script>
+      // Firebase config
+      const firebaseConfig = {
+        apiKey: "AIzaSyBVjsT4eVkdZaWaYfkgz_hoK00ZgmLWNR4",
+        authDomain: "tailorlink-571d5.firebaseapp.com",
+        projectId: "tailorlink-571d5",
+        storageBucket: "tailorlink-571d5.appspot.com",
+        messagingSenderId: "685008238153",
+        appId: "1:685008238153:web:8625d73d9511fde3f2b198",
+        measurementId: "G-H9RNR0LLKF",
+      };
+
+      // Init Firebase
+      firebase.initializeApp(firebaseConfig);
+      const auth = firebase.auth();
+      const db = firebase.firestore();
+
+      const form = document.getElementById("profile-form");
+      const messageDiv = document.getElementById("message");
+
+      // Check login
+      auth.onAuthStateChanged((user) => {
+        if (!user) {
+          window.location.href = "login.html";
+          return;
+        }
+
+        document.getElementById("email").value = user.email;
+        loadProfile(user.uid);
+      });
+
+      // Load profile if it exists
+      async function loadProfile(uid) {
+        try {
+          const doc = await db.collection("users").doc(uid).get();
+          if (doc.exists) {
+            const data = doc.data();
+            document.getElementById("name").value = data.name || "";
+            document.getElementById("phone").value = data.phone || "";
+            if (data.role) {
+              document.getElementById("role").value = data.role;
+            }
+          }
+        } catch (err) {
+          console.error("Error loading profile:", err);
+          messageDiv.textContent = "Failed to load profile.";
+          messageDiv.style.color = "red";
+        }
+      }
+
+      // Handle form submit
+      form.addEventListener("submit", async (e) => {
+        e.preventDefault();
+        const btn = form.querySelector("button");
+        btn.disabled = true;
+        btn.innerText = "Saving...";
+
+        const user = auth.currentUser;
+        if (!user) {
+          messageDiv.textContent = "User not authenticated.";
+          messageDiv.style.color = "red";
+          btn.disabled = false;
+          btn.innerText = "Save Profile";
+          return;
+        }
+
+        const name = document.getElementById("name").value.trim();
+        const phone = document.getElementById("phone").value.trim();
+        const role = document.getElementById("role").value;
+
+        // Reset borders
+        document.getElementById("name").style.border = "";
+        document.getElementById("role").style.border = "";
+
+        if (!name || !role) {
+          messageDiv.textContent = "Please fill in all required fields.";
+          messageDiv.style.color = "red";
+          if (!name)
+            document.getElementById("name").style.border = "1px solid red";
+          if (!role)
+            document.getElementById("role").style.border = "1px solid red";
+          btn.disabled = false;
+          btn.innerText = "Save Profile";
+          return;
+        }
+
+        try {
+          await db.collection("users").doc(user.uid).set(
+            {
+              name,
+              phone,
+              role,
+              email: user.email,
+            },
+            { merge: true }
+          );
+
+          messageDiv.textContent = "Profile saved successfully!";
+          messageDiv.style.color = "green";
+
+          // Optional: Role-based redirect
+          let redirectPage = "profile.html";
+          if (role === "tailor") redirectPage = "dashboard-tailors.html";
+          else if (role === "customer")
+            redirectPage = "dashboard-customer.html";
+          else if (role === "admin") redirectPage = "dashboard-admin.html";
+
+          setTimeout(() => {
+            window.location.href = redirectPage;
+          }, 2000);
+        } catch (error) {
+          console.error("Error saving profile:", error);
+          messageDiv.textContent = "Failed to save profile.";
+          messageDiv.style.color = "red";
+        } finally {
+          btn.disabled = false;
+          btn.innerText = "Save Profile";
+        }
+      });
+    </script>
+  </body>
+</html>

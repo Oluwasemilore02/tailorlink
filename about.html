@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>About – TailorLink🔗</title>
+    <link href="https://fonts.googleapis.com/css2?family=Segoe+UI:wght@400;600;700&display=swap" rel="stylesheet" />
+    <link href="https://cdn.jsdelivr.net/npm/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet" />
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: 'Segoe UI', sans-serif;
+      }
+
+      body {
+        line-height: 1.6;
+        background-color: #fff;
+        color: #333;
+        scroll-behavior: smooth;
+      }
+
+      /* Navbar */
+      .navbar {
+        background: rgba(23, 145, 29, 0.95);
+        backdrop-filter: blur(10px);
+        padding: 1rem 2rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        position: fixed;
+        top: 0;
+        width: 100%;
+        z-index: 1000;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+        animation: slideInDown 0.8s ease-out;
+      }
+
+      @keyframes slideInDown {
+        0% {
+          transform: translateY(-100%);
+        }
+        100% {
+          transform: translateY(0);
+        }
+      }
+
+      .logo {
+        font-size: 1.5rem;
+        font-weight: 700;
+        color: white;
+      }
+
+      .logo-main {
+        text-decoration: none;
+        color: white;
+      }
+
+      .logo-span {
+        margin-left: 4px;
+        color: #0e6bf7;
+      }
+
+      .nav-links {
+        display: flex;
+        align-items: center;
+        gap: 0.7rem;
+      }
+
+      .nav-links a {
+        color: white;
+        text-decoration: none;
+        font-weight: 500;
+        padding: 0.5rem 1rem;
+        border-radius: 25px;
+        font-size: 15px;
+        position: relative;
+        transition: background 0.3s;
+      }
+
+      .nav-links a::after {
+        content: '';
+        position: absolute;
+        bottom: 0;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 0;
+        height: 2px;
+        background: white;
+        transition: width 0.3s;
+      }
+
+      .nav-links a:hover::after {
+        width: 80%;
+      }
+
+      .btn {
+        padding: 0.5rem 1.2rem;
+        border-radius: 25px;
+        border: none;
+        cursor: pointer;
+        background: linear-gradient(45deg, #17911d, #27ae60);
+        color: white;
+        font-weight: 500;
+        box-shadow: 0 4px 15px rgba(23, 145, 29, 0.3);
+        transition: all 0.3s ease;
+      }
+
+      .btn:hover {
+        background: #fff;
+        color: #17911d;
+        box-shadow: 0 6px 20px rgba(23, 145, 29, 0.4);
+        transform: scale(1.05);
+      }
+
+      /* About Section */
+      .about-container {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        justify-content: space-between;
+        gap: 2rem;
+        padding: 7rem 2rem 4rem;
+      }
+
+      .about-text {
+        flex: 1;
+        min-width: 280px;
+      }
+
+      .about-text h1 {
+        font-size: 2.6rem;
+        color: #17911d;
+        margin-bottom: 1rem;
+        position: relative;
+      }
+
+      .about-text h1::after {
+        content: '';
+        position: absolute;
+        bottom: -8px;
+        left: 0;
+        width: 80px;
+        height: 4px;
+        background-color: #17911d;
+      }
+
+      .about-text p {
+        font-size: 1rem;
+        margin-bottom: 1rem;
+        color: #555;
+      }
+
+      .about-img {
+        flex: 1;
+        min-width: 280px;
+        overflow: hidden;
+      }
+
+      .about-img img {
+        width: 100%;
+        border-radius: 16px;
+        box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
+        transition: transform 0.5s ease;
+      }
+
+      .about-img img:hover {
+        transform: scale(1.05);
+      }
+
+      /* Mission & Vision */
+      .mission-vision {
+        background-color: #f9f9f9;
+        padding: 4rem 2rem;
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 3rem;
+      }
+
+      .mv-block {
+        flex: 1;
+        min-width: 280px;
+        max-width: 500px;
+        background: white;
+        padding: 2rem;
+        border-radius: 12px;
+        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.05);
+        transition: transform 0.3s;
+      }
+
+      .mv-block:hover {
+        transform: translateY(-5px);
+      }
+
+      .mv-block h2 {
+        color: #17911d;
+        margin-bottom: 1rem;
+      }
+
+      .mv-block p {
+        font-size: 1rem;
+        line-height: 1.7;
+        color: #444;
+      }
+
+      /* Scroll To Top */
+      .scroll-top {
+        position: fixed;
+        bottom: 30px;
+        right: 30px;
+        background: #17911d;
+        color: white;
+        padding: 0.7rem;
+        border-radius: 50%;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.5rem;
+        z-index: 1001;
+        transition: background 0.3s;
+      }
+
+      .scroll-top:hover {
+        background: #ffffff;
+        color: #17911d;
+      }
+
+      /* Footer */
+      .footer {
+        background-color: #17911d;
+        color: white;
+        padding: 2rem;
+        margin-top: 3rem;
+      }
+
+      .footer-content {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-between;
+        gap: 2rem;
+      }
+
+      .footer-content h4 {
+        margin-bottom: 0.5rem;
+      }
+
+      .footer-content ul {
+        list-style: none;
+        padding: 0;
+      }
+
+      .footer-content ul li a {
+        color: white;
+        text-decoration: none;
+      }
+
+      .footer-content ul li a:hover {
+        color: #c0c0c0;
+      }
+
+      .footer-bottom {
+        text-align: center;
+        margin-top: 2rem;
+        font-size: 0.9rem;
+        border-top: 1px solid rgba(255, 255, 255, 0.2);
+        padding-top: 1rem;
+      }
+
+      @media (max-width: 768px) {
+        .about-container,
+        .mission-vision,
+        .footer-content {
+          flex-direction: column;
+          text-align: center;
+        }
+
+        .nav-links {
+          flex-direction: column;
+          background-color: rgba(0, 0, 0, 0.8);
+          position: absolute;
+          top: 60px;
+          right: 0;
+          width: 100%;
+          display: none;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Navbar -->
+    <header class="navbar">
+      <a href="index.html" class="logo-main">
+        <div class="logo">Tailor<span class="logo-span">Link🔗</span></div>
+      </a>
+      <nav class="nav-links">
+        <a href="index.html">Home</a>
+        <a href="about.html">About</a>
+        <a href="explore.html">View Tailors</a>
+      </nav>
+    </header>
+
+    <!-- About -->
+    <main class="about-container">
+      <div class="about-text">
+        <h1>About TailorLink🔗</h1>
+        <p>
+          TailorLink🔗 is a modern solution for anyone seeking professional tailoring services near them.
+          We bridge the gap between traditional tailoring and modern convenience — allowing users to book local
+          tailors online for fittings, custom outfits, and repairs.
+        </p>
+        <p>
+          From weddings to everyday wear, TailorLink🔗 makes it easy to connect with experienced tailors who
+          match your style and budget. No more stress, just style – made simple.
+        </p>
+      </div>
+      <div class="about-img">
+        <img src="img/medium-shot-man-repairing-fashion-goods.jpg" alt="Tailor at work" />
+      </div>
+    </main>
+
+    <!-- Mission & Vision -->
+    <section class="mission-vision">
+      <div class="mv-block">
+        <h2>Our Mission</h2>
+        <p>
+          To empower fashion entrepreneurs and simplify access to local tailoring services. We believe in a world where
+          quality fashion is accessible, and local talent is celebrated.
+        </p>
+      </div>
+      <div class="mv-block">
+        <h2>Our Vision</h2>
+        <p>
+          To become Africa’s go-to tailoring platform — trusted by users, loved by tailors, and known for reliable,
+          stylish service delivery across the continent.
+        </p>
+      </div>
+    </section>
+
+    <!-- Scroll to Top -->
+    <div class="scroll-top" onclick="window.scrollTo({ top: 0, behavior: 'smooth' })">
+      <i class='bx bx-chevron-up'></i>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+      <div class="footer-content">
+        <div class="footer-brand">
+          <h3>TailorLink🔗</h3>
+          <p>Connecting you with trusted tailors – fast, easy, and local.</p>
+        </div>
+        <div class="footer-links">
+          <h4>Quick Links</h4>
+          <ul>
+            <li><a href="index.html">Home</a></li>
+            <li><a href="explore.html">Find Tailors</a></li>
+            <li><a href="about.html">About</a></li>
+          </ul>
+        </div>
+        <div class="footer-contact">
+          <h4>Contact</h4>
+          <p>Website by Atitebi Oluwasemilore</p>
+          <p>Email: semioreatitebi@gmail.com</p>
+          <p>Phone: +234 912 0236 106</p>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p>&copy; 2025 TailorLink🔗. All rights reserved.</p>
+      </div>
+    </footer>
+  </body>
+</html>

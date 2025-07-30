@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Login To TailorLink</title>
+    <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
+
+    <style>
+      @import url("https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,400;1,400&family=Poppins:wght@400;600&display=swap");
+
+      :root {
+        --primary-color: #17911d; /* Your specified primary color */
+        --primary-dark: #0f6e16;
+        --background-color: #f4f4f4;
+        --text-color: #333;
+        --input-border-color: #ccc;
+        --error-color: #e74c3c; /* Consistent error color */
+        --shadow-medium: 0 8px 25px rgba(0, 0, 0, 0.1); /* Consistent shadow */
+        --border-radius-soft: 8px; /* Consistent border radius */
+      }
+
+      body {
+        font-family: "Inter", sans-serif;
+        background-color: var(--background-color);
+        color: var(--text-color);
+        margin: 0;
+        padding: 0 20px; /* Use px for better consistency on all screens */
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 100vh; /* Use min-height for full viewport height */
+      }
+
+      .wrapper {
+        width: 100%;
+        max-width: 400px; /* Adjusted max-width for a more compact login form */
+        padding: 30px; /* Increased padding */
+        background-color: white;
+        box-shadow: var(--shadow-medium);
+        border-radius: var(--border-radius-soft);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        text-align: center; /* Center text elements within wrapper */
+      }
+
+      h1 {
+        font-size: 1.5rem;
+        font-weight: 600;
+        margin-bottom: 1.5rem; /* More space below heading */
+        text-transform: uppercase;
+        color: var(--text-color);
+      }
+
+      form {
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        gap: 1rem; /* Space between input groups */
+      }
+
+      .input-group {
+        /* Added input-group for consistent styling */
+        width: 100%;
+        margin-bottom: 1rem; /* Space below each input group */
+      }
+
+      input {
+        width: 100%;
+        padding: 12px 7px; /* More padding for inputs */
+        font-size: 1rem;
+        border: 1px solid var(--input-border-color);
+        border-radius: var(--border-radius-soft);
+        font-family: "Inter", sans-serif;
+        transition: border-color 0.3s ease, box-shadow 0.3s ease;
+        outline: none;
+        background-color: white;
+      }
+
+      input:focus {
+        border-color: var(--primary-color);
+        box-shadow: 0 0 0 3px rgba(23, 145, 29, 0.2); /* Subtle focus ring */
+      }
+
+      input::placeholder {
+        color: var(--text-color);
+        opacity: 0.7;
+      }
+
+      button {
+        /* General button styling, applied to submit button */
+        width: 100%;
+        padding: 12px;
+        background-color: var(--primary-color);
+        color: white;
+        border: none;
+        border-radius: var(--border-radius-soft);
+        font-size: 1.1rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: background-color 0.3s ease, box-shadow 0.3s ease,
+          transform 0.3s ease;
+        margin-top: 0.5rem; /* Space above button */
+      }
+
+      button:hover:not(:disabled) {
+        /* Apply hover only when not disabled */
+        background-color: var(--primary-dark);
+        box-shadow: 0 6px 15px rgba(23, 145, 29, 0.35);
+        transform: translateY(-2px);
+      }
+
+      button:disabled {
+        background-color: #a0a0a0; /* Grey out when disabled */
+        cursor: not-allowed;
+        box-shadow: none;
+        transform: none;
+      }
+
+      #error-message {
+        color: var(--error-color);
+        font-size: 0.9rem;
+        margin-bottom: 1rem;
+        text-align: left;
+        width: 100%;
+      }
+
+      .signup-link-text {
+        /* Renamed for clarity */
+        font-size: 0.9rem;
+        color: var(--text-color);
+        margin-top: 1rem;
+      }
+
+      .signup-link-text a {
+        color: var(--primary-color);
+        text-decoration: none;
+        font-weight: 600;
+        transition: color 0.3s ease;
+      }
+
+      .signup-link-text a:hover {
+        color: var(--primary-dark);
+        text-decoration: underline;
+      }
+
+      .input-group.incorrect input {
+        /* Apply error style to the group */
+        border-color: var(--error-color);
+        box-shadow: 0 0 0 3px rgba(231, 76, 60, 0.2);
+      }
+    </style>
+  </head>
+
+  <body>
+    <div class="wrapper">
+      <h1>Login To TailorLink🔗</h1>
+      <p id="error-message"></p>
+      <form id="loginForm">
+        <div class="input-group">
+          <input
+            type="email"
+            id="email-input"
+            placeholder="Email"
+            required
+            autocomplete="email"
+          />
+        </div>
+        <div class="input-group">
+          <input
+            type="password"
+            id="password-input"
+            placeholder="Enter Password"
+            required
+            autocomplete="current-password"
+          />
+        </div>
+        <button type="submit" id="submit-button">Login Now</button>
+        <p class="signup-link-text">
+          New here? <a href="signup.html">Create An Account</a>
+        </p>
+      </form>
+    </div>
+
+    <script>
+      // Firebase config (ensure these values are correct for your project)
+      const firebaseConfig = {
+        apiKey: "AIzaSyBVjsT4eVkdZaWaYfkgz_hoK00ZgmLWNR4",
+        // Corrected authDomain and projectId to remove special characters (🔗)
+        authDomain: "tailorlink-571d5.firebaseapp.com",
+        projectId: "tailorlink-571d5",
+        storageBucket: "tailorlink-571d5.appspot.com",
+        messagingSenderId: "685008238153",
+        appId: "1:685008238153:web:8625d73d9511fde3f2b198",
+        measurementId: "G-H9RNR0LLKF",
+      };
+
+      firebase.initializeApp(firebaseConfig);
+      const auth = firebase.auth();
+      const db = firebase.firestore(); // Firestore is needed to get user role
+
+      const loginForm = document.getElementById("loginForm"); // Using new form ID
+      const emailInput = document.getElementById("email-input");
+      const passwordInput = document.getElementById("password-input");
+      const errorMessage = document.getElementById("error-message");
+      const submitButton = document.getElementById("submit-button"); // Get reference to the submit button
+
+      loginForm.addEventListener("submit", async (e) => {
+        e.preventDefault();
+
+        // 1. Disable button and change text immediately on submit
+        submitButton.textContent = "Logging In...";
+        submitButton.disabled = true;
+
+        // Reset error visuals
+        clearInputError(emailInput);
+        clearInputError(passwordInput);
+        errorMessage.textContent = "";
+
+        const email = emailInput.value.trim();
+        const password = passwordInput.value;
+
+        if (!email || !password) {
+          errorMessage.textContent = "Please enter both email and password.";
+          if (!email) markInputIncorrect(emailInput);
+          if (!password) markInputIncorrect(passwordInput);
+          // Re-enable button and reset text if client-side validation fails
+          submitButton.textContent = "Login Now";
+          submitButton.disabled = false;
+          return;
+        }
+
+        try {
+          const userCredential = await auth.signInWithEmailAndPassword(
+            email,
+            password
+          );
+          const user = userCredential.user;
+
+          // Fetch user role from Firestore
+          const docSnap = await db.collection("users").doc(user.uid).get();
+
+          if (!docSnap.exists) {
+            // If user data not found in Firestore, log out the user and show error
+            await auth.signOut();
+            throw new Error(
+              "User profile not found. Please try again or Sign up."
+            );
+          }
+
+          const userData = docSnap.data();
+          const role = userData.role;
+
+          if (role === "customer") {
+            window.location.href = "explore.html"; // Redirect customers to the main page
+          } else if (role === "tailor") {
+            window.location.href = "dashboard-tailors.html"; // Redirect tailors to their dashboard
+          } else if (role === "admin") {
+            window.location.href = "dashboard-admin.html"; // Redirect admin to admin dashboard
+          } else {
+            // Fallback for unexpected roles, or if role is missing
+            await auth.signOut(); // Log out user with invalid/missing role
+            throw new Error(
+              "Invalid user role detected. Please contact support."
+            );
+          }
+        } catch (error) {
+          console.error("Login error:", error);
+          let userFacingMessage =
+            "Login failed. Please check your credentials or Internet Connection.";
+          if (
+            error.code === "auth/user-not-found" ||
+            error.code === "auth/wrong-password"
+          ) {
+            userFacingMessage = "Invalid email or password.";
+            markInputIncorrect(emailInput);
+            markInputIncorrect(passwordInput);
+          } else if (error.code === "auth/invalid-email") {
+            userFacingMessage = "The email address is not valid.";
+            markInputIncorrect(emailInput);
+          } else if (error.code === "auth/too-many-requests") {
+            userFacingMessage =
+              "Too many failed login attempts. Please try again later.";
+          } else if (
+            error.message.includes("User profile not found") ||
+            error.message.includes("Invalid user role")
+          ) {
+            userFacingMessage = error.message; // Use specific error message thrown above
+          }
+          errorMessage.textContent = userFacingMessage;
+        } finally {
+          // 2. Re-enable button and reset text after the try/catch block
+          submitButton.textContent = "Login Now";
+          submitButton.disabled = false;
+        }
+      });
+
+      // --- Helper functions for validation styling ---
+      function markInputIncorrect(inputElement) {
+        inputElement.closest(".input-group").classList.add("incorrect");
+      }
+
+      function clearInputError(inputElement) {
+        inputElement.closest(".input-group").classList.remove("incorrect");
+      }
+
+      // Remove error styling when user starts typing
+      [emailInput, passwordInput].forEach((input) => {
+        input.addEventListener("input", () => {
+          clearInputError(input);
+          errorMessage.textContent = "";
+        });
+      });
+    </script>
+  </body>
+</html>

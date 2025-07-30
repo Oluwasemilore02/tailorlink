@@ -1,0 +1,1158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TailorLink Dashboard</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
+
+    <style>
+      :root {
+        --primary-color: #17911d;
+        --primary-light: #27ae60;
+        --primary-dark: #0f6e16;
+        --secondary-color: #c7a123;
+        --background-color: #f8fafc;
+        --background-secondary: #f1f5f9;
+        --card-background: #ffffff;
+        --text-color: #1e293b;
+        --text-muted: #64748b;
+        --text-light: #94a3b8;
+        --border-color: #e2e8f0;
+        --border-light: #f1f5f9;
+        --shadow-sm: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
+        --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+        --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+        --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
+        --gradient-primary: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-light) 100%);
+        --gradient-secondary: linear-gradient(135deg, var(--secondary-color) 0%, #d4b831 100%);
+        --gradient-bg: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+        --border-radius-sm: 6px;
+        --border-radius-md: 12px;
+        --border-radius-lg: 16px;
+        --border-radius-xl: 24px;
+        --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        --backdrop-blur: blur(12px);
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: "Inter", -apple-system, BlinkMacSystemFont, sans-serif;
+        background: var(--gradient-bg);
+        color: var(--text-color);
+        margin: 0;
+        display: flex;
+        flex-direction: column;
+        min-height: 100vh;
+        padding: 0;
+        font-weight: 400;
+        line-height: 1.6;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+      }
+
+      /* Navbar */
+      .navbar {
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: var(--backdrop-blur);
+        -webkit-backdrop-filter: var(--backdrop-blur);
+        padding: 1rem 2rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        position: sticky;
+        top: 0;
+        width: 100%;
+        z-index: 1000;
+        box-shadow: var(--shadow-sm);
+        border-bottom: 1px solid var(--border-light);
+      }
+
+      .logo {
+        font-size: 1.75rem;
+        font-weight: 800;
+        background: var(--gradient-primary);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        text-decoration: none;
+        letter-spacing: -0.025em;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+      }
+      
+      .logo-span {
+        background: var(--gradient-secondary);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        font-size: 1.5rem;
+        margin-left: 0;
+      }
+
+      .nav-links {
+        display: flex;
+        gap: 1.5rem;
+        align-items: center;
+      }
+
+      .nav-links a {
+        color: var(--text-color);
+        text-decoration: none;
+        font-weight: 500;
+        transition: var(--transition);
+        padding: 0.75rem 1.25rem;
+        border-radius: var(--border-radius-lg);
+        position: relative;
+        overflow: hidden;
+      }
+      
+      .nav-links a::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: var(--gradient-primary);
+        opacity: 0.1;
+        transition: var(--transition);
+        z-index: -1;
+      }
+      
+      .nav-links a:hover::before {
+        left: 0;
+      }
+      
+      .nav-links a:hover {
+        color: var(--primary-color);
+        transform: translateY(-2px);
+      }
+
+      .welcome-user {
+        color: var(--text-muted);
+        font-weight: 600;
+        margin-right: 1rem;
+        padding: 0.5rem 1rem;
+        background: var(--background-secondary);
+        border-radius: var(--border-radius-lg);
+        border: 1px solid var(--border-color);
+      }
+
+      .btn-logout {
+        padding: 0.75rem 1.5rem;
+        background: var(--gradient-primary);
+        color: white;
+        border: none;
+        border-radius: var(--border-radius-lg);
+        font-weight: 600;
+        cursor: pointer;
+        transition: var(--transition);
+        box-shadow: var(--shadow-sm);
+        position: relative;
+        overflow: hidden;
+      }
+      
+      .btn-logout::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(135deg, rgba(255,255,255,0.2) 0%, rgba(255,255,255,0.1) 100%);
+        transition: var(--transition);
+      }
+      
+      .btn-logout:hover::before {
+        left: 0;
+      }
+      
+      .btn-logout:hover {
+        transform: translateY(-2px);
+        box-shadow: var(--shadow-lg);
+      }
+
+      /* Dashboard Layout */
+      .dashboard-container {
+        display: flex;
+        flex-grow: 1;
+        padding: 2rem;
+        gap: 2rem;
+        max-width: 1600px;
+        margin: 2rem auto;
+        align-items: flex-start;
+        transition: var(--transition);
+      }
+
+      /* Sidebar Toggle Button */
+      .sidebar-toggle {
+        background: var(--gradient-primary);
+        color: white;
+        border: none;
+        padding: 0.75rem 0.9rem;
+        border-radius: var(--border-radius-md);
+        cursor: pointer;
+        margin-bottom: 1.5rem;
+        align-self: flex-end;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: var(--transition);
+        box-shadow: var(--shadow-sm);
+        position: relative;
+        overflow: hidden;
+      }
+
+      .sidebar-toggle::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: rgba(255,255,255,0.2);
+        transition: var(--transition);
+      }
+
+      .sidebar-toggle:hover::before {
+        left: 0;
+      }
+
+      .sidebar-toggle:hover {
+        transform: scale(1.05);
+        box-shadow: var(--shadow-md);
+      }
+
+      .sidebar {
+        flex: 0 0 280px;
+        background: rgba(255, 255, 255, 0.9);
+        backdrop-filter: var(--backdrop-blur);
+        -webkit-backdrop-filter: var(--backdrop-blur);
+        box-shadow: var(--shadow-lg);
+        border: 1px solid var(--border-color);
+        border-radius: var(--border-radius-xl);
+        padding: 2rem;
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+        position: sticky;
+        top: calc(1rem + 80px);
+        height: fit-content;
+        transition: var(--transition);
+        align-items: flex-start;
+      }
+
+      .sidebar-nav-item {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 1rem 1.25rem;
+        border-radius: var(--border-radius-lg);
+        color: var(--text-color);
+        text-decoration: none;
+        font-weight: 500;
+        transition: var(--transition);
+        cursor: pointer;
+        width: 100%;
+        justify-content: flex-start;
+        position: relative;
+        overflow: hidden;
+      }
+      
+      .sidebar-nav-item::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: var(--gradient-primary);
+        transition: var(--transition);
+        z-index: -1;
+      }
+      
+      .sidebar-nav-item i {
+        font-size: 1.2rem;
+        color: var(--text-muted);
+        min-width: 28px;
+        text-align: center;
+        transition: var(--transition);
+      }
+      
+      .sidebar-nav-item:hover::before,
+      .sidebar-nav-item.active::before {
+        left: 0;
+      }
+      
+      .sidebar-nav-item:hover,
+      .sidebar-nav-item.active {
+        color: white;
+        transform: translateX(8px);
+        box-shadow: var(--shadow-md);
+      }
+      
+      .sidebar-nav-item:hover i,
+      .sidebar-nav-item.active i {
+        color: white;
+        transform: scale(1.1);
+      }
+
+      .sidebar.collapsed .sidebar-nav-item span {
+        display: none;
+      }
+
+      .sidebar.collapsed .sidebar-nav-item {
+        justify-content: center;
+        padding: 1rem 0;
+      }
+
+      .sidebar.collapsed {
+        flex: 0 0 80px;
+        align-items: center;
+        padding: 2rem 0.75rem;
+      }
+
+      .main-content {
+        flex-grow: 1;
+        background: rgba(255, 255, 255, 0.9);
+        backdrop-filter: var(--backdrop-blur);
+        -webkit-backdrop-filter: var(--backdrop-blur);
+        box-shadow: var(--shadow-lg);
+        border: 1px solid var(--border-color);
+        border-radius: var(--border-radius-xl);
+        padding: 2.5rem;
+        transition: var(--transition);
+        position: relative;
+        overflow: hidden;
+      }
+
+      .main-content::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 4px;
+        background: var(--gradient-primary);
+        border-radius: var(--border-radius-xl) var(--border-radius-xl) 0 0;
+      }
+
+      .dashboard-section {
+        display: none;
+        animation: fadeIn 0.5s ease-in-out;
+      }
+      
+      @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(20px); }
+        to { opacity: 1; transform: translateY(0); }
+      }
+      
+      .dashboard-section.active {
+        display: block;
+      }
+
+      .dashboard-section h2 {
+        font-size: 2rem;
+        font-weight: 700;
+        background: var(--gradient-primary);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        margin-bottom: 2rem;
+        padding-bottom: 1rem;
+        border-bottom: 2px solid var(--border-color);
+        position: relative;
+        letter-spacing: -0.025em;
+      }
+
+      .dashboard-section h2::after {
+        content: '';
+        position: absolute;
+        bottom: -2px;
+        left: 0;
+        width: 60px;
+        height: 2px;
+        background: var(--gradient-primary);
+        border-radius: 2px;
+      }
+
+      /* Profile Section Styling */
+      .profile-info {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 1.5rem;
+        margin-bottom: 2.5rem;
+      }
+      
+      .profile-info div {
+        background: var(--background-secondary);
+        padding: 1.5rem;
+        border-radius: var(--border-radius-lg);
+        border: 1px solid var(--border-color);
+        transition: var(--transition);
+        position: relative;
+        overflow: hidden;
+      }
+      
+      .profile-info div::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 3px;
+        background: var(--gradient-primary);
+      }
+      
+      .profile-info div:hover {
+        transform: translateY(-4px);
+        box-shadow: var(--shadow-lg);
+        border-color: var(--primary-light);
+      }
+      
+      .profile-info div strong {
+        display: block;
+        color: var(--text-muted);
+        font-size: 0.875rem;
+        font-weight: 600;
+        margin-bottom: 0.5rem;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+      }
+      
+      .profile-info div span {
+        font-size: 1.125rem;
+        color: var(--text-color);
+        font-weight: 600;
+        display: block;
+      }
+
+      .profile-image-container {
+        width: 180px;
+        height: 180px;
+        border-radius: 50%;
+        overflow: hidden;
+        border: 6px solid transparent;
+        background: var(--gradient-primary);
+        margin: 0 auto 2rem;
+        box-shadow: var(--shadow-xl);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        position: relative;
+        transition: var(--transition);
+      }
+      
+      .profile-image-container::before {
+        content: '';
+        position: absolute;
+        inset: 6px;
+        border-radius: 50%;
+        background: var(--card-background);
+        z-index: 1;
+      }
+      
+      .profile-image-container:hover {
+        transform: scale(1.05);
+        box-shadow: var(--shadow-xl);
+      }
+      
+      .profile-image-container img {
+        width: calc(100% - 12px);
+        height: calc(100% - 12px);
+        object-fit: cover;
+        border-radius: 50%;
+        position: relative;
+        z-index: 2;
+      }
+
+      .bio-text {
+        font-style: italic;
+        color: var(--text-muted);
+        margin-bottom: 2rem;
+        line-height: 1.8;
+        background: var(--background-secondary);
+        padding: 2rem;
+        border-radius: var(--border-radius-lg);
+        border: 1px solid var(--border-color);
+        position: relative;
+        font-size: 1.1rem;
+      }
+
+      .bio-text::before {
+        content: '"';
+        font-size: 4rem;
+        color: var(--primary-light);
+        position: absolute;
+        top: 0.5rem;
+        left: 1rem;
+        font-family: serif;
+        opacity: 0.3;
+      }
+
+      /* Services Management Styling */
+      .services-list {
+        list-style: none;
+        padding: 0;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 1rem;
+        margin-bottom: 2rem;
+      }
+      
+      .service-tag {
+        background: var(--gradient-primary);
+        color: white;
+        padding: 0.75rem 1.5rem;
+        border-radius: var(--border-radius-xl);
+        font-size: 0.9rem;
+        font-weight: 600;
+        box-shadow: var(--shadow-md);
+        transition: var(--transition);
+        position: relative;
+        overflow: hidden;
+      }
+
+      .service-tag::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: rgba(255,255,255,0.2);
+        transition: var(--transition);
+      }
+
+      .service-tag:hover::before {
+        left: 0;
+      }
+
+      .service-tag:hover {
+        transform: translateY(-2px);
+        box-shadow: var(--shadow-lg);
+      }
+
+      .no-data-message {
+        text-align: center;
+        color: var(--text-muted);
+        padding: 3rem 2rem;
+        background: var(--background-secondary);
+        border-radius: var(--border-radius-lg);
+        border: 2px dashed var(--border-color);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        transition: var(--transition);
+      }
+      
+      .no-data-message:hover {
+        border-color: var(--primary-light);
+        background: rgba(23, 145, 29, 0.02);
+      }
+      
+      .no-data-message i {
+        font-size: 3rem;
+        margin-bottom: 1rem;
+        background: var(--gradient-primary);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        opacity: 0.8;
+      }
+      
+      .no-data-message p {
+        margin: 0.3rem 0;
+        font-size: 1.1rem;
+      }
+
+      .no-data-message p:first-of-type {
+        font-weight: 600;
+        color: var(--text-color);
+      }
+
+      /* Buttons within sections */
+      .btn-primary {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+        padding: 1rem 2rem;
+        background: var(--gradient-primary);
+        color: white;
+        border: none;
+        border-radius: var(--border-radius-lg);
+        cursor: pointer;
+        font-weight: 600;
+        font-size: 1rem;
+        transition: var(--transition);
+        text-decoration: none;
+        box-shadow: var(--shadow-md);
+        position: relative;
+        overflow: hidden;
+      }
+
+      .btn-primary::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: rgba(255,255,255,0.2);
+        transition: var(--transition);
+      }
+
+      .btn-primary:hover::before {
+        left: 0;
+      }
+
+      .btn-primary:hover {
+        transform: translateY(-3px);
+        box-shadow: var(--shadow-xl);
+      }
+
+      .btn-primary:active {
+        transform: translateY(-1px);
+      }
+
+      /* Section Headers */
+      .dashboard-section h3 {
+        font-size: 1.5rem;
+        font-weight: 600;
+        color: var(--text-color);
+        margin: 2rem 0 1rem 0;
+        position: relative;
+        padding-left: 1rem;
+      }
+
+      .dashboard-section h3::before {
+        content: '';
+        position: absolute;
+        left: 0;
+        top: 50%;
+        transform: translateY(-50%);
+        width: 4px;
+        height: 100%;
+        background: var(--gradient-primary);
+        border-radius: 2px;
+      }
+
+      /* Responsive adjustments */
+      @media (max-width: 1200px) {
+        .dashboard-container {
+          max-width: 95%;
+          padding: 1.5rem;
+          gap: 1.5rem;
+        }
+      }
+
+      @media (max-width: 992px) {
+        .dashboard-container {
+          max-width: 90%;
+          padding: 1.5rem;
+          gap: 1.5rem;
+        }
+        
+        .profile-info {
+          grid-template-columns: 1fr;
+        }
+        
+        .sidebar {
+          flex: 0 0 260px;
+        }
+      }
+
+      @media (max-width: 768px) {
+        .navbar {
+          padding: 1rem;
+          flex-wrap: wrap;
+          justify-content: center;
+          gap: 1rem;
+        }
+        
+        .nav-links {
+          width: 100%;
+          justify-content: center;
+          margin-top: 1rem;
+          flex-wrap: wrap;
+        }
+        
+        .dashboard-container {
+          flex-direction: column;
+          padding: 1rem;
+          margin: 1rem auto;
+          gap: 1rem;
+        }
+        
+        .sidebar {
+          flex: none;
+          width: 100%;
+          position: static;
+          margin-bottom: 0;
+          padding: 1.5rem;
+          flex-direction: row;
+          flex-wrap: wrap;
+          justify-content: space-around;
+          height: auto;
+          border-radius: var(--border-radius-lg);
+        }
+        
+        .sidebar-toggle {
+          display: none;
+        }
+        
+        .sidebar-nav-item {
+          padding: 1rem;
+          flex-basis: calc(50% - 0.5rem);
+          justify-content: center;
+          flex-direction: column;
+          text-align: center;
+          gap: 0.5rem;
+          font-size: 0.9rem;
+          border-radius: var(--border-radius-md);
+        }
+        
+        .sidebar-nav-item i {
+          margin-bottom: 0.25rem;
+          font-size: 1.5rem;
+        }
+        
+        .sidebar.collapsed {
+          flex-direction: row;
+          flex-wrap: wrap;
+          justify-content: space-around;
+          flex: none;
+          width: 100%;
+          padding: 1.5rem;
+        }
+        
+        .sidebar.collapsed .sidebar-nav-item span {
+          display: block;
+        }
+
+        .main-content {
+          padding: 2rem 1.5rem;
+          border-radius: var(--border-radius-lg);
+        }
+        
+        .dashboard-section h2 {
+          font-size: 1.75rem;
+        }
+        
+        .profile-image-container {
+          width: 150px;
+          height: 150px;
+        }
+      }
+
+      @media (max-width: 480px) {
+        .navbar {
+          padding: 0.75rem;
+        }
+        
+        .logo {
+          font-size: 1.5rem;
+        }
+        
+        .dashboard-container {
+          padding: 0.75rem;
+          margin: 0.75rem auto;
+        }
+        
+        .main-content {
+          padding: 1.5rem 1rem;
+        }
+        
+        .sidebar-nav-item {
+          flex-basis: 100%;
+          margin-bottom: 0.5rem;
+        }
+        
+        .profile-info {
+          gap: 1rem;
+        }
+        
+        .profile-info div {
+          padding: 1rem;
+        }
+      }
+    </style>
+</head>
+<body>
+    <header class="navbar">
+      <a href="index.html" class="logo">
+        Tailor<span class="logo-span">Link🔗</span>
+      </a>
+      <nav class="nav-links">
+        <span class="welcome-user" id="welcome-message">Welcome, Tailor!</span>
+        <button id="logout-btn" class="btn-logout">Logout</button>
+      </nav>
+    </header>
+
+    <div class="dashboard-container" id="dashboard-container">
+      <aside class="sidebar" id="sidebar">
+        <button class="sidebar-toggle" id="sidebar-toggle">
+          <i class="fas fa-chevron-left"></i>
+        </button>
+        <a href="#" class="sidebar-nav-item active" data-section="profile">
+          <i class="fas fa-user-circle"></i> <span>Profile</span>
+        </a>
+        <a href="#" class="sidebar-nav-item" data-section="services">
+          <i class="fas fa-scissors"></i> <span>Services</span>
+        </a>
+        <a href="tailor-bookings.html" class="sidebar-nav-item" data-section="bookings">
+          <i class="fas fa-calendar-alt"></i> <span>Bookings</span>
+        </a>
+        <a href="#" class="sidebar-nav-item" data-section="reviews">
+          <i class="fas fa-star"></i> <span>Reviews</span>
+        </a>
+        <a href="#" class="sidebar-nav-item" data-section="settings">
+          <i class="fas fa-cog"></i> <span>Settings</span>
+        </a>
+      </aside>
+
+      <main class="main-content">
+        <section id="profile-section" class="dashboard-section active">
+          <h2>My Profile</h2>
+          <div class="profile-image-container">
+            <img
+              id="profile-img"
+              src="https://firebasestorage.googleapis.com/v0/b/tailorlink-571d5.appspot.com/o/tailor-default-profile.png?alt=media&token=AIzaSyBVjsT4eVkdZaWaYfkgz_hoK00ZgmLWNR4"
+              alt="Profile Picture"
+            />
+          </div>
+          <div class="profile-info">
+            <div>
+              <strong>Full Name</strong>
+              <span id="tailor-name">Loading...</span>
+            </div>
+            <div>
+              <strong>Email</strong> 
+              <span id="tailor-email">Loading...</span>
+            </div>
+            <div>
+              <strong>Phone</strong>
+              <span id="tailor-phone">Not provided</span>
+            </div>
+            <div>
+              <strong>Location</strong>
+              <span id="tailor-location">Not provided</span>
+            </div>
+            <div>
+              <strong>Experience</strong>
+              <span id="tailor-experience">Not specified</span>
+            </div>
+            <div>
+              <strong>Rating</strong>
+              <span id="tailor-rating">N/A</span> (<span id="tailor-reviews">0</span> reviews)
+            </div>
+            <div>
+              <strong>Price Range</strong>
+              <span id="tailor-price">On request</span>
+            </div>
+          </div>
+          <h3>Bio</h3>
+          <p class="bio-text" id="tailor-bio">Loading bio...</p>
+          <button class="btn-primary">
+            <i class="fas fa-edit"></i>
+            Edit Profile
+          </button>
+        </section>
+
+        <section id="services-section" class="dashboard-section">
+          <h2>Services Offered</h2>
+          <ul id="services-list" class="services-list">
+            <div class="no-data-message">
+              <i class="fas fa-info-circle"></i>
+              <p>No services listed yet</p>
+              <p>Add your services to attract more clients</p>
+            </div>
+          </ul>
+          <button class="btn-primary" onclick="window.location.href='edit-profile.html#services';">
+            <i class="fas fa-plus"></i>
+            Add/Manage Services
+          </button>
+        </section>
+
+        <section id="bookings-section" class="dashboard-section">
+          <h2><a href="tailor-bookings.html" class="btn btn-secondary mt-3"
+          >View All My Bookings <i class="fas fa-arrow-right"></i
+        ></a></h2>
+          <div class="no-data-message">
+            <i class="fas fa-calendar-times"></i>
+            <a href="tailor-bookings.html"><p>Click Here To Check Bookings</p></a>
+          </div>
+        </section>
+
+        <section id="reviews-section" class="dashboard-section">
+          <h2>Client Reviews</h2>
+          <div class="no-data-message">
+            <i class="fas fa-comment-alt"></i>
+            <p>No reviews yet</p>
+            <p>Reviews from your clients will show up here</p>
+          </div>
+        </section>
+
+        <section id="settings-section" class="dashboard-section">
+          <h2>Settings</h2>
+          <div class="no-data-message">
+            <i class="fas fa-cog"></i>
+            <p>Manage your account settings here</p>
+            <p>Update your profile, change password, and more</p>
+          </div>
+        </section>
+      </main>
+    </div>
+
+    <script>
+      // Simple navigation functionality
+      document.addEventListener('DOMContentLoaded', function() {
+        const navItems = document.querySelectorAll('.sidebar-nav-item');
+        const sections = document.querySelectorAll('.dashboard-section');
+        const sidebarToggle = document.getElementById('sidebar-toggle');
+        const sidebar = document.getElementById('sidebar');
+
+        // Navigation switching
+        navItems.forEach(item => {
+          item.addEventListener('click', function(e) {
+            e.preventDefault();
+            
+            // Remove active class from all nav items and sections
+            navItems.forEach(nav => nav.classList.remove('active'));
+            sections.forEach(section => section.classList.remove('active'));
+            
+            // Add active class to clicked item
+            this.classList.add('active');
+            
+            // Show corresponding section
+            const sectionName = this.getAttribute('data-section');
+            const targetSection = document.getElementById(sectionName + '-section');
+            if (targetSection) {
+              targetSection.classList.add('active');
+            }
+          });
+        });
+
+        // Sidebar toggle functionality
+        sidebarToggle.addEventListener('click', function() {
+          sidebar.classList.toggle('collapsed');
+          const icon = this.querySelector('i');
+          
+          if (sidebar.classList.contains('collapsed')) {
+            icon.className = 'fas fa-chevron-right';
+          } else {
+            icon.className = 'fas fa-chevron-left';
+          }
+        });
+
+        // Logout functionality (placeholder)
+        document.getElementById('logout-btn').addEventListener('click', function() {
+            if (confirm("Are you sure you want to log out?" + welcomeMessage.textContent + "?")) {
+                firebase.auth().signOut().then(() => {
+                window.location.href = "login.html"; // Redirect to login page
+                }).catch((error) => {
+                console.error("Logout failed:", error);
+                });
+            }
+        });
+
+        // Profile edit functionality (placeholder)
+        document.querySelector('.btn-primary').addEventListener('click', function() {
+            window.location.href = "edit-profile.html";// Redirect to edit profile page
+        });
+      });
+    </script>
+
+    <script>
+      // Your Firebase config (ensure this matches your actual project config)
+      const firebaseConfig = {
+        apiKey: "AIzaSyBVjsT4eVkdZaWaYfkgz_hoK00ZgmLWNR4",
+        authDomain: "tailorlink-571d5.firebaseapp.com",
+        projectId: "tailorlink-571d5",
+        storageBucket: "tailorlink-571d5.appspot.com",
+        messagingSenderId: "685008238153",
+        appId: "1:685008238153:web:8625d73d9511fde3f2b198",
+        measurementId: "G-H9RNR0LLKF",
+      };
+
+      // Initialize Firebase
+      firebase.initializeApp(firebaseConfig);
+      const auth = firebase.auth();
+      const db = firebase.firestore();
+
+      // DOM Elements
+      const welcomeMessage = document.getElementById("welcome-message");
+      const logoutBtn = document.getElementById("logout-btn");
+
+      // Profile Section Elements
+      const profileImg = document.getElementById("profile-img");
+      const tailorName = document.getElementById("tailor-name");
+      const tailorEmail = document.getElementById("tailor-email");
+      const tailorPhone = document.getElementById("tailor-phone");
+      const tailorLocation = document.getElementById("tailor-location");
+      const tailorExperience = document.getElementById("tailor-experience");
+      const tailorRating = document.getElementById("tailor-rating");
+      const tailorReviews = document.getElementById("tailor-reviews");
+      const tailorPrice = document.getElementById("tailor-price");
+      const tailorBio = document.getElementById("tailor-bio");
+      const servicesList = document.getElementById("services-list");
+
+      // Dashboard Navigation & Sections
+      const sidebarNavItems = document.querySelectorAll(".sidebar-nav-item");
+      const dashboardSections = document.querySelectorAll(".dashboard-section");
+
+      // --- Authentication State Listener ---
+      auth.onAuthStateChanged(async (user) => {
+        if (user) {
+          // User is signed in.
+          // Fetch user's role from 'users' collection first
+          try {
+            const userDoc = await db.collection("users").doc(user.uid).get();
+            if (!userDoc.exists) {
+              console.error("User data not found in Firestore.");
+              auth.signOut(); // Force sign out if data is missing
+              window.location.href = "login.html";
+              return;
+            }
+            const userData = userDoc.data();
+
+            if (userData.role !== "tailor") {
+              // Not a tailor, redirect to their respective dashboard or home
+              console.warn("Unauthorized access: User is not a tailor.");
+              auth.signOut(); // Log out for security/clarity if trying to access wrong dashboard
+              window.location.href = "login.html"; // Redirect to login, or index.html
+              return;
+            }
+
+            // If it's a tailor, fetch tailor-specific data
+            const tailorDoc = await db
+              .collection("tailors")
+              .doc(user.uid)
+              .get();
+            if (tailorDoc.exists) {
+              const tailorData = tailorDoc.data();
+              welcomeMessage.textContent = `Welcome, ${
+                tailorData.name || user.displayName || "Tailor"
+              }!`;
+
+              // Populate Profile Section
+              profileImg.src =
+                tailorData.profileImage ||
+                "https://firebasestorage.googleapis.com/v0/b/tailorlink-571d5.appspot.com/o/tailor-default-profile.png?alt=media&token=AIzaSyBVjsT4eVkdZaWaYfkgz_hoK00ZgmLWNR4"; // Use the default image URL if none is provided
+              tailorName.textContent = tailorData.name || "N/A";
+              tailorEmail.textContent = tailorData.email || "N/A";
+              tailorPhone.textContent = tailorData.phone || "Not provided";
+              tailorLocation.textContent =
+                tailorData.location || "Not provided";
+              tailorExperience.textContent =
+                tailorData.experience || "Not specified";
+              tailorRating.textContent = tailorData.rating
+                ? tailorData.rating.toFixed(1)
+                : "0.0";
+              tailorReviews.textContent = tailorData.reviews || "0";
+              tailorPrice.textContent = tailorData.price || "On request";
+              tailorBio.textContent =
+                tailorData.bio ||
+                'No bio provided yet. Click "Edit Profile" to add one!';
+
+              // Populate Services Section
+              if (tailorData.services && tailorData.services.length > 0) {
+                servicesList.innerHTML = ""; // Clear default message
+                tailorData.services.forEach((service) => {
+                  const li = document.createElement("li");
+                  li.className = "service-tag";
+                  li.textContent = service;
+                  servicesList.appendChild(li);
+                });
+              } else {
+                // Re-insert the no-data-message if no services are found
+                servicesList.innerHTML = `
+                                <div class="no-data-message">
+                                    <i class="fas fa-info-circle"></i>
+                                    <p>No services listed yet.</p>
+                                    <p>Add your services to attract more clients.</p>
+                                </div>
+                            `;
+              }
+            } else {
+              console.error(
+                "Tailor data not found in 'tailors' collection for UID:",
+                user.uid
+              );
+              // Optionally, prompt them to complete their tailor profile
+              alert(
+                "Your tailor profile is incomplete. Please update your information."
+              );
+              // Or redirect them to a profile completion page
+            }
+          } catch (error) {
+            console.error("Error fetching user/tailor data:", error);
+            // Handle errors, possibly redirect to login or show generic error
+            auth.signOut();
+            window.location.href = "login.html";
+          }
+        } else {
+          // User is signed out. Redirect to login page.
+          window.location.href = "login.html";
+        }
+      });
+
+      // --- Logout Logic ---
+      logoutBtn.addEventListener("click", async () => {
+        try {
+          await auth.signOut();
+          // Redirection handled by onAuthStateChanged listener
+        } catch (error) {
+          console.error("Error signing out:", error);
+          alert("Failed to log out. Please try again.");
+        }
+      });
+
+      // --- Dashboard Navigation Logic ---
+      sidebarNavItems.forEach((item) => {
+        item.addEventListener("click", function (e) {
+          e.preventDefault();
+
+          // Remove 'active' from all sidebar items and sections
+          sidebarNavItems.forEach((nav) => nav.classList.remove("active"));
+          dashboardSections.forEach((section) =>
+            section.classList.remove("active")
+          );
+
+          // Add 'active' to the clicked item
+          this.classList.add("active");
+
+          // Show the corresponding section
+          const targetSectionId = this.dataset.section + "-section";
+          document.getElementById(targetSectionId).classList.add("active");
+        });
+      });
+
+      // Ensure the correct default image URL is used
+      // IMPORTANT: Replace 'AIzaSyBVjsT4eVkdZaWaYfkgz_hoK00ZgmLWNR4' with an actual token from your Firebase Storage
+      // You'll need to upload a default image to Firebase Storage and get its download URL,
+      // then replace the token part.
+      // For example: if you upload 'tailor-default-profile.png' to storage,
+      // go to its file details in Firebase console and copy the "Access token" or "Download URL".
+      // The current placeholder URL is from a generic Firebase path.
+      const defaultProfileImageUrl =
+        "https://firebasestorage.googleapis.com/v0/b/tailorlink-571d5.appspot.com/o/tailor-default-profile.png?alt=media&token=AIzaSyBVjsT4eVkdZaWaYfkgz_hoK00ZgmLWNR4";
+      // (You'll generate this token from your Firebase Storage console for the default image you upload)
+      profileImg.onerror = function () {
+        this.src = defaultProfileImageUrl; // Fallback if the specific tailor's image fails
+      };
+    </script>
+  </body>
+</html>
