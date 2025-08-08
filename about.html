@@ -4,28 +4,91 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>About – TailorLink🔗</title>
+    <meta name="description" content="TailorLink connects users with verified local tailors. Learn how it works, our mission & vision." />
+    <!-- Open Graph (optional, extend if you want social previews) -->
+    <meta property="og:title" content="About TailorLink🔗" />
+    <meta property="og:description" content="Connecting you with trusted tailors – fast, easy, and local." />
+    <meta property="og:type" content="website" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link href="https://fonts.googleapis.com/css2?family=Segoe+UI:wght@400;600;700&display=swap" rel="stylesheet" />
     <link href="https://cdn.jsdelivr.net/npm/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet" />
     <style>
+      :root {
+        --primary: #17911d;
+        --primary-dark: #0f6f16;
+        --accent: #f5a623;
+        --bg: #f9f9f9;
+        --radius: 12px;
+        --shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
+        --transition: 0.3s ease;
+        --text: #1f1f1f;
+        --muted: #555;
+        --radius-full: 50px;
+        font-family: 'Segoe UI', sans-serif;
+      }
+
       * {
         margin: 0;
         padding: 0;
         box-sizing: border-box;
-        font-family: 'Segoe UI', sans-serif;
       }
 
       body {
-        line-height: 1.6;
         background-color: #fff;
-        color: #333;
+        color: var(--text);
+        line-height: 1.6;
         scroll-behavior: smooth;
+        min-height: 100vh;
+        position: relative;
+      }
+
+      a {
+        text-decoration: none;
+        color: inherit;
+      }
+
+      img {
+        display: block;
+        max-width: 100%;
+      }
+
+      /* Utility */
+      .container {
+        width: min(1200px, 100% - 32px);
+        margin: 0 auto;
+        padding: 0 16px;
+      }
+
+      .flex {
+        display: flex;
+        gap: 1rem;
+      }
+
+      .btn {
+        padding: 0.55rem 1.2rem;
+        border-radius: var(--radius-full);
+        border: none;
+        cursor: pointer;
+        background: linear-gradient(45deg, var(--primary), #27ae60);
+        color: white;
+        font-weight: 600;
+        font-size: 0.95rem;
+        box-shadow: 0 4px 15px rgba(23, 145, 29, 0.3);
+        transition: all var(--transition);
+      }
+
+      .btn:hover {
+        background: white;
+        color: var(--primary);
+        box-shadow: 0 6px 20px rgba(23, 145, 29, 0.4);
+        transform: scale(1.05);
       }
 
       /* Navbar */
       .navbar {
         background: rgba(23, 145, 29, 0.95);
         backdrop-filter: blur(10px);
-        padding: 1rem 2rem;
+        padding: 1rem 1rem;
         display: flex;
         justify-content: space-between;
         align-items: center;
@@ -35,6 +98,7 @@
         z-index: 1000;
         box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
         animation: slideInDown 0.8s ease-out;
+        gap: 1rem;
       }
 
       @keyframes slideInDown {
@@ -52,37 +116,41 @@
         color: white;
       }
 
-      .logo-main {
-        text-decoration: none;
-        color: white;
+      .logo-span {
+        color: #0e6bf7;
       }
 
-      .logo-span {
-        margin-left: 4px;
-        color: #0e6bf7;
+      .nav-wrapper {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
       }
 
       .nav-links {
         display: flex;
         align-items: center;
         gap: 0.7rem;
+        list-style: none;
+      }
+
+      .nav-links li {
+        position: relative;
       }
 
       .nav-links a {
         color: white;
-        text-decoration: none;
         font-weight: 500;
-        padding: 0.5rem 1rem;
+        padding: 0.45rem 1rem;
         border-radius: 25px;
-        font-size: 15px;
+        font-size: 14px;
         position: relative;
-        transition: background 0.3s;
+        transition: background var(--transition);
       }
 
       .nav-links a::after {
         content: '';
         position: absolute;
-        bottom: 0;
+        bottom: -2px;
         left: 50%;
         transform: translateX(-50%);
         width: 0;
@@ -92,36 +160,30 @@
       }
 
       .nav-links a:hover::after {
-        width: 80%;
+        width: 60%;
       }
 
-      .btn {
-        padding: 0.5rem 1.2rem;
-        border-radius: 25px;
-        border: none;
+      .auth-section {
+        display: flex;
+        gap: 0.5rem;
+        align-items: center;
+      }
+
+      .menu-icon {
+        display: none;
         cursor: pointer;
-        background: linear-gradient(45deg, #17911d, #27ae60);
-        color: white;
-        font-weight: 500;
-        box-shadow: 0 4px 15px rgba(23, 145, 29, 0.3);
-        transition: all 0.3s ease;
+        font-size: 1.5rem;
+        color: rgb(0, 0, 0);
       }
 
-      .btn:hover {
-        background: #fff;
-        color: #17911d;
-        box-shadow: 0 6px 20px rgba(23, 145, 29, 0.4);
-        transform: scale(1.05);
-      }
-
-      /* About Section */
+      /* Hero / About */
       .about-container {
         display: flex;
         flex-wrap: wrap;
         align-items: center;
         justify-content: space-between;
         gap: 2rem;
-        padding: 7rem 2rem 4rem;
+        padding: 8rem 0 4rem; /* top padding to compensate for fixed nav */
       }
 
       .about-text {
@@ -131,7 +193,7 @@
 
       .about-text h1 {
         font-size: 2.6rem;
-        color: #17911d;
+        color: var(--primary);
         margin-bottom: 1rem;
         position: relative;
       }
@@ -143,7 +205,8 @@
         left: 0;
         width: 80px;
         height: 4px;
-        background-color: #17911d;
+        background-color: var(--primary);
+        border-radius: 2px;
       }
 
       .about-text p {
@@ -156,23 +219,116 @@
         flex: 1;
         min-width: 280px;
         overflow: hidden;
+        border-radius: 16px;
       }
 
       .about-img img {
         width: 100%;
         border-radius: 16px;
-        box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
+        box-shadow: var(--shadow);
         transition: transform 0.5s ease;
       }
 
       .about-img img:hover {
-        transform: scale(1.05);
+        transform: scale(1.03);
+      }
+
+      /* How it works */
+      .how-it-works {
+        background-color: var(--bg);
+        padding: 4rem 0;
+      }
+
+      .section-title {
+        text-align: center;
+        max-width: 800px;
+        margin: 0 auto 1rem;
+      }
+
+      .section-title h2 {
+        font-size: 2rem;
+        font-weight: 700;
+        color: #1a1a1a;
+        margin-bottom: 0.5rem;
+      }
+
+      .section-title p {
+        font-size: 1.1rem;
+        color: #4a4a4a;
+      }
+
+      .steps-grid {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 30px;
+        margin-top: 2rem;
+      }
+
+      .step-card {
+        background: white;
+        border: 1px solid #e0e0e0;
+        border-radius: var(--radius);
+        padding: 40px 20px;
+        width: 300px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.03);
+        position: relative;
+        transition: transform var(--transition), box-shadow var(--transition);
+      }
+
+      .step-card:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 12px 30px rgba(0, 0, 0, 0.08);
+      }
+
+      .step-badge {
+        position: absolute;
+        top: 20px;
+        right: 20px;
+        background: var(--accent);
+        color: white;
+        border-radius: var(--radius-full);
+        width: 30px;
+        height: 30px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: bold;
+        font-size: 0.85rem;
+      }
+
+      .step-icon-wrapper {
+        background: var(--primary);
+        border-radius: 50%;
+        width: 80px;
+        height: 80px;
+        margin: 0 auto;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .step-icon-wrapper img {
+        width: 40px;
+        height: 40px;
+      }
+
+      .step-card h3 {
+        margin-top: 20px;
+        font-size: 20px;
+        color: #1a1a1a;
+      }
+
+      .step-card p {
+        margin-top: 10px;
+        font-size: 15px;
+        color: #555;
       }
 
       /* Mission & Vision */
       .mission-vision {
-        background-color: #f9f9f9;
-        padding: 4rem 2rem;
+        background-color: var(--bg);
+        padding: 4rem 0;
         display: flex;
         flex-wrap: wrap;
         justify-content: center;
@@ -185,9 +341,9 @@
         max-width: 500px;
         background: white;
         padding: 2rem;
-        border-radius: 12px;
+        border-radius: var(--radius);
         box-shadow: 0 4px 16px rgba(0, 0, 0, 0.05);
-        transition: transform 0.3s;
+        transition: transform var(--transition);
       }
 
       .mv-block:hover {
@@ -195,7 +351,7 @@
       }
 
       .mv-block h2 {
-        color: #17911d;
+        color: var(--primary);
         margin-bottom: 1rem;
       }
 
@@ -210,7 +366,7 @@
         position: fixed;
         bottom: 30px;
         right: 30px;
-        background: #17911d;
+        background: var(--primary);
         color: white;
         padding: 0.7rem;
         border-radius: 50%;
@@ -221,19 +377,19 @@
         justify-content: center;
         font-size: 1.5rem;
         z-index: 1001;
-        transition: background 0.3s;
+        transition: background var(--transition);
       }
 
       .scroll-top:hover {
         background: #ffffff;
-        color: #17911d;
+        color: var(--primary);
       }
 
       /* Footer */
       .footer {
-        background-color: #17911d;
+        background-color: var(--primary);
         color: white;
-        padding: 2rem;
+        padding: 2rem 1rem 3rem;
         margin-top: 3rem;
       }
 
@@ -242,10 +398,13 @@
         flex-wrap: wrap;
         justify-content: space-between;
         gap: 2rem;
+        max-width: 1200px;
+        margin: 0 auto;
       }
 
       .footer-content h4 {
         margin-bottom: 0.5rem;
+        font-size: 1rem;
       }
 
       .footer-content ul {
@@ -253,39 +412,78 @@
         padding: 0;
       }
 
+      .footer-content ul li {
+        margin-bottom: 6px;
+      }
+
       .footer-content ul li a {
         color: white;
         text-decoration: none;
+        font-size: 0.9rem;
       }
 
       .footer-content ul li a:hover {
         color: #c0c0c0;
       }
 
+      .footer-brand p {
+        font-size: 0.9rem;
+        margin-top: 6px;
+        max-width: 280px;
+        line-height: 1.4;
+      }
+
+      .footer-contact p {
+        font-size: 0.9rem;
+        margin-bottom: 4px;
+      }
+
       .footer-bottom {
         text-align: center;
         margin-top: 2rem;
-        font-size: 0.9rem;
+        font-size: 0.8rem;
         border-top: 1px solid rgba(255, 255, 255, 0.2);
         padding-top: 1rem;
       }
 
-      @media (max-width: 768px) {
-        .about-container,
-        .mission-vision,
-        .footer-content {
+      /* Responsive */
+      @media (max-width: 1024px) {
+        .about-container {
           flex-direction: column;
-          text-align: center;
         }
+      }
 
+      @media (max-width: 768px) {
         .nav-links {
-          flex-direction: column;
-          background-color: rgba(0, 0, 0, 0.8);
           position: absolute;
           top: 60px;
           right: 0;
+          background-color: rgba(0, 0, 0, 0.8);
+          flex-direction: column;
           width: 100%;
+          padding: 1rem 0;
+          gap: 0;
           display: none;
+        }
+
+        .nav-links.active {
+          display: flex;
+        }
+
+        .nav-links li {
+          width: 100%;
+          text-align: center;
+          margin: 4px 0;
+        }
+
+        .menu-icon {
+          display: block;
+        }
+
+        .footer-content {
+          flex-direction: column;
+          text-align: center;
+          gap: 1.5rem;
         }
       }
     </style>
@@ -293,64 +491,139 @@
   <body>
     <!-- Navbar -->
     <header class="navbar">
-      <a href="index.html" class="logo-main">
-        <div class="logo">Tailor<span class="logo-span">Link🔗</span></div>
-      </a>
-      <nav class="nav-links">
-        <a href="index.html">Home</a>
-        <a href="about.html">About</a>
-        <a href="explore.html">View Tailors</a>
-      </nav>
+      <div class="logo">
+        <a href="index.html" aria-label="Home" style="display:flex; align-items:center; gap:4px; color:white;">
+          Tailor<span class="logo-span">Link🔗</span>
+        </a>
+      </div>
+      <div class="nav-wrapper" aria-label="Primary navigation">
+        <ul class="nav-links" id="nav-links">
+          <li><a href="index.html">Home</a></li>
+          <li><a href="explore.html">Find Tailors</a></li>
+          <li><a href="about.html" aria-current="page">About</a></li>
+        </ul>
+        <div class="auth-section" id="auth-section">
+          <!-- populated by JS -->
+        </div>
+        <div class="menu-icon" aria-label="Toggle menu" role="button" tabindex="0">
+          <i class="bx bx-menu"></i>
+        </div>
+      </div>
     </header>
 
-    <!-- About -->
-    <main class="about-container">
+    <!-- About / Hero -->
+    <main class="about-container container" aria-labelledby="about-heading">
       <div class="about-text">
-        <h1>About TailorLink🔗</h1>
+        <h1 id="about-heading">About TailorLink🔗</h1>
         <p>
-          TailorLink🔗 is a modern solution for anyone seeking professional tailoring services near them.
-          We bridge the gap between traditional tailoring and modern convenience — allowing users to book local
-          tailors online for fittings, custom outfits, and repairs.
+          TailorLink🔗 is a modern solution for anyone seeking professional
+          tailoring services near them. We bridge the gap between traditional
+          tailoring and modern convenience — allowing users to book local tailors
+          online for fittings, custom outfits, and repairs.
         </p>
         <p>
-          From weddings to everyday wear, TailorLink🔗 makes it easy to connect with experienced tailors who
-          match your style and budget. No more stress, just style – made simple.
+          From weddings to everyday wear, TailorLink🔗 makes it easy to connect
+          with experienced tailors who match your style and budget. No more
+          stress, just style – made simple.
         </p>
       </div>
-      <div class="about-img">
-        <img src="img/medium-shot-man-repairing-fashion-goods.jpg" alt="Tailor at work" />
+      <div class="about-img" aria-hidden="false">
+        <img
+          src="img/medium-shot-man-repairing-fashion-goods.jpg"
+          alt="Tailor at work"
+          loading="lazy"
+        />
       </div>
     </main>
+
+    <!-- How It Works -->
+    <section class="how-it-works">
+      <div class="container">
+        <div class="section-title">
+          <h2>How TailorLink🔗 Works</h2>
+          <p>
+            Connecting with the perfect tailor has never been easier. Just follow
+            these simple steps to bring your outfit ideas to life.
+          </p>
+        </div>
+
+        <div class="steps-grid">
+          <div class="step-card">
+            <div class="step-badge">01</div>
+            <div class="step-icon-wrapper" aria-hidden="true">
+              <img src="https://img.icons8.com/ios-filled/50/ffffff/search--v1.png" alt="" />
+            </div>
+            <h3>Search Tailors</h3>
+            <p>
+              Discover verified tailors by location, specialty, or outfit category.
+              Browse profiles instantly.
+            </p>
+          </div>
+
+          <div class="step-card">
+            <div class="step-badge">02</div>
+            <div class="step-icon-wrapper" aria-hidden="true">
+              <img src="https://img.icons8.com/ios-filled/50/ffffff/user-group-man-man.png" alt="" />
+            </div>
+            <h3>View Profile &amp; Reviews</h3>
+            <p>
+              Check each tailor’s ratings, completed projects, pricing, and customer
+              reviews before making a choice.
+            </p>
+          </div>
+
+          <div class="step-card">
+            <div class="step-badge">03</div>
+            <div class="step-icon-wrapper" aria-hidden="true">
+              <img src="https://img.icons8.com/ios-filled/50/ffffff/communication.png" alt="" />
+            </div>
+            <h3>Book &amp; Chat</h3>
+            <p>
+              Book your preferred tailor, discuss your design ideas via chat, and
+              track your project through the dashboard.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
 
     <!-- Mission & Vision -->
     <section class="mission-vision">
       <div class="mv-block">
         <h2>Our Mission</h2>
         <p>
-          To empower fashion entrepreneurs and simplify access to local tailoring services. We believe in a world where
-          quality fashion is accessible, and local talent is celebrated.
+          To empower fashion entrepreneurs and simplify access to local tailoring
+          services. We believe in a world where quality fashion is accessible, and
+          local talent is celebrated.
         </p>
       </div>
       <div class="mv-block">
         <h2>Our Vision</h2>
         <p>
-          To become Africa’s go-to tailoring platform — trusted by users, loved by tailors, and known for reliable,
-          stylish service delivery across the continent.
+          To become Africa’s go-to tailoring platform — trusted by users, loved by
+          tailors, and known for reliable, stylish service delivery across the
+          continent.
         </p>
       </div>
     </section>
 
     <!-- Scroll to Top -->
-    <div class="scroll-top" onclick="window.scrollTo({ top: 0, behavior: 'smooth' })">
-      <i class='bx bx-chevron-up'></i>
+    <div
+      class="scroll-top"
+      onclick="window.scrollTo({ top: 0, behavior: 'smooth' })"
+      aria-label="Scroll to top"
+    >
+      <i class="bx bx-chevron-up"></i>
     </div>
 
     <!-- Footer -->
-    <footer class="footer">
+    <footer class="footer" aria-label="Footer">
       <div class="footer-content">
         <div class="footer-brand">
-          <h3>TailorLink🔗</h3>
-          <p>Connecting you with trusted tailors – fast, easy, and local.</p>
+          <h3 style="margin-bottom:8px;">TailorLink🔗</h3>
+          <p>
+            Connecting you with trusted tailors – fast, easy, and local.
+          </p>
         </div>
         <div class="footer-links">
           <h4>Quick Links</h4>
@@ -371,5 +644,69 @@
         <p>&copy; 2025 TailorLink🔗. All rights reserved.</p>
       </div>
     </footer>
+
+    <!-- Scripts -->
+    <script>
+      const firebaseConfig = {
+        apiKey: "AIzaSyBVjsT4eVkdZaWaYfkgz_hoK00ZgmLWNR4",
+        authDomain: "tailorlink-571d5.firebaseapp.com",
+        projectId: "tailorlink-571d5",
+        storageBucket: "tailorlink-571d5.appspot.com",
+        messagingSenderId: "367154563836",
+        appId: "1:367154563836:web:14e41712a32c2865955684",
+      }; 
+
+      const authSection = document.getElementById("auth-section");
+
+      function renderNav() {
+        if (isLoggedIn) {
+          authSection.innerHTML = `
+            <span style="color:white; font-weight:500; margin-right:8px;">Welcome, ${username}</span>
+            <button class="btn" id="logout-btn">Logout</button>
+          `;
+          document.getElementById("logout-btn")?.addEventListener("click", () => {
+            // TODO: hook into Firebase sign-out
+            console.log("Logout clicked");
+          });
+        } else {
+          authSection.innerHTML = `
+            <a href="login.html" style="padding:0;"><button class="btn" style="margin-right:6px;">Login</button></a>
+            <a href="signup.html"><button class="btn">Signup</button></a>
+          `;
+        }
+      }
+
+      renderNav();
+
+      // Mobile menu toggle
+      const menuIcon = document.querySelector(".menu-icon");
+      const navLinks = document.getElementById("nav-links");
+
+      menuIcon.addEventListener("click", () => {
+        navLinks.classList.toggle("active");
+      });
+
+      // Close menu on link click (mobile)
+      document.querySelectorAll(".nav-links a").forEach((link) => {
+        link.addEventListener("click", () => {
+          navLinks.classList.remove("active");
+        });
+      });
+
+      // Optional: hide scroll-top until scrolled
+      const scrollTopEl = document.querySelector(".scroll-top");
+      window.addEventListener("scroll", () => {
+        if (window.scrollY > 300) {
+          scrollTopEl.style.opacity = "1";
+          scrollTopEl.style.pointerEvents = "auto";
+        } else {
+          scrollTopEl.style.opacity = "0";
+          scrollTopEl.style.pointerEvents = "none";
+        }
+      });
+      // init state
+      scrollTopEl.style.opacity = "0";
+      scrollTopEl.style.pointerEvents = "none";
+    </script>
   </body>
 </html>

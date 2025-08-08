@@ -17,6 +17,7 @@
         box-sizing: border-box;
       }
 
+      /* Accessibility: keep focus outlines for keyboard users */
       :focus-visible {
         outline: 2px solid #17911d;
         outline-offset: 2px;
@@ -35,6 +36,17 @@
         from {
           opacity: 0;
           transform: translateX(-50px);
+        }
+        to {
+          opacity: 1;
+          transform: translateX(0);
+        }
+      }
+
+      @keyframes slideInRight {
+        from {
+          opacity: 0;
+          transform: translateX(50px);
         }
         to {
           opacity: 1;
@@ -96,26 +108,9 @@
 
       .logo-main {
         text-decoration: none;
-        color: #fff;
-        display: flex;
-        align-items: center;
+        color: rgb(255, 255, 255);
       }
 
-      /* Corrected navigation structure for both desktop and mobile */
-      .main-nav {
-        display: flex;
-        align-items: center;
-        gap: 1rem;
-      }
-
-      /* This is the main container for the nav links, toggled on mobile */
-      .nav-links-container {
-        display: flex;
-        align-items: center;
-        gap: 1rem;
-      }
-
-      /* These are the individual link sections inside the container */
       .nav-links {
         display: flex;
         align-items: center;
@@ -135,7 +130,6 @@
         background: transparent;
         border: none;
         cursor: pointer;
-        white-space: nowrap;
       }
 
       .nav-home {
@@ -152,12 +146,11 @@
       .welcome-user {
         font-weight: 600;
         margin-right: 1rem;
-        background-color: #fff;
+        background-color: rgb(255, 255, 255);
         padding: 0.5rem 1rem;
         border-radius: 25px;
         transition: all 0.3s ease;
         color: #17911d;
-        white-space: nowrap;
       }
 
       .btn {
@@ -186,13 +179,9 @@
         font-size: 0.9rem;
       }
 
-      #authenticated-nav {
-        display: none; /* Hidden by default, shown when user is authenticated */
-      }
-
-      /* Hamburger menu button styles */
+      /* Hamburger menu styles */
       .hamburger {
-        display: none; /* Hidden by default on desktop */
+        display: none;
         flex-direction: column;
         gap: 5px;
         background: transparent;
@@ -218,11 +207,23 @@
         width: 15px;
       }
 
-      /* Media query for mobile screens (1200px and below) */
+      /* Responsive Navigation */
+      @media (min-width: 1201px) {
+        #visitor-nav .nav-links {
+          display: flex !important;
+        }
+        .hamburger {
+          display: none !important;
+        }
+      }
+
       @media (max-width: 1200px) {
         .hamburger {
-          display: flex !important; /* Show the hamburger on mobile */
-          position: relative;
+          display: flex;
+          position: absolute;
+          right: 20px;
+          top: 50%;
+          transform: translateY(-50%);
           z-index: 1001;
           background: rgba(23, 145, 29, 0.95);
           border-radius: 50%;
@@ -231,12 +232,7 @@
           transition: background 0.3s ease;
         }
 
-        .hamburger:hover {
-          background: rgba(23, 145, 29, 0.85);
-        }
-
-        /* Hide the nav links container by default on mobile */
-        .nav-links-container {
+        #visitor-nav .nav-links {
           display: none;
           flex-direction: column;
           align-items: center;
@@ -246,46 +242,30 @@
           left: 0;
           padding: 20px 0;
           background: rgba(23, 145, 29, 0.95);
-          backdrop-filter: blur(10px);
+          gap: 1rem;
           z-index: 900;
-          gap: 1.5rem;
+          backdrop-filter: blur(10px);
         }
 
-        /* When the .show class is added by JS, display the mobile menu */
-        .nav-links-container.show {
+        #visitor-nav .nav-links.show {
           display: flex;
         }
 
-        /* Align the content within the mobile menu */
-        .nav-links {
-          flex-direction: column;
-          width: 100%;
-          align-items: center;
-          gap: 1rem;
-        }
-
-        .nav-links a,
-        .nav-links button,
-        .welcome-user {
+        #visitor-nav .nav-links a,
+        #visitor-nav .nav-links button {
           width: 90%;
           text-align: center;
-          padding: 0.7rem 0;
-          font-size: 1rem;
-          border-radius: 25px;
+          padding: 1rem;
+          border-radius: 8px;
+          background: transparent;
+          color: white;
+          transition: all 0.3s ease;
+        }
+
+        #visitor-nav .nav-links a:hover,
+        #visitor-nav .nav-links button:hover {
           background: rgba(255, 255, 255, 0.1);
-        }
-      }
-
-      /* Media query for desktop screens (1201px and up) */
-      @media (min-width: 1201px) {
-        .hamburger {
-          display: none; /* Ensure hamburger is hidden on desktop */
-        }
-
-        /* Ensure the nav links container is always visible as a flex row on desktop */
-        .nav-links-container {
-          display: flex !important;
-          flex-direction: row;
+          transform: none;
         }
       }
 
@@ -304,6 +284,7 @@
         color: white;
         text-align: center;
       }
+
       .hero::before {
         content: "";
         position: absolute;
@@ -314,6 +295,7 @@
         background: rgba(0, 0, 0, 0.4);
         z-index: 1;
       }
+
       .hero-text {
         flex: none;
         max-width: 700px;
@@ -327,13 +309,19 @@
         border-radius: 15px;
         padding: 2% 2rem;
       }
+
       .hero-text h1 {
         font-size: 3.5rem;
         margin-bottom: 1rem;
         font-weight: 700;
-        color: #fff;
+        background: none;
+        -webkit-background-clip: unset;
+        -webkit-text-fill-color: unset;
+        background-clip: unset;
+        color: rgb(255, 255, 255);
         line-height: 1.2;
       }
+
       .hero-text p {
         margin-bottom: 2rem;
         font-size: 1.2rem;
@@ -341,30 +329,20 @@
         opacity: 1;
         color: rgba(255, 255, 255, 0.9);
       }
-      .cta-buttons {
-        display: flex;
-        gap: 1rem;
-        justify-content: center;
-        flex-wrap: wrap;
+
+      .hero-text input {
+        padding: 1rem 1.5rem;
+        width: 100%;
+        max-width: 450px;
+        border: none;
+        border-radius: 50px;
+        font-size: 1rem;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        transition: all 0.3s ease;
       }
-      @media (max-width: 768px) {
-        .hero {
-          padding: 6rem 1rem 3rem;
-          min-height: 70vh;
-        }
-        .hero-text h1 {
-          font-size: 2.5rem;
-        }
-        .hero-text p {
-          font-size: 1rem;
-        }
-        .navbar {
-          padding: 1rem;
-        }
-        .cta-buttons {
-          flex-direction: column;
-          align-items: center;
-        }
+
+      .hero-img {
+        display: none;
       }
 
       @media (max-width: 768px) {
@@ -378,12 +356,15 @@
         .hero-text p {
           font-size: 1rem;
         }
+
         .navbar {
           padding: 1rem;
         }
+
         .testimonial-card {
           padding: 2rem 1rem;
         }
+
         .cta-buttons {
           flex-direction: column;
           align-items: center;
@@ -451,7 +432,7 @@
       }
 
       .feature-card {
-        background: #fff;
+        background: rgb(255, 255, 255);
         padding: 2rem;
         border-radius: 20px;
         text-align: center;
@@ -564,7 +545,7 @@
       /* Testimonials */
       .testimonials-section {
         padding: 80px 5%;
-        background-color: #f9f9f9;
+        background-color: var(--background-color);
         text-align: center;
       }
 
@@ -877,56 +858,34 @@
   </head>
   <body>
     <header class="navbar">
-      <a href="index.html" class="logo-main">
+      <a href="index.html" class="logo-main" style="text-decoration: none">
         <div class="logo">
           Tailor<span class="logo-span" style="color: #0e6bf7">Link🔗</span>
         </div>
       </a>
 
-      <nav class="main-nav" id="main-nav" aria-label="Main navigation">
-        <button
-          aria-label="Toggle navigation"
-          class="hamburger"
-          aria-expanded="false"
-        >
+      <nav class="nav-links" id="authenticated-nav" style="display: none">
+        <span class="welcome-user" id="welcome-message">Welcome There👋, User!</span>
+        <a href="index.html" class="nav-home">Home</a>
+        <a href="about.html" class="nav-about">About</a>
+        <a href="customer-bookings.html" class="nav-bookings">View My Bookings</a>
+        <a href="explore.html" class="nav-view">View Tailors</a>
+        <button id="logout-btn" class="btn btn-small">Logout</button>
+        <button id="toggleDarkMode" class="btn btn-small">🌓</button>
+      </nav>
+
+      <nav id="visitor-nav" style="display: flex; align-items: center; position: relative;">
+        <button aria-label="Toggle navigation" class="hamburger">
           <span></span><span></span><span></span>
         </button>
 
-        <div class="nav-links-container" id="nav-links-container">
-          <div class="nav-links" id="authenticated-nav" style="display: none">
-            <span class="welcome-user" id="welcome-message"
-              >Welcome there 👋, User!</span
-            >
-            <a href="index.html" class="nav-home">Home</a>
-            <a href="about.html" class="nav-about">About</a>
-            <a href="customer-bookings.html" class="nav-bookings"
-              >View My Bookings</a
-            >
-            <a href="explore.html" class="nav-view">View Tailors</a>
-            <button id="logout-btn" class="btn btn-small">Logout</button>
-            <button
-              id="toggleDarkMode"
-              class="btn btn-small"
-              aria-label="Toggle dark mode"
-            >
-              🌓
-            </button>
-          </div>
-
-          <div class="nav-links" id="visitor-links">
-            <a href="index.html" class="nav-home">Home</a>
-            <a href="about.html" class="nav-about">About</a>
-            <a href="explore.html" class="nav-view">View Tailors</a>
-            <a href="login.html" class="btn btn-small">Login</a>
-            <a href="signup.html" class="btn btn-small">Sign Up</a>
-            <button
-              id="toggleDarkMode"
-              class="btn btn-small"
-              aria-label="Toggle dark mode"
-            >
-              🌓
-            </button>
-          </div>
+        <div class="nav-links">
+          <a href="index.html" class="nav-home">Home</a>
+          <a href="about.html" class="nav-about">About</a>
+          <a href="explore.html" class="nav-view">View Tailors</a>
+          <a href="login.html" class="btn btn-small">Login</a>
+          <a href="signup.html" class="btn btn-small">Sign Up</a>
+          <button id="toggleDarkModeVisitor" class="btn btn-small">🌓</button>
         </div>
       </nav>
     </header>
@@ -939,18 +898,13 @@
           tailors in your area.
         </p>
         <div class="cta-buttons">
-          <a
-            href="explore.html"
-            class="btn"
-            style="background: #ffffff; color: #17911d"
+          <a href="explore.html" class="btn" style="background: #ffffff; color: #17911d;"
             >Browse Tailors</a
           >
           <a href="login.html" class="btn">Sign Up Now</a>
         </div>
       </div>
     </section>
-
-    <!-- stats, features, tailors, testimonials, CTA, footer (same as your original) -->
 
     <section class="stats-section">
       <div class="stats-grid">
@@ -1016,6 +970,7 @@
           <p class="services">Custom gowns, Bridal fittings, alterations</p>
           <a href="explore.html" class="btn">View Profile</a>
         </div>
+
         <div class="tailor-card">
           <img
             src="img/medium-shot-man-repairing-fashion-goods (1).jpg"
@@ -1026,6 +981,7 @@
           <p class="services">Native wears, Agbada, Trouser fitting</p>
           <a href="explore.html" class="btn">View Profile</a>
         </div>
+
         <div class="tailor-card">
           <img
             src="img/medium-shot-black-woman-running-small-business.jpg"
@@ -1041,11 +997,14 @@
 
     <section class="testimonials-section">
       <h2>What Our Customers Say</h2>
+
       <div class="testimonial-slider-container">
         <div class="testimonial-slider" id="testimonialSlider">
-          <!-- testimonial cards (same as original) -->
           <div class="testimonial-card">
-            <img src="data:image/png;base64,..." alt="Customer 1" />
+            <img
+              src="data:image/png;base64,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"
+              alt="Customer 1"
+            />
             <p class="quote">
               "TailorLink has revolutionized how I get my clothes fitted.
               Finding a skilled tailor nearby used to be a hassle, but now it's
@@ -1054,8 +1013,12 @@
             <p class="author">Jane Doe</p>
             <p class="role">Fashion Enthusiast</p>
           </div>
+
           <div class="testimonial-card">
-            <img src="data:image/png;base64,..." alt="Customer 2" />
+            <img
+              src="data:image/png;base64,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"
+              alt="Customer 2"
+            />
             <p class="quote">
               "As a busy professional, I appreciate the convenience TailorLink
               offers. Booking appointments is super easy, and my tailor always
@@ -1064,17 +1027,22 @@
             <p class="author">John Smith</p>
             <p class="role">Project Manager</p>
           </div>
+
           <div class="testimonial-card">
-            <img src="data:image/png;base64,..." alt="Customer 3" />
+            <img
+              src="data:image/png;base64,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"
+              alt="Customer 3"
+            />
             <p class="quote">
-              "I needed an urgent alteration for an event, and TailorLink came
-              to the rescue! Found a local tailor instantly who did an amazing
-              job. The platform is user-friendly and truly a game-changer."
+              "I needed an urgent alteration for an event, and TailorLink came to
+              the rescue! Found a local tailor instantly who did an amazing job.
+              The platform is user-friendly and truly a game-changer."
             </p>
             <p class="author">Sarah Johnson</p>
             <p class="role">Event Planner</p>
           </div>
         </div>
+
         <button class="slider-nav-btn prev-slide">&#10094;</button>
         <button class="slider-nav-btn next-slide">&#10095;</button>
       </div>
@@ -1123,7 +1091,7 @@
     </footer>
 
     <script>
-      // Firebase init
+      // Firebase config & init
       const firebaseConfig = {
         apiKey: "AIzaSyBVjsT4eVkdZaWaYfkgz_hoK00ZgmLWNR4",
         authDomain: "tailorlink-571d5.firebaseapp.com",
@@ -1138,41 +1106,95 @@
 
       // Elements
       const authenticatedNav = document.getElementById("authenticated-nav");
-      const visitorNavLinks = document.getElementById("visitor-links");
+      const visitorNav = document.getElementById("visitor-nav");
       const welcomeMessage = document.getElementById("welcome-message");
       const logoutBtn = document.getElementById("logout-btn");
-      const hamburger = document.querySelector(".hamburger");
-      const navLinksContainer = document.getElementById("nav-links-container");
-      const heroCtaButtons = document.querySelector(".hero .cta-buttons");
       const toggleDarkModeBtn = document.getElementById("toggleDarkMode");
+      const toggleDarkModeVisitorBtn = document.getElementById("toggleDarkModeVisitor");
 
       // Hamburger scoped for visitor
       const visitorHamburger = document.querySelector(
         "#visitor-nav .hamburger"
       );
       visitorHamburger?.addEventListener("click", () => {
-        visitorNavLinks?.classList.toggle("show");
-      });
+  visitorNavLinks?.classList.toggle("show");
+});
 
-      visitorHamburger?.addEventListener("click", () => {
-        visitorNavLinks?.classList.toggle("show");
-      });
+  const visitorNavLinks = document.querySelector("#visitor-nav .nav-links");  
+visitorHamburger?.addEventListener("click", () => {
+  visitorNavLinks?.classList.toggle("show");
+});
 
-      // Function to fetch user's first name from Firestore
-      async function fetchUserName(user) {
-        if (user && user.uid) {
-          try {
-            const userDoc = await db.collection("users").doc(user.uid).get();
-            if (userDoc.exists) {
-              const userData = userDoc.data();
-              return userData.firstName || "User";
-            }
-          } catch (error) {
-            console.error("Error fetching user data:", error);
-          }
+      // Dark mode toggle (deduped)
+      function toggleDarkMode() {
+        document.body.classList.toggle("dark-mode");
+        if (document.body.classList.contains("dark-mode")) {
+          localStorage.setItem("darkMode", "enabled");
+        } else {
+          localStorage.setItem("darkMode", "disabled");
         }
-        return "User";
       }
+      document
+        .querySelectorAll("#toggleDarkMode, #toggleDarkModeVisitor")
+        .forEach((btn) => btn.addEventListener("click", toggleDarkMode));
+
+      // Welcome formatter
+      const formatWelcome = (name) => `Welcome there 👋, ${name}!`;
+
+      // Testimonial slider core references
+      let slideIndex = 0;
+      const testimonialSlider = document.getElementById("testimonialSlider");
+      const testimonialCards = document.querySelectorAll(".testimonial-card");
+      const totalSlides = testimonialCards.length;
+      const prevButton = document.querySelector(".prev-slide");
+      const nextButton = document.querySelector(".next-slide");
+      let autoSlideInterval = null;
+
+      function showSlide(index) {
+        if (!testimonialSlider || testimonialCards.length === 0) return;
+        if (index >= totalSlides) {
+          slideIndex = 0;
+        } else if (index < 0) {
+          slideIndex = totalSlides - 1;
+        } else {
+          slideIndex = index;
+        }
+        testimonialSlider.style.transform = `translateX(-${slideIndex * 100}%)`;
+      }
+
+      function moveSlide(n) {
+        showSlide(slideIndex + n);
+      }
+
+      function startAutoSlide() {
+        clearInterval(autoSlideInterval);
+        autoSlideInterval = setInterval(() => {
+          moveSlide(1);
+        }, 5000);
+      }
+
+      function pauseAutoSlide() {
+        clearInterval(autoSlideInterval);
+      }
+
+      // Unified DOMContentLoaded
+      document.addEventListener("DOMContentLoaded", () => {
+        // apply dark mode if persisted
+        if (localStorage.getItem("darkMode") === "enabled") {
+          document.body.classList.add("dark-mode");
+        }
+
+        // slider init defensively
+        if (testimonialSlider && testimonialCards.length > 0) {
+          showSlide(slideIndex);
+          startAutoSlide();
+          const sliderContainer = testimonialSlider.parentElement;
+          sliderContainer?.addEventListener("mouseover", pauseAutoSlide);
+          sliderContainer?.addEventListener("mouseleave", startAutoSlide);
+          prevButton?.addEventListener("click", () => moveSlide(-1));
+          nextButton?.addEventListener("click", () => moveSlide(1));
+        }
+      });
 
       // Auth state listener with flicker prevention
       auth.onAuthStateChanged(async (user) => {
@@ -1207,171 +1229,14 @@
         }
       });
 
-      // Function to handle logout
-      const handleLogout = async () => {
+      // Logout
+      logoutBtn?.addEventListener("click", async () => {
         try {
           await auth.signOut();
-          window.location.href = "index.html";
+          console.log("User signed out successfully.");
         } catch (error) {
-          console.error("Logout failed:", error);
-        }
-      };
-
-      // Function to handle the hamburger menu toggle
-      function toggleMobileMenu() {
-        const isExpanded = hamburger.getAttribute("aria-expanded") === "true";
-        hamburger.setAttribute("aria-expanded", String(!isExpanded));
-        navLinksContainer?.classList.toggle("show");
-      }
-
-      // Function to close mobile menu
-      function closeMobileMenu() {
-        if (navLinksContainer && navLinksContainer.classList.contains("show")) {
-          navLinksContainer.classList.remove("show");
-        }
-        if (hamburger) {
-          hamburger.setAttribute("aria-expanded", "false");
-        }
-      }
-
-      // Mobile menu toggle listener
-      hamburger?.addEventListener("click", toggleMobileMenu);
-
-      // Close menu when clicking outside
-      document.addEventListener("click", (e) => {
-        if (
-          !hamburger?.contains(e.target) &&
-          !navLinksContainer?.contains(e.target)
-        ) {
-          closeMobileMenu();
-        }
-      });
-
-      // Close menu on escape key
-      document.addEventListener("keydown", (e) => {
-        if (e.key === "Escape") {
-          closeMobileMenu();
-        }
-      });
-
-      // Auto-collapse when resizing above breakpoint
-      window.addEventListener("resize", () => {
-        if (window.innerWidth > 1200) {
-          closeMobileMenu();
-        }
-      });
-
-      // Dark mode functionality
-      function enableDarkMode() {
-        document.body.classList.add("dark-mode");
-        localStorage.setItem("darkMode", "enabled");
-      }
-
-      function disableDarkMode() {
-        document.body.classList.remove("dark-mode");
-        localStorage.setItem("darkMode", "disabled");
-      }
-
-      function toggleDarkMode() {
-        if (document.body.classList.contains("dark-mode")) {
-          disableDarkMode();
-        } else {
-          enableDarkMode();
-        }
-      }
-
-      // Check for saved dark mode preference on page load
-      if (localStorage.getItem("darkMode") === "enabled") {
-        enableDarkMode();
-      }
-
-      // Attach dark mode toggle listener
-      toggleDarkModeBtn?.addEventListener("click", toggleDarkMode);
-
-      // Auth state listener
-      auth.onAuthStateChanged(async (user) => {
-        // Ensure menu is closed on state change
-        closeMobileMenu();
-
-        if (user) {
-          // Logged-in state
-          authenticatedNav.style.display = "flex";
-          visitorNavLinks.style.display = "none";
-
-          // Fetch and display user's first name
-          const userName = await fetchUserName(user);
-          document.getElementById(
-            "welcome-message"
-          ).textContent = `Welcome there 👋, ${userName}!`;
-
-          welcomeMessage.textContent = `Welcome there 👋, ${userName}!`;
-
-          // Update hero CTA for logged-in users
-          if (heroCtaButtons) {
-            heroCtaButtons.innerHTML = `
-        <a href="explore.html" class="btn" style="background: #ffffff; color: #17911d;">Browse Tailors</a>
-        <a href="customer-bookings.html" class="btn">View My Bookings</a>
-      `;
-          }
-
-          // Attach logout listener
-          logoutBtn?.addEventListener("click", handleLogout);
-        } else {
-          // Logged-out state (visitor)
-          authenticatedNav.style.display = "none";
-          visitorNavLinks.style.display = "flex";
-
-          // Reset hero CTA for visitors
-          if (heroCtaButtons) {
-            heroCtaButtons.innerHTML = `
-        <a href="explore.html" class="btn" style="background: #ffffff; color: #17911d;">Browse Tailors</a>
-        <a href="signup.html" class="btn">Sign Up Now</a>
-      `;
-          }
-        }
-      });
-
-      // Testimonial slider
-      document.addEventListener("DOMContentLoaded", () => {
-        let slideIndex = 0;
-        const testimonialSlider = document.getElementById("testimonialSlider");
-        const testimonialCards = document.querySelectorAll(".testimonial-card");
-        const totalSlides = testimonialCards.length;
-        const prevButton = document.querySelector(".prev-slide");
-        const nextButton = document.querySelector(".next-slide");
-        let autoSlideInterval = null;
-
-        function showSlide(index) {
-          if (!testimonialSlider || testimonialCards.length === 0) return;
-          if (index >= totalSlides) slideIndex = 0;
-          else if (index < 0) slideIndex = totalSlides - 1;
-          else slideIndex = index;
-          testimonialSlider.style.transform = `translateX(-${
-            slideIndex * 100
-          }%)`;
-        }
-
-        function moveSlide(n) {
-          showSlide(slideIndex + n);
-        }
-
-        function startAutoSlide() {
-          clearInterval(autoSlideInterval);
-          autoSlideInterval = setInterval(() => moveSlide(1), 5000);
-        }
-
-        function pauseAutoSlide() {
-          clearInterval(autoSlideInterval);
-        }
-
-        if (testimonialSlider && totalSlides > 0) {
-          showSlide(slideIndex);
-          startAutoSlide();
-          const sliderContainer = testimonialSlider.parentElement;
-          sliderContainer?.addEventListener("mouseover", pauseAutoSlide);
-          sliderContainer?.addEventListener("mouseleave", startAutoSlide);
-          prevButton?.addEventListener("click", () => moveSlide(-1));
-          nextButton?.addEventListener("click", () => moveSlide(1));
+          console.error("Error signing out:", error.message);
+          alert("Failed to log out. Please try again.");
         }
       });
     </script>
