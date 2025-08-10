@@ -10,8 +10,8 @@
     />
     <style>
       :root {
-        --primary-color: #27ae60;
-        --primary-hover: #219150;
+        --primary-color: #0A192F;
+        --primary-hover: #0A192F;
         --color-muted: #666;
         --background: #f7f7f7;
         --white: #ffffff;
@@ -33,7 +33,7 @@
       }
 
       .navbar {
-        background: var(--primary-color);
+        background: #0A192F;
         color: white;
         display: flex;
         justify-content: space-between;
@@ -46,8 +46,9 @@
       }
 
       .nav-logo {
-        font-size: 1.8rem;
+        font-size: 1.5rem;
         font-weight: 700;
+        color: #ffd700;
       }
 
       .nav-links {
@@ -57,8 +58,11 @@
         align-items: center;
       }
 
-      .nav-links li a,
-      .nav-links li span {
+      #nav-welcome{
+        color: #0A192F;
+      }
+
+      .nav-links li a {
         color: white;
         text-decoration: none;
         font-weight: 500;
@@ -235,7 +239,7 @@
       }
 
       .services h4 {
-        color: var(--text-dark);
+        color: #0A192F;
         margin-bottom: 0.5rem;
         font-size: 1rem;
       }
@@ -248,7 +252,7 @@
 
       .service-tag {
         background: #e8f5e8;
-        color: var(--primary-color);
+        color: #0A192F;
         padding: 0.25rem 0.5rem;
         border-radius: 20px;
         font-size: 0.8rem;
@@ -380,8 +384,8 @@
       }
 
 :root {
-    --primary-color: #17991d; /* A slightly adjusted primary green for better contrast on gradients */
-    --primary-dark: #0f6e16;
+    --primary-color: #0A192F; /* A slightly adjusted primary green for better contrast on gradients */
+    --primary-dark: #0A192F;
     --accent-color-light: #a8e6cf; /* Lighter green for accents */
     --text-color-light: #ffffff; /* White text for dark backgrounds */
     --text-color-muted-light: rgba(255, 255, 255, 0.7); /* Lighter muted text */
@@ -393,7 +397,7 @@
 }
 
 .footer {
-    background: #0f6e16; /* Dark green background */
+    background: #0A192F; /* Dark green background */
     color: var(--text-color-light);
     padding: 3rem 2rem 1rem; /* Top, sides, bottom padding */
     animation: fadeIn 1s ease-out; /* Assumes @keyframes fadeIn is defined */
@@ -408,7 +412,7 @@
     max-width: 1200px; /* Max width to contain the content */
     margin: 0 auto; /* Center the content */
     align-items: flex-start; /* Align items to the top of the row */
-    background-color: #0f6e16;
+    background-color: #0A192F;
     padding: 2rem; /* Padding inside the footer content */
     border-radius: var(--border-radius-soft);
 }
@@ -429,6 +433,7 @@
     font-size: 1.8rem;
     font-weight: 700;
     margin-bottom: 0.8rem;
+    color: #ffd700;
     /* Text gradient effect */
 }
 .footer-brand p {
@@ -592,14 +597,14 @@
   <body>
     <!-- Navbar -->
     <nav class="navbar">
-      <div class="nav-logo">TailorLink🔗</div>
+      <div class="nav-logo">Tailor<span style="color: rgb(66, 113, 231);">Link</span>🔗</div>
       <ul class="nav-links" id="navLinks">
         <li
           id="nav-welcome"
           style="
             display: none;
             left: auto;
-            background-color: #cecccc5d;
+            background-color: #c8e2fa;
             padding: 0.5rem;
             border-radius: 0.8rem;
           "
@@ -1024,7 +1029,7 @@
           <div class="price-range">${tailor.price}</div>
 
           <div class="card-actions">
-<button class="btn btn-primary">
+<button class="btn btn-primary" >
   <a href="https://wa.me/${tailor.phone}?text=Hi+${tailor.name}+I+Saw+Your+Profile+On+TailorLink" target='_blank' style="color:#fff; text-decoration:none;">
     Chat Tailor
   </a>

@@ -22,7 +22,7 @@
     <style>
       /* --- Root Variables & Base Styles --- */
       :root {
-        --primary-color: #17911d;
+        --primary-color: #0a192f;
         --primary-dark: #0f6e16;
         --background-color: #f0f2f5;
         --card-background: #ffffff;
@@ -31,10 +31,11 @@
         --input-border-color: #e0e0e0;
         --focus-border-color: var(--primary-color);
         --error-color: #e74c3c;
+        --success-color: #27ae60;
         --shadow-light: 0 4px 12px rgba(0, 0, 0, 0.08);
         --shadow-medium: 0 8px 25px rgba(0, 0, 0, 0.1);
         --border-radius-soft: 8px;
-        --border-radius-round: 50%; /* For profile image */
+        --border-radius-round: 50%;
       }
 
       * {
@@ -57,7 +58,7 @@
       /* --- Navigation Bar --- */
       .navbar {
         width: 100%;
-        max-width: 800px; /* Aligns with wrapper max-width */
+        max-width: 800px;
         background-color: var(--card-background);
         box-shadow: var(--shadow-light);
         border-radius: var(--border-radius-soft);
@@ -133,7 +134,8 @@
         display: flex;
         justify-content: center;
         align-items: center;
-        background-color: #f0f0f0; /* Placeholder background */
+        background-color: #f0f0f0;
+        position: relative;
       }
 
       .profile-image-container img {
@@ -152,38 +154,58 @@
         font-size: 0.9rem;
         font-weight: 500;
         transition: background-color 0.2s ease;
+        border: none;
       }
 
       .image-upload-label:hover {
         background-color: var(--primary-dark);
       }
 
-      #profile-image-upload {
-        display: none; /* Hide the actual file input */
+      .image-upload-label:disabled {
+        background-color: #a0a0a0;
+        cursor: not-allowed;
+      }
+
+      #fileInput {
+        display: none;
+      }
+
+      .upload-status {
+        font-size: 0.8rem;
+        margin-top: 5px;
+        min-height: 20px;
+      }
+
+      .upload-status.success {
+        color: var(--success-color);
+      }
+
+      .upload-status.error {
+        color: var(--error-color);
       }
 
       /* --- Form Styling --- */
       form {
         display: grid;
-        grid-template-columns: 1fr; /* Single column by default */
-        gap: 1rem; /* Space between input groups */
+        grid-template-columns: 1fr;
+        gap: 1rem;
         align-items: stretch;
       }
 
       @media (min-width: 600px) {
         form {
-          grid-template-columns: 1fr 1fr; /* Two columns on larger screens */
+          grid-template-columns: 1fr 1fr;
           gap: 1.5rem;
         }
         .full-width {
-          grid-column: 1 / -1; /* Span full width for specific fields */
+          grid-column: 1 / -1;
         }
       }
 
       .input-group {
         width: 100%;
         position: relative;
-        text-align: left; /* Align labels/inputs left */
+        text-align: left;
       }
 
       .input-group label {
@@ -210,7 +232,7 @@
 
       textarea {
         min-height: 80px;
-        resize: vertical; /* Allow vertical resizing */
+        resize: vertical;
       }
 
       input:focus,
@@ -225,18 +247,18 @@
         opacity: 0.8;
       }
 
-      /* Password toggle icon */
       .password-toggle {
         position: absolute;
         right: 15px;
-        top: 50%; /* Adjusted for label */
-        transform: translateY(20%); /* Adjusted for label */
+        top: 50%;
+        transform: translateY(20%);
         cursor: pointer;
         color: var(--text-muted);
         font-size: 0.9rem;
       }
+
       .input-group.incorrect .password-toggle {
-        color: var(--error-color); /* Match error color */
+        color: var(--error-color);
       }
 
       /* --- Button Styles --- */
@@ -253,7 +275,7 @@
         transition: background-color 0.3s ease, box-shadow 0.3s ease,
           transform 0.3s ease;
         margin-top: 1rem;
-        grid-column: 1 / -1; /* Span full width on grid */
+        grid-column: 1 / -1;
       }
 
       .btn-submit:hover:not(:disabled) {
@@ -269,6 +291,21 @@
         transform: none;
       }
 
+      .back-button {
+        text-decoration: none;
+        color: #ffffff;
+        background-color: #0f6e16;
+        border-radius: 10px;
+        padding: 0.5rem 1rem;
+        margin-bottom: 1rem;
+        display: inline-block;
+        transition: background-color 0.3s ease;
+      }
+
+      .back-button:hover {
+        background-color: var(--primary-dark);
+      }
+
       /* --- Error Message --- */
       #error-message {
         color: var(--error-color);
@@ -276,7 +313,12 @@
         margin-bottom: 1rem;
         text-align: left;
         width: 100%;
-        grid-column: 1 / -1; /* Span full width on grid */
+        grid-column: 1 / -1;
+        min-height: 20px;
+      }
+
+      #error-message.success {
+        color: var(--success-color);
       }
 
       /* --- Input Validation Styling --- */
@@ -300,7 +342,7 @@
         z-index: 1000;
         backdrop-filter: blur(5px);
         -webkit-backdrop-filter: blur(5px);
-        display: none; /* Hidden by default */
+        display: none;
       }
 
       .loader {
@@ -319,6 +361,25 @@
         100% {
           transform: rotate(360deg);
         }
+      }
+
+      /* --- Progress Bar --- */
+      .progress-container {
+        width: 100%;
+        height: 4px;
+        background-color: #f0f0f0;
+        border-radius: 2px;
+        margin-top: 10px;
+        overflow: hidden;
+        display: none;
+      }
+
+      .progress-bar {
+        height: 100%;
+        background-color: var(--primary-color);
+        border-radius: 2px;
+        transition: width 0.3s ease;
+        width: 0%;
       }
 
       /* --- Responsive Adjustments --- */
@@ -366,6 +427,10 @@
           font-size: 1rem;
           padding: 10px;
         }
+        .back-button {
+          padding: 0.4rem 0.8rem;
+          font-size: 0.9rem;
+        }
       }
     </style>
   </head>
@@ -375,17 +440,15 @@
     </div>
 
     <nav class="navbar">
-      <a href="javascript:void(0);" class="logo" id="dashboard-link"
-        >TailorLink🔗</a
-      >
+      <a href="javascript:void(0);" class="logo" id="dashboard-link">TailorLink🔗</a>
       <div class="nav-links">
         <a href="javascript:void(0);" id="logout-btn">Logout</a>
       </div>
     </nav>
 
-
     <div class="wrapper">
-    <a href="dashboard-tailors.html" class="btn btn-primary" style="text-decoration: none; color: #ffffff; background-color: #0f6e16; border-radius: 10px; padding: 0.5rem; margin-right: 33rem;">🔙Back to Dashboard</a>
+      <a href="dashboard-tailors.html" class="back-button">🔙 Back to Dashboard</a>
+      
       <h1>Edit Your Profile</h1>
       <p class="subtitle">Update your personal and professional information</p>
       <p id="error-message"></p>
@@ -393,16 +456,16 @@
       <form id="editProfileForm">
         <div class="profile-image-section full-width">
           <div class="profile-image-container">
-            <img
-              id="profile-img-preview"
-              src="https://via.placeholder.com/120?text=Profile"
-              alt="Profile Image"
-            />
+            <img id="preview" src="" alt="Profile Image" />
           </div>
-          <label for="profile-image-upload" class="image-upload-label">
-            <i class="fas fa-camera"></i> Upload New Image
-          </label>
-          <input type="file" id="profile-image-upload" accept="image" />
+          <button type="button" class="image-upload-label" id="uploadButton">
+            Upload Photo
+          </button>
+          <input type="file" id="fileInput" accept="image/*" />
+          <div class="progress-container" id="progressContainer">
+            <div class="progress-bar" id="progressBar"></div>
+          </div>
+          <p class="upload-status" id="uploadStatus"></p>
         </div>
 
         <div class="input-group">
@@ -415,6 +478,7 @@
             autocomplete="name"
           />
         </div>
+        
         <div class="input-group">
           <label for="email">Email Address</label>
           <input
@@ -425,7 +489,8 @@
             autocomplete="email"
             disabled
           />
-          </div>
+        </div>
+        
         <div class="input-group">
           <label for="phone">Phone Number</label>
           <input
@@ -435,6 +500,7 @@
             autocomplete="tel"
           />
         </div>
+        
         <div class="input-group">
           <label for="location">Location</label>
           <input
@@ -457,6 +523,7 @@
             <i class="fa fa-eye-slash" aria-hidden="true"></i>
           </span>
         </div>
+        
         <div class="input-group">
           <label for="newPassword">New Password</label>
           <input
@@ -470,6 +537,7 @@
             <i class="fa fa-eye-slash" aria-hidden="true"></i>
           </span>
         </div>
+        
         <div class="input-group">
           <label for="confirmNewPassword">Confirm New Password</label>
           <input
@@ -486,9 +554,8 @@
 
         <div id="tailorSpecificFields" class="full-width" style="display: none">
           <hr style="border: none; border-top: 1px solid #eee; margin: 20px 0" />
-          <h2 style="font-size: 1.5rem; margin-bottom: 1.5rem">
-            Tailor Information
-          </h2>
+          <h2 style="font-size: 1.5rem; margin-bottom: 1.5rem">Tailor Information</h2>
+          
           <div class="input-group">
             <label for="bio">Biography / Description</label>
             <textarea
@@ -497,15 +564,16 @@
               maxlength="500"
             ></textarea>
           </div>
+          
           <div class="input-group">
             <label for="experience">Years of Experience</label>
             <input
               type="text"
               id="experience"
               placeholder="e.g., 5 years, 10+ years. Note: Honest is the best policy 😉"
-                pattern="^\d+(\+\d+)?\s*years?$"
             />
           </div>
+          
           <div class="input-group">
             <label for="services">Services Offered (Comma Separated)</label>
             <input
@@ -514,6 +582,7 @@
               placeholder="e.g., Suits, Dresses, Alterations, Embroidery"
             />
           </div>
+          
           <div class="input-group">
             <label for="price">Pricing Model</label>
             <input
@@ -529,8 +598,8 @@
     </div>
 
     <script>
-      // Firebase Configuration (REPLACE WITH YOUR ACTUAL CONFIG)
-        const firebaseConfig = {
+      // Firebase Configuration
+      const firebaseConfig = {
         apiKey: "AIzaSyBVjsT4eVkdZaWaYfkgz_hoK00ZgmLWNR4",
         authDomain: "tailorlink-571d5.firebaseapp.com",
         projectId: "tailorlink-571d5",
@@ -546,15 +615,19 @@
       const db = firebase.firestore();
       const storage = firebase.storage();
 
-      // --- DOM Elements ---
+      // DOM Elements
       const loaderOverlay = document.getElementById("loader-overlay");
       const dashboardLink = document.getElementById("dashboard-link");
       const logoutBtn = document.getElementById("logout-btn");
       const editProfileForm = document.getElementById("editProfileForm");
-      const profileImgPreview = document.getElementById("profile-img-preview");
-      const profileImageUpload = document.getElementById("profile-image-upload");
+      const profileImgPreview = document.getElementById("preview");
+      const fileInput = document.getElementById("fileInput");
+      const uploadButton = document.getElementById("uploadButton");
+      const progressContainer = document.getElementById("progressContainer");
+      const progressBar = document.getElementById("progressBar");
+      const uploadStatus = document.getElementById("uploadStatus");
       const fullNameInput = document.getElementById("fullName");
-      const emailInput = document.getElementById("email"); // Disabled, but good to have reference
+      const emailInput = document.getElementById("email");
       const phoneInput = document.getElementById("phone");
       const locationInput = document.getElementById("location");
       const currentPasswordInput = document.getElementById("currentPassword");
@@ -573,15 +646,12 @@
       const toggleNewPassword = document.getElementById("toggleNewPassword");
       const toggleConfirmNewPassword = document.getElementById("toggleConfirmNewPassword");
 
-      let currentUser = null; // To store the authenticated user object
-      let userRole = null; // To store the user's role (customer/tailor)
+      let currentUser = null;
+      let userRole = null;
 
-      // Default profile image URL (REPLACE WITH YOUR OWN UPLOADED DEFAULT IMAGE URL)
-      const defaultProfileImageUrl =
-        "https://firebasestorage.googleapis.com/v0/b/tailorlink-571d5.appspot.com/o/tailor-default-profile.png?alt=media&token=YOUR_DEFAULT_IMAGE_TOKEN";
-        // To get a token: Upload a default image to Firebase Storage. Click on the image, and copy the "Access token" or "Download URL".
+      const defaultProfileImageUrl = "data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wCEAAkGBw8PDxUQDw8VFRUVFRUVFRUVFRUVFRUVFRUWFxUVFRUYHSggGBolHRUVITEhJSkrLi4uFx8zODMtNygtLisBCgoKDQ0NDg0NDisZFRkrKysrKystLSsrKysrKysrKysrKystKysrKysrKysrKysrKysrKysrKysrKysrKysrK//AABEIAOEA4QMBIgACEQEDEQH/xAAbAAEBAAMBAQEAAAAAAAAAAAAAAQIEBQMGB//EADQQAQEAAQICCAMIAAcAAAAAAAABAgMRBCEFEjFBUWFxgZGx4SIyM0KhwdHwExUjcoKS8f/EABUBAQEAAAAAAAAAAAAAAAAAAAAB/8QAFBEBAAAAAAAAAAAAAAAAAAAAAP/aAAwDAQACEQMRAD8A/XAFQAAAAAAAAAAAAAAAAAAAAQAQEASiAom/kgPYAAAAAAAAAAAAAAAAAAAAEAQQAEAQQAQB7gAAAAAAAA8+I18dPHfL2nffQHpbt2tHX6Twx5Y/avwnxc7iuLy1Lz5Tund7+LXBuanSWreyyek/l4XidS/ny+NeQD1nEak/Pl/2r20+kdWfm39Y1AHX0OlMbyzm3nOcb+OUs3l3njHzL24fiMtO7431ndQfQjw4XisdSbzt754fR7AJSgICAIIAi1iCoig2AAAAAAAAY6upMcbleyOBxOvdTLrX2nhG10txG+XUnZO31c8ABQAAAAABlpatwymWN5x3uG15qYzKe88K+ebXR3EdTPbuy5X9qg7iCAUGNARUoCDHcBU38wG0AAAAAAx1M+rjcr3S34Mmr0pltpXz2n6g4eWVttvbeaAoAAAAAAIAIAD6DhNXr6eOXlz9Zyr1aHQ+X2LPC/ON5AtQSgJRNwEqVLQUTcBuAAAAAANLpj8Of7p8q3Wp0pjvpXysv6/UHDAUAAAAEABAAQAdPobsz/4/u6LQ6Hn2LfG/KfVvoG7Fd0oJUN0ArEqAox3Ab4AAAAADHVw62Nx8ZYyAfM2bXa9yN/pbQ6uXXnZl8/7+7QAAUEVAEABFQBBs9H6HXzm/ZOd/aA6vB6fV08Z5b31vN7UqVArFaxAqUSgWsaJaCjHdQdAAAAAAAAGGtpTPG43sv93cDiNG4ZdXL/2eL6J5cTw+Opjtfa98B86PbieGy079qcu691eCgCAAgCKz0dHLO7Yz+J6gx08LldpOddzhdCaeO07e++NThOFmnPG3tv7Tye1QEpUAS0Y2gWpuVNwGNq2sQN7/AHYTcB0wAAAAAAAAaev0jp48petfL+QbWWMs2s3nhWhr9F43nhdvLtn0a+fSue/LGSe9bGj0phfvS4/rAaOpwGrj+Xf05/V4ZaWU7cb8K+g09bDL7uUvpWYPm5pZd2N+FeunwWrl+Wz15fN3q89TVxx7cpPW7A0NHouTnnlv5Ts+LfwwmM2xm0amt0lpzs3yvlynxrU/zTPffqzbw5/MHXYtPS6Swy5X7N8+c+Lbll5ygVKWpQKxpUASlrECpS1KCbi+4DqAAAAAAPDiuLx05z53unf9Hnx/GTTm055Xs8vOuJnlbd7d7Qe3E8Xnqdt2nhOz6tcFEABGUzynZb8axQGWWple3K/GsFQBBAHpocRlhfs327r7PIB2uF43HPl2ZeH8NivnN3U4Hjet9nK/a7r4/VBvVjVY0CsaVKBuxq1iC7IbIDsAAAAPLiteaeNyvtPGvVxOlNfrZ9WdmPL37/4Bq6mdyttvOsAUEABAAQQBAoIgAIVAEl7xKDtcHxH+Jj5zlf5e+7h8HrdTOXuvK+jt2oJU3KxA3RUoG9/tE2UHYAAAB58Tq9TC5eE/XufOWux0xnthJ435f2OMAgKCAAhQERUASlQBDdAKgUEqCAOzwWr1tOeXK+zi1v8ARWf3sfS/39EHRtQqAIbgG1VjuoOyAACA5XTV54zyv67fw5rodNfex9L83OARUUEABBAEpUARalAYrUBAqAJSsQG10Zf9T2v7VqVtdG/ie1QddjVqUBDcA9/1E9wHbBAEAHJ6Z+9j6fu5zodM/ex9P3c4AEUEEoCKxABALUogCCAIICU3KgDZ6N/E9q1Wz0b+J7VB10VAEVAXYXqgOygAiADk9Nfex9L83OABAUY0oAlKgBUAGNABjQAYpQBKgAlbfRv4k9KAOrCfyCCLf7+igAAP/9k=";
 
-      // --- Helper Functions ---
+      // Helper Functions
       function showLoader() {
         loaderOverlay.style.display = "flex";
       }
@@ -608,15 +678,24 @@
         });
       }
 
-      function displayErrorMessage(message) {
+      function displayErrorMessage(message, isSuccess = false) {
         errorMessageDisplay.textContent = message;
+        if (isSuccess) {
+          errorMessageDisplay.classList.add("success");
+        } else {
+          errorMessageDisplay.classList.remove("success");
+        }
       }
 
-      // --- Password Toggle Logic ---
+      function setUploadStatus(message, type = 'info') {
+        uploadStatus.textContent = message;
+        uploadStatus.className = `upload-status ${type}`;
+      }
+
+      // Password Toggle Logic
       function setupPasswordToggle(toggleBtn, inputField) {
         toggleBtn.addEventListener("click", function () {
-          const type =
-            inputField.getAttribute("type") === "password" ? "text" : "password";
+          const type = inputField.getAttribute("type") === "password" ? "text" : "password";
           inputField.setAttribute("type", type);
           this.querySelector("i").classList.toggle("fa-eye");
           this.querySelector("i").classList.toggle("fa-eye-slash");
@@ -627,7 +706,285 @@
       setupPasswordToggle(toggleNewPassword, newPasswordInput);
       setupPasswordToggle(toggleConfirmNewPassword, confirmNewPasswordInput);
 
-      // --- Populate Form with User Data ---
+      // Test Firebase Storage Connection
+      async function testStorageConnection() {
+        try {
+          console.log("Testing Firebase Storage connection...");
+          const testRef = storage.ref().child('test/connection.txt');
+          const testData = 'test connection';
+          await testRef.putString(testData);
+          await testRef.delete(); // Clean up
+          console.log("✅ Firebase Storage connection successful");
+          return true;
+        } catch (error) {
+          console.error("❌ Firebase Storage connection failed:", error);
+          return false;
+        }
+      }
+
+      // Image Upload Functionality
+      uploadButton.addEventListener("click", () => {
+        fileInput.click();
+      });
+
+      fileInput.addEventListener("change", async (event) => {
+        const file = event.target.files[0];
+        if (!file) return;
+
+        console.log("🔍 Upload Debug Info:");
+        console.log("File selected:", file.name);
+        console.log("File size:", (file.size / 1024 / 1024).toFixed(2) + " MB");
+        console.log("File type:", file.type);
+        console.log("User authenticated:", !!currentUser);
+        console.log("User ID:", currentUser?.uid);
+        console.log("Storage bucket:", firebaseConfig.storageBucket);
+
+        if (!currentUser) {
+          setUploadStatus("Please log in to upload an image.", 'error');
+          return;
+        }
+
+        // Test storage connection first
+        const storageWorking = await testStorageConnection();
+        if (!storageWorking) {
+          setUploadStatus("Storage connection failed. Check console for details.", 'error');
+          return;
+        }
+
+        // Validate file type
+        const allowedTypes = ["image/jpeg", "image/jpg", "image/png", "image/gif", "image/webp"];
+        if (!allowedTypes.includes(file.type)) {
+          setUploadStatus("Only JPEG, PNG, GIF, and WebP images are allowed.", 'error');
+          console.log("❌ File type rejected:", file.type);
+          return;
+        }
+
+        // Validate file size (max 5MB)
+        const maxSize = 5 * 1024 * 1024;
+        if (file.size > maxSize) {
+          setUploadStatus("Image file size must be less than 5MB.", 'error');
+          console.log("❌ File too large:", (file.size / 1024 / 1024).toFixed(2) + " MB");
+          return;
+        }
+
+        // Check if file is actually readable
+        try {
+          const arrayBuffer = await file.arrayBuffer();
+          if (arrayBuffer.byteLength === 0) {
+            setUploadStatus("File appears to be empty or corrupted.", 'error');
+            return;
+          }
+          console.log("✅ File is readable, size:", arrayBuffer.byteLength);
+        } catch (error) {
+          console.error("❌ Cannot read file:", error);
+          setUploadStatus("Cannot read file. Please try a different image.", 'error');
+          return;
+        }
+
+        uploadButton.disabled = true;
+        uploadButton.textContent = "Uploading...";
+        progressContainer.style.display = "block";
+        progressBar.style.width = "0%";
+        setUploadStatus("Preparing upload...", 'info');
+
+        let uploadTimeout;
+        let isUploadComplete = false;
+        let progressStalled = false;
+        let lastProgress = 0;
+        let progressCheckInterval;
+
+        try {
+          const timestamp = Date.now();
+          const sanitizedFileName = file.name.replace(/[^a-zA-Z0-9.-]/g, '_');
+          const fileName = `${timestamp}_${sanitizedFileName}`;
+          const imagePath = `profile_images/${currentUser.uid}/${fileName}`;
+          
+          console.log("📁 Upload path:", imagePath);
+
+          const storageRef = storage.ref();
+          const imageRef = storageRef.child(imagePath);
+          
+          console.log("🚀 Starting upload...");
+          setUploadStatus("Starting upload...", 'info');
+
+          // Create upload task
+          const uploadTask = imageRef.put(file, {
+            contentType: file.type,
+            cacheControl: 'public,max-age=3600'
+          });
+
+          // Progress stall detection
+          progressCheckInterval = setInterval(() => {
+            if (!isUploadComplete && lastProgress === 0) {
+              progressStalled = true;
+              console.warn("⚠️ Upload appears stalled at 0%");
+            }
+          }, 5000); // Check every 5 seconds
+
+          // Main upload timeout (2 minutes)
+          uploadTimeout = setTimeout(() => {
+            if (!isUploadComplete) {
+              console.warn("⏰ Upload timeout reached (120s)");
+              uploadTask.cancel();
+              setUploadStatus("Upload timeout. Please try again with a smaller image.", 'error');
+              resetUploadUI();
+            }
+          }, 120000);
+
+          uploadTask.on(
+            "state_changed",
+            (snapshot) => {
+              const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+              const progressRounded = Math.round(progress * 100) / 100; // 2 decimal places
+              
+              console.log(`📊 Upload progress: ${progressRounded}% (${snapshot.bytesTransferred}/${snapshot.totalBytes} bytes)`);
+              console.log("Upload state:", snapshot.state);
+              
+              progressBar.style.width = progress + "%";
+              setUploadStatus(`Uploading: ${Math.round(progress)}%`, 'info');
+              
+              lastProgress = progress;
+              
+              // Reset stall detection on progress
+              if (progress > 0) {
+                progressStalled = false;
+                if (progressCheckInterval) {
+                  clearInterval(progressCheckInterval);
+                  progressCheckInterval = null;
+                }
+              }
+
+              // Log detailed state information
+              switch (snapshot.state) {
+                case firebase.storage.TaskState.PAUSED:
+                  console.log("Upload is paused");
+                  break;
+                case firebase.storage.TaskState.RUNNING:
+                  console.log("Upload is running");
+                  break;
+              }
+            },
+            (error) => {
+              isUploadComplete = true;
+              if (uploadTimeout) clearTimeout(uploadTimeout);
+              if (progressCheckInterval) clearInterval(progressCheckInterval);
+              
+              console.error("💥 Upload error details:");
+              console.error("Error code:", error.code);
+              console.error("Error message:", error.message);
+              console.error("Full error:", error);
+              
+              let errorMessage = "Upload failed: ";
+              switch (error.code) {
+                case 'storage/unauthorized':
+                  errorMessage += "Permission denied. Please refresh and try again.";
+                  console.log("Auth token:", currentUser?.accessToken ? "Present" : "Missing");
+                  break;
+                case 'storage/canceled':
+                  errorMessage += "Upload was cancelled.";
+                  break;
+                case 'storage/unknown':
+                  errorMessage += "Unknown error. Check your internet connection.";
+                  break;
+                case 'storage/retry-limit-exceeded':
+                  errorMessage += "Connection timeout. Please try again.";
+                  break;
+                case 'storage/invalid-checksum':
+                  errorMessage += "File corrupted during upload. Please try again.";
+                  break;
+                case 'storage/quota-exceeded':
+                  errorMessage += "Storage quota exceeded.";
+                  break;
+                default:
+                  errorMessage += `${error.message}`;
+              }
+              
+              setUploadStatus(errorMessage, 'error');
+              resetUploadUI();
+            },
+            async () => {
+              isUploadComplete = true;
+              if (uploadTimeout) clearTimeout(uploadTimeout);
+              if (progressCheckInterval) clearInterval(progressCheckInterval);
+              
+              try {
+                console.log("✅ Upload completed successfully!");
+                setUploadStatus("Upload complete, getting URL...", 'info');
+                
+                const downloadURL = await imageRef.getDownloadURL();
+                console.log("🔗 Download URL obtained:", downloadURL);
+                
+                // Test if URL is accessible
+                try {
+                  const response = await fetch(downloadURL, { method: 'HEAD' });
+                  console.log("🌐 URL accessibility test:", response.status);
+                } catch (urlTest) {
+                  console.warn("⚠️ URL test failed (might still work):", urlTest);
+                }
+                
+                profileImgPreview.src = downloadURL;
+                setUploadStatus("Updating profile in database...", 'info');
+
+                // Update Firestore with new image URL
+                console.log("💾 Updating user document...");
+                await db.collection("users").doc(currentUser.uid).update({
+                  profileImage: downloadURL,
+                  updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+                });
+
+                if (userRole === "tailor") {
+                  console.log("👔 Updating tailor document...");
+                  await db.collection("tailors").doc(currentUser.uid).update({
+                    profileImage: downloadURL,
+                    updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+                  });
+                }
+
+                console.log("✅ Profile image updated successfully!");
+                setUploadStatus("Profile image updated successfully! 🎉", 'success');
+                
+                setTimeout(() => {
+                  progressContainer.style.display = "none";
+                  uploadButton.disabled = false;
+                  uploadButton.textContent = "Upload Photo";
+                  fileInput.value = '';
+                  setUploadStatus("", 'info');
+                }, 3000);
+                
+              } catch (dbError) {
+                console.error("💾 Database update error:", dbError);
+                setUploadStatus("Image uploaded but failed to update profile. Please refresh the page.", 'error');
+                resetUploadUI();
+              }
+            }
+          );
+
+          console.log("📤 Upload task created and started");
+
+        } catch (error) {
+          isUploadComplete = true;
+          if (uploadTimeout) clearTimeout(uploadTimeout);
+          if (progressCheckInterval) clearInterval(progressCheckInterval);
+          
+          console.error("🚫 Error creating upload:", error);
+          setUploadStatus("Failed to start upload: " + error.message, 'error');
+          resetUploadUI();
+        }
+
+        function resetUploadUI() {
+          progressContainer.style.display = "none";
+          progressBar.style.width = "0%";
+          uploadButton.disabled = false;
+          uploadButton.textContent = "Upload Photo";
+          fileInput.value = '';
+          if (progressCheckInterval) {
+            clearInterval(progressCheckInterval);
+            progressCheckInterval = null;
+          }
+        }
+      });
+
+      // Populate Form with User Data
       async function populateProfileData(user) {
         showLoader();
         try {
@@ -638,19 +995,20 @@
           }
 
           const userData = userDoc.data();
-          currentUser = user; // Store user object globally
-          userRole = userData.role; // Store role globally
+          currentUser = user;
+          userRole = userData.role;
 
           fullNameInput.value = userData.fullName || "";
-          emailInput.value = userData.email || ""; // Email is disabled
+          emailInput.value = userData.email || "";
           phoneInput.value = userData.phone || "";
           locationInput.value = userData.location || "";
 
-          // Set profile image (from Firestore, or default if not set/fails)
-          profileImgPreview.src = userData.profileImage || defaultProfileImageUrl;
-          profileImgPreview.onerror = () => {
+          // Set profile image
+          if (userData.profileImage) {
+            profileImgPreview.src = userData.profileImage;
+          } else {
             profileImgPreview.src = defaultProfileImageUrl;
-          };
+          }
 
           // Show tailor-specific fields if role is 'tailor'
           if (userRole === "tailor") {
@@ -675,101 +1033,28 @@
           } else if (userRole === "admin") {
             dashboardLink.href = "dashboard-admin.html";
           } else {
-            dashboardLink.href = "#"; // Fallback
+            dashboardLink.href = "#";
           }
         } catch (error) {
           console.error("Error populating profile data:", error);
-          displayErrorMessage(
-            "Failed to load profile data. Please refresh or log in again."
-          );
-          auth.signOut(); // Force sign out on critical data load error
-          window.location.href = "login.html";
+          displayErrorMessage("Failed to load profile data. Please refresh or log in again.");
+          setTimeout(() => {
+            auth.signOut();
+            window.location.href = "login.html";
+          }, 3000);
         } finally {
           hideLoader();
         }
       }
 
-      // --- Handle Profile Image Upload ---
-      profileImageUpload.addEventListener("change", async (event) => {
-        const file = event.target.files[0];
-        if (!file) return;
-
-        if (!currentUser) {
-          displayErrorMessage("Please log in to upload an image.");
-          return;
-        }
-
-        showLoader();
-        try {
-          // Validate file type
-          const allowedTypes = ["image/jpeg", "image/png", "image/gif"];
-          if (!allowedTypes.includes(file.type)) {
-            displayErrorMessage("Only JPEG, PNG, and GIF images are allowed.");
-            hideLoader();
-            return;
-          }
-
-          // Validate file size (e.g., max 2MB)
-          const maxSize = 2 * 1024 * 1024; // 2MB
-          if (file.size > maxSize) {
-            displayErrorMessage("Image file size must be less than 2MB.");
-            hideLoader();
-            return;
-          }
-
-          const storageRef = storage.ref();
-          const imageRef = storageRef.child(`profile_images/${currentUser.uid}/${file.name}`);
-          const uploadTask = imageRef.put(file);
-
-          uploadTask.on(
-            "state_changed",
-            (snapshot) => {
-              // Observe state change events such as progress, pause, and resume
-              const progress =
-                (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-              console.log("Upload is " + progress + "% done");
-              // You could update a progress bar here
-            },
-            (error) => {
-              // Handle unsuccessful uploads
-              console.error("Image upload error:", error);
-              displayErrorMessage("Failed to upload image. Please try again.");
-              hideLoader();
-            },
-            async () => {
-              // Handle successful uploads on complete
-              const downloadURL = await imageRef.getDownloadURL();
-              profileImgPreview.src = downloadURL; // Update preview
-
-              // Update Firestore with new image URL
-              await db.collection("users").doc(currentUser.uid).update({
-                profileImage: downloadURL,
-              });
-              if (userRole === "tailor") {
-                await db.collection("tailors").doc(currentUser.uid).update({
-                  profileImage: downloadURL,
-                });
-              }
-              displayErrorMessage("Profile image updated successfully!");
-              hideLoader();
-            }
-          );
-        } catch (error) {
-          console.error("Error uploading image:", error);
-          displayErrorMessage("Failed to upload image.");
-          hideLoader();
-        }
-      });
-
-      // --- Handle Form Submission (Save Changes) ---
+      // Handle Form Submission
       editProfileForm.addEventListener("submit", async (e) => {
         e.preventDefault();
 
-        // Show loader and disable button
         showLoader();
         submitButton.textContent = "Saving...";
         submitButton.disabled = true;
-        displayErrorMessage(""); // Clear previous errors
+        displayErrorMessage("");
         clearAllInputErrors();
 
         const fullName = fullNameInput.value.trim();
@@ -791,18 +1076,19 @@
           errors.push("New password must be at least 6 characters long.");
           markInputIncorrect(newPasswordInput);
         }
+
         if (newPassword && newPassword !== confirmNewPassword) {
           errors.push("New passwords do not match.");
           markInputIncorrect(newPasswordInput);
           markInputIncorrect(confirmNewPasswordInput);
         }
-        // If new password is provided, current password is required
+
         if (newPassword && !currentPassword) {
           errors.push("Current password is required to change password.");
           markInputIncorrect(currentPasswordInput);
         }
 
-        // Tailor-specific validation and data
+        // Tailor-specific validation
         let bio = "";
         let experience = "";
         let services = [];
@@ -812,11 +1098,11 @@
           bio = bioInput.value.trim();
           experience = experienceInput.value.trim();
           price = priceInput.value.trim();
-          
+
           const servicesRaw = servicesInput.value.trim();
           if (!servicesRaw) {
-             errors.push("Services Offered are required for tailors.");
-             markInputIncorrect(servicesInput);
+            errors.push("Services Offered are required for tailors.");
+            markInputIncorrect(servicesInput);
           } else {
             services = servicesRaw
               .split(",")
@@ -838,34 +1124,37 @@
         }
 
         try {
-          // 1. Update Firebase Authentication Profile
+          // Update Firebase Authentication Profile
           if (currentUser) {
-            // Update display name (if changed)
             if (currentUser.displayName !== fullName) {
               await currentUser.updateProfile({ displayName: fullName });
             }
 
-            // Update password if new password is provided
+            // Update password if provided
             if (newPassword) {
               const credential = firebase.auth.EmailAuthProvider.credential(
                 currentUser.email,
                 currentPassword
               );
-              await currentUser.reauthenticateWithCredential(credential); // Re-authenticate first
+              await currentUser.reauthenticateWithCredential(credential);
               await currentUser.updatePassword(newPassword);
-              displayErrorMessage("Password updated successfully.");
-              // Clear password fields after successful update
+              
+              // Clear password fields
               currentPasswordInput.value = "";
               newPasswordInput.value = "";
               confirmNewPasswordInput.value = "";
+              
               // Reset password toggle icons
-              toggleCurrentPassword.querySelector('i').className = 'fa fa-eye-slash';
-              toggleNewPassword.querySelector('i').className = 'fa fa-eye-slash';
-              toggleConfirmNewPassword.querySelector('i').className = 'fa fa-eye-slash';
+              document.querySelectorAll('.password-toggle i').forEach(icon => {
+                icon.className = "fa fa-eye-slash";
+              });
+              document.querySelectorAll('input[type="text"][id*="Password"]').forEach(input => {
+                input.setAttribute("type", "password");
+              });
             }
           }
 
-          // 2. Update Firestore User Data
+          // Update Firestore User Data
           const userUpdateData = {
             fullName: fullName,
             phone: phone || null,
@@ -874,10 +1163,10 @@
           };
           await db.collection("users").doc(currentUser.uid).update(userUpdateData);
 
-          // 3. Update Firestore Tailor Data (if applicable)
+          // Update Firestore Tailor Data (if applicable)
           if (userRole === "tailor") {
             const tailorUpdateData = {
-              name: fullName, // Update name in tailors collection too
+              name: fullName,
               phone: phone || null,
               location: location || null,
               bio: bio || null,
@@ -889,25 +1178,28 @@
             await db.collection("tailors").doc(currentUser.uid).update(tailorUpdateData);
           }
 
-          displayErrorMessage("Profile updated successfully!");
-          // Optional: Redirect back to dashboard or show success message for a duration
-          // setTimeout(() => window.location.href = dashboardLink.href, 1500);
-
+          displayErrorMessage("Profile updated successfully!", true);
+          
+          // Auto-hide success message after 3 seconds
+          setTimeout(() => {
+            displayErrorMessage("");
+          }, 3000);
+          
         } catch (error) {
           console.error("Error saving profile:", error);
           let userFacingMessage = "Failed to save profile. Please try again.";
 
-          if (error.code === 'auth/requires-recent-login') {
+          if (error.code === "auth/requires-recent-login") {
             userFacingMessage = "Please log out and log in again to update your password.";
             markInputIncorrect(currentPasswordInput);
-          } else if (error.code === 'auth/wrong-password') {
+          } else if (error.code === "auth/wrong-password") {
             userFacingMessage = "Incorrect current password.";
             markInputIncorrect(currentPasswordInput);
-          } else if (error.code === 'auth/weak-password') {
+          } else if (error.code === "auth/weak-password") {
             userFacingMessage = "The new password is too weak. Please choose a stronger one.";
             markInputIncorrect(newPasswordInput);
-          } else if (error.code === 'auth/invalid-email') {
-              userFacingMessage = 'Invalid email format (though email is disabled, useful for other contexts).';
+          } else if (error.code === "auth/invalid-email") {
+            userFacingMessage = "Invalid email format.";
           }
           displayErrorMessage(userFacingMessage);
         } finally {
@@ -917,22 +1209,20 @@
         }
       });
 
-      // --- Authentication State Listener ---
+      // Authentication State Listener
       auth.onAuthStateChanged((user) => {
         if (user) {
           populateProfileData(user);
         } else {
-          // User is signed out, redirect to login page
           window.location.href = "login.html";
         }
       });
 
-      // --- Logout Logic ---
+      // Logout Logic
       logoutBtn.addEventListener("click", async () => {
         showLoader();
         try {
           await auth.signOut();
-          // Redirection handled by onAuthStateChanged listener
         } catch (error) {
           console.error("Error signing out:", error);
           displayErrorMessage("Failed to log out. Please try again.");
@@ -941,11 +1231,11 @@
         }
       });
 
-      // Initial clear of password fields on page load for security
+      // Clear password fields on page load for security
       document.addEventListener("DOMContentLoaded", () => {
-          currentPasswordInput.value = "";
-          newPasswordInput.value = "";
-          confirmNewPasswordInput.value = "";
+        currentPasswordInput.value = "";
+        newPasswordInput.value = "";
+        confirmNewPasswordInput.value = "";
       });
     </script>
   </body>

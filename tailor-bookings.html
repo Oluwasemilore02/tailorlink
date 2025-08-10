@@ -21,7 +21,7 @@
     <style>
       /* Root variables for colors */
       :root {
-        --primary-color: #17911d; /* Your specified primary color */
+        --primary-color: #0a192f; /* Your specified primary color */
         --primary-light: #27ae60;
         --primary-dark: #0f6e16;
         --background-color: #f0f2f5; /* Light subtle background */
@@ -723,7 +723,6 @@
         measurementId: "G-H9RNR0LLKF",
       };
 
-
       // Initialize Firebase
       firebase.initializeApp(firebaseConfig);
       const auth = firebase.auth();
@@ -885,7 +884,9 @@
           : new Date(); // Fallback to current date if missing
 
         bookingCard.innerHTML = `
-          <span class="booking-status status-${booking.status}">${booking.status}</span>
+          <span class="booking-status status-${booking.status}">${
+          booking.status
+        }</span>
           <h3>Booking with <span style="color:var(--primary-color)">${
             booking.customerName || "Unknown Customer"
           }</span></h3>
@@ -927,7 +928,9 @@
         bookingsContainer.appendChild(bookingCard);
 
         // Add event listeners for action buttons
-        const actionButtons = bookingCard.querySelectorAll(".booking-actions .btn");
+        const actionButtons = bookingCard.querySelectorAll(
+          ".booking-actions .btn"
+        );
         actionButtons.forEach((button) => {
           button.addEventListener("click", () =>
             handleBookingAction(bookingId, button.dataset.action)
@@ -947,10 +950,12 @@
 
         if (action === "confirm") {
           newStatus = "confirmed";
-          confirmationMessage = "Are you sure you want to confirm this booking?";
+          confirmationMessage =
+            "Are you sure you want to confirm this booking?";
         } else if (action === "complete") {
           newStatus = "completed";
-          confirmationMessage = "Are you sure you want to mark this booking as completed?";
+          confirmationMessage =
+            "Are you sure you want to mark this booking as completed?";
         } else if (action === "cancel") {
           newStatus = "cancelled";
           confirmationMessage = "Are you sure you want to cancel this booking?";
@@ -969,12 +974,21 @@
             status: newStatus,
             updatedAt: firebase.firestore.FieldValue.serverTimestamp(),
           });
-          displayMessage("success", `Booking status updated to '${newStatus}'.`);
+          displayMessage(
+            "success",
+            `Booking status updated to '${newStatus}'.`
+          );
           // Re-fetch and display bookings to update the UI
           fetchAndDisplayTailorBookings();
         } catch (error) {
-          console.error(`Error updating booking status to ${newStatus}:`, error);
-          displayMessage("error", `Failed to update booking status. ${error.message}`);
+          console.error(
+            `Error updating booking status to ${newStatus}:`,
+            error
+          );
+          displayMessage(
+            "error",
+            `Failed to update booking status. ${error.message}`
+          );
         } finally {
           hideLoader();
         }

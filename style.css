@@ -10,98 +10,98 @@ body {
 }
 
 .navbar {
-        background: rgba(23, 145, 29, 0.95);
-        backdrop-filter: blur(10px);
-        padding: 1rem 2rem;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        position: fixed;
-        top: 0;
-        width: 100%;
-        z-index: 1000;
-        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-        animation: slideInUp 0.8s ease-out;
-      }
+  background: rgba(23, 145, 29, 0.95);
+  backdrop-filter: blur(10px);
+  padding: 1rem 2rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  position: fixed;
+  top: 0;
+  width: 100%;
+  z-index: 1000;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  animation: slideInUp 0.8s ease-out;
+}
 
-      .logo {
-        font-size: 1.5rem;
-        font-weight: 700;
-        color: white;
-      }
+.logo {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: white;
+}
 
-      .logo-main {
-        text-decoration: none;
-        color: rgb(255, 255, 255);
-      }
+.logo-main {
+  text-decoration: none;
+  color: rgb(255, 255, 255);
+}
 
-      .nav-links {
-        display: flex;
-        align-items: center;
-        gap: 1.5rem;
-      }
+.nav-links {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+}
 
-      .nav-links a {
-        color: white;
-        text-decoration: none;
-        font-weight: 500;
-        transition: all 0.3s ease;
-        position: relative;
-        padding: 0.5rem 1rem;
-        border-radius: 25px;
-      }
+.nav-links a {
+  color: white;
+  text-decoration: none;
+  font-weight: 500;
+  transition: all 0.3s ease;
+  position: relative;
+  padding: 0.5rem 1rem;
+  border-radius: 25px;
+}
 
-      .nav-about{
-        background: rgba(255, 255, 255, 0.1);
-        text-decoration: underline;
-      }
+.nav-about {
+  background: rgba(255, 255, 255, 0.1);
+  text-decoration: underline;
+}
 
-      .nav-links a:hover {
-        background: rgba(255, 255, 255, 0.1);
-        transform: translateY(-2px);
-      }
+.nav-links a:hover {
+  background: rgba(255, 255, 255, 0.1);
+  transform: translateY(-2px);
+}
 
-      .welcome-user {
-        color: #a8e6cf;
-        font-weight: 600;
-        margin-right: 1rem;
-      }
+.welcome-user {
+  color: #a8e6cf;
+  font-weight: 600;
+  margin-right: 1rem;
+}
 
-      .show{
-        display: flex;
-        flex-direction: column;
-        position: absolute;
-        top: 60px;
-        right: 20px;
-        background-color: rgba(23, 145, 29, 0.95);
-        padding: 1rem;
-        border-radius: 8px;
-        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-      }
+.show {
+  display: flex;
+  flex-direction: column;
+  position: absolute;
+  top: 60px;
+  right: 20px;
+  background-color: rgba(23, 145, 29, 0.95);
+  padding: 1rem;
+  border-radius: 8px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+}
 
-       .btn {
-        display: inline-block;
-        padding: 0.7rem 1.5rem;
-        background: linear-gradient(45deg, #17911d, #27ae60);
-        color: white;
-        text-decoration: none;
-        border-radius: 25px;
-        font-weight: 600;
-        transition: all 0.3s ease;
-        border: none;
-        cursor: pointer;
-        box-shadow: 0 4px 15px rgba(23, 145, 29, 0.3);
-      }
+.btn {
+  display: inline-block;
+  padding: 0.7rem 1.5rem;
+  background: linear-gradient(45deg, #0a192f, #27ae60);
+  color: white;
+  text-decoration: none;
+  border-radius: 25px;
+  font-weight: 600;
+  transition: all 0.3s ease;
+  border: none;
+  cursor: pointer;
+  box-shadow: 0 4px 15px rgba(23, 145, 29, 0.3);
+}
 
-      .btn:hover {
-        transform: translateY(-3px);
-        box-shadow: 0 8px 25px rgba(23, 145, 29, 0.4);
-      }
+.btn:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 25px rgba(23, 145, 29, 0.4);
+}
 
-      .btn-small {
-        padding: 0.5rem 1rem;
-        font-size: 0.9rem;
-      }
+.btn-small {
+  padding: 0.5rem 1rem;
+  font-size: 0.9rem;
+}
 
 .about-container {
   display: flex;
@@ -141,10 +141,10 @@ body {
   transition: 0.9s ease-in-out;
   box-shadow: 0 20px 40px rgba(2, 255, 36, 0.1);
   object-fit: cover;
-  border: 0.3px solid #17911d;
+  border: 0.3px solid #0a192f;
 
   &:hover {
-    transform: scale(0.60);
+    transform: scale(0.6);
   }
 }
 
@@ -166,9 +166,8 @@ body {
 .mv-block h2 {
   font-size: 1.6rem;
   margin-bottom: 0.8rem;
-  color: #17911d;
+  color: #0a192f;
 }
-
 
 .tailor-grid {
   display: grid;
@@ -199,7 +198,7 @@ body {
   border-radius: 8px;
   margin-bottom: 0.75rem;
   transition: transform 0.5s;
-  border: 0.3px solid #17911d;
+  border: 0.3px solid #0a192f;
 
   &:hover {
     transform: scale(1.01);
@@ -220,14 +219,14 @@ body {
 .btn {
   display: inline-block;
   padding: 0.6rem 1rem;
-  background-color: #17911d;
+  background-color: #0a192f;
   color: white;
   text-decoration: none;
   border-radius: 6px;
   font-weight: 500;
 }
 .btn:hover {
-  background-color: #17911d;
+  background-color: #0a192f;
 }
 
 /* Mission / Vision Section */
@@ -247,7 +246,7 @@ body {
 .mv-block h2 {
   font-size: 1.9rem;
   margin-bottom: 1rem;
-  color: #17911d;
+  color: #0a192f;
   font-family: Arial, Helvetica, sans-serif;
 }
 .mv-block p {
@@ -270,7 +269,7 @@ body {
 .about-text h1 {
   font-size: 2rem;
   margin-bottom: 1rem;
-  color: #17911d;
+  color: #0a192f;
 }
 .about-text p {
   margin-bottom: 1rem;
@@ -305,7 +304,7 @@ body {
   max-width: 500px;
 }
 .mv-block h2 {
-  color: #17911d;
+  color: #0a192f;
   margin-bottom: 0.8rem;
 }
 .mv-block p {
@@ -315,7 +314,7 @@ body {
 
 /* FOOTER */
 .footer {
-  background-color: #17911d;
+  background-color: #0a192f;
   color: white;
   padding: 2rem;
   margin-top: 3rem;
@@ -395,7 +394,7 @@ body {
   padding: 1.5rem;
   border-radius: 10px;
   box-shadow: 0 6px 16px rgba(0, 0, 0, 0.05);
-  border-left: 4px solid #17911d;
+  border-left: 4px solid #0a192f;
 }
 .booking-card h3 {
   margin-bottom: 0.5rem;
@@ -488,7 +487,7 @@ body.dark-mode {
 }
 
 .testimonials-section h2 {
-  color: #17911d;
+  color: #0a192f;
   margin-bottom: 2rem;
 }
 
@@ -528,10 +527,11 @@ body.dark-mode {
 .customer-name {
   margin-top: 1rem;
   font-weight: bold;
-  color: #17911d;
+  color: #0a192f;
 }
 
-.prev, .next {
+.prev,
+.next {
   position: absolute;
   top: 50%;
   transform: translateY(-50%);
@@ -545,21 +545,24 @@ body.dark-mode {
   z-index: 2;
 }
 
-.prev { left: -20px; }
-.next { right: -20px; }
+.prev {
+  left: -20px;
+}
+.next {
+  right: -20px;
+}
 
 @media (max-width: 768px) {
   .testimonial-card {
     padding: 1.2rem;
     margin: 0;
   }
-  .prev, .next {
+  .prev,
+  .next {
     left: 5px;
     right: 5px;
   }
 }
-
-
 
 @media (min-width: 500px) and (max-width: 720px) {
   .navbar {

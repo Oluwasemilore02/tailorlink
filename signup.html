@@ -21,7 +21,7 @@
     <style>
       /* Root variables for colors */
       :root {
-        --primary-color: #17911d; /* Your specified primary color */
+        --primary-color: #0a192f; /* Your specified primary color */
         --primary-light: #27ae60;
         --primary-dark: #0f6e16;
         --background-color: #f0f2f5; /* Light subtle background */
@@ -110,7 +110,7 @@
       input:focus,
       select:focus {
         border-color: var(--focus-border-color);
-        box-shadow: 0 0 0 3px rgba(23, 145, 29, 0.2); /* Subtle focus ring */
+        box-shadow: 0 0 0 2px #0a192f;
       }
 
       input::placeholder {
@@ -171,7 +171,7 @@
 
       .role-btn.selected {
         border-color: var(--primary-color);
-        box-shadow: 0 0 0 3px rgba(23, 145, 29, 0.3);
+        box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.3);
         background-color: var(--card-background);
       }
 
@@ -201,9 +201,8 @@
       }
 
       .btn-submit:hover:not(:disabled) {
-        background-color: var(--primary-dark);
-        box-shadow: 0 6px 15px rgba(23, 145, 29, 0.35);
-        transform: translateY(-2px);
+        box-shadow: 0 6px 15px rgba(0, 0, 0, 0.148);
+        transform: scale(0.94); /* Slight scale effect on hover */
       }
 
       .btn-submit:disabled {
@@ -228,7 +227,6 @@
       }
 
       .login-link-text a:hover {
-        color: var(--primary-dark);
         text-decoration: underline;
       }
 
@@ -268,7 +266,7 @@
 
       .loader {
         border: 6px solid #f3f3f3;
-        border-top: 6px solid var(--primary-color);
+        border-top: 6px solid var #0a192f;
         border-radius: 50%;
         width: 50px;
         height: 50px;
@@ -307,7 +305,8 @@
         border: 1px solid #27ae60;
       }
 
-      .message.error-message { /* Renamed to avoid conflict with #error-message */
+      .message.error-message {
+        /* Renamed to avoid conflict with #error-message */
         background-color: rgba(231, 76, 60, 0.1); /* Red with alpha */
         color: #e74c3c;
         border: 1px solid #e74c3c;
@@ -351,6 +350,7 @@
         }
       }
     </style>
+    <script src="https://js.paystack.co/v1/inline.js"></script>
   </head>
   <body>
     <div id="loader-overlay" class="loader-overlay">
@@ -454,7 +454,14 @@
               id="services"
               placeholder="Services Offered (e.g., Suits, Dresses, Alterations)"
             />
-            <small style="color: var(--text-muted); font-size: 0.8em; margin-top: 5px; display: block;">
+            <small
+              style="
+                color: var(--text-muted);
+                font-size: 0.8em;
+                margin-top: 5px;
+                display: block;
+              "
+            >
               Comma-separated, e.g., Suits, Dresses, Alterations
             </small>
           </div>
@@ -524,7 +531,9 @@
         const messageDiv = document.createElement("div");
         messageDiv.className = `message ${type}-message`; // Using -message suffix for consistency
         messageDiv.innerHTML = `
-          <i class="fas fa-${type === 'success' ? 'check-circle' : 'exclamation-triangle'}"></i>
+          <i class="fas fa-${
+            type === "success" ? "check-circle" : "exclamation-triangle"
+          }"></i>
           <span>${message}</span>
           <button class="close-btn"><i class="fas fa-times"></i></button>
         `;
@@ -534,6 +543,8 @@
         messageDiv.querySelector(".close-btn").addEventListener("click", () => {
           messageDiv.remove();
         });
+
+        // Email
 
         // Auto-hide success messages after 5 seconds
         if (type === "success") {
@@ -557,6 +568,19 @@
           group.classList.remove("incorrect");
         });
       }
+
+      // Phone number length validation
+      phoneInput.addEventListener("input", () => {
+        const phoneValue = phoneInput.value.trim();
+        if (phoneValue && phoneValue.length < 11) {
+          markInputIncorrect(phoneInput);
+          displayMessage("error", "Phone number must be at least 11 digits.");
+        } else {
+          clearInputError(phoneInput);
+        }
+        // Clear error message when user starts typing
+        messageContainer.innerHTML = "";
+      });
 
       // --- Role Selection Logic ---
       customerRoleBtn.addEventListener("click", () => {
@@ -582,7 +606,9 @@
       function setupPasswordToggle(toggleBtn, inputField) {
         toggleBtn.addEventListener("click", function () {
           const type =
-            inputField.getAttribute("type") === "password" ? "text" : "password";
+            inputField.getAttribute("type") === "password"
+              ? "text"
+              : "password";
           inputField.setAttribute("type", type);
           this.querySelector("i").classList.toggle("fa-eye");
           this.querySelector("i").classList.toggle("fa-eye-slash");
@@ -592,183 +618,205 @@
       setupPasswordToggle(toggleConfirmPassword, confirmPasswordInput);
 
       // --- Form Submission Logic ---
-      signupForm.addEventListener("submit", async (e) => {
-        e.preventDefault();
+      // ... (your existing code for Firebase config, DOM elements, and helper functions)
 
-        messageContainer.innerHTML = ""; // Clear previous messages
-        clearAllInputErrors(); // Clear previous error styles
+// --- Form Submission Logic ---
+signupForm.addEventListener("submit", async (e) => {
+  e.preventDefault();
 
-        const fullName = fullNameInput.value.trim();
-        const email = emailInput.value.trim();
-        const phone = phoneInput.value.trim();
-        const location = locationInput.value.trim();
-        const password = passwordInput.value;
-        const confirmPassword = confirmPasswordInput.value;
+  messageContainer.innerHTML = ""; // Clear previous messages
+  clearAllInputErrors(); // Clear previous error styles
 
-        // Basic client-side validation
-        const errors = [];
+  const fullName = fullNameInput.value.trim();
+  const email = emailInput.value.trim();
+  const phone = phoneInput.value.trim();
+  const location = locationInput.value.trim();
+  const password = passwordInput.value;
+  const confirmPassword = confirmPasswordInput.value;
 
-        if (!fullName) {
-          errors.push("Full Name is required.");
-          markInputIncorrect(fullNameInput);
-        }
-        if (!email) {
-          errors.push("Email Address is required.");
-          markInputIncorrect(emailInput);
-        } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-          errors.push("Please enter a valid email address.");
-          markInputIncorrect(emailInput);
-        }
-        if (!password) {
-          errors.push("Password is required.");
-          markInputIncorrect(passwordInput);
-        } else if (password.length < 6) {
-          errors.push("Password must be at least 6 characters long.");
-          markInputIncorrect(passwordInput);
-        }
-        if (password !== confirmPassword) {
-          errors.push("Passwords do not match.");
-          markInputIncorrect(passwordInput);
-          markInputIncorrect(confirmPasswordInput);
-        }
+  // Basic client-side validation
+  const errors = [];
 
-        // Tailor-specific validation
-        let services = [];
+  if (!fullName) {
+    errors.push("Full Name is required.");
+    markInputIncorrect(fullNameInput);
+  }
+  if (!email) {
+    errors.push("Email Address is required.");
+    markInputIncorrect(emailInput);
+  } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+    errors.push("Please enter a valid email address.");
+    markInputIncorrect(emailInput);
+  }
+  if (!password) {
+    errors.push("Password is required.");
+    markInputIncorrect(passwordInput);
+  } else if (password.length < 6) {
+    errors.push("Password must be at least 6 characters long.");
+    markInputIncorrect(passwordInput);
+  }
+  if (password !== confirmPassword) {
+    errors.push("Passwords do not match.");
+    markInputIncorrect(passwordInput);
+    markInputIncorrect(confirmPasswordInput);
+  }
+
+  // Tailor-specific validation
+  let services = [];
+  if (currentRole === "tailor") {
+    const servicesRaw = servicesInput.value.trim();
+    if (!servicesRaw) {
+      errors.push("Services Offered are required for tailors.");
+      markInputIncorrect(servicesInput);
+    } else {
+      services = servicesRaw
+        .split(",")
+        .map((s) => s.trim())
+        .filter((s) => s !== "");
+      if (services.length === 0) {
+        errors.push("Please enter at least one service offered.");
+        markInputIncorrect(servicesInput);
+      }
+    }
+  }
+
+  if (errors.length > 0) {
+    displayMessage("error", errors.join(" "));
+    return;
+  }
+
+  // Disable button and show loader during submission
+  signupSubmitBtn.textContent = "Signing Up...";
+  signupSubmitBtn.disabled = true;
+  showLoader();
+
+  // Function to handle the actual Firebase signup and Firestore data storage
+  const handleFirebaseSignup = async () => {
+    try {
+      // 1. Create user with Firebase Authentication
+      const userCredential = await auth.createUserWithEmailAndPassword(
+        email,
+        password
+      );
+      const user = userCredential.user;
+
+      // 2. Store user data in Firestore based on role
+      if (user) {
+        // Update user's profile display name in Firebase Auth
+        await user.updateProfile({ displayName: fullName });
+
+        // Store in 'users' collection for both customers and tailors
+        await db
+          .collection("users")
+          .doc(user.uid)
+          .set({
+            fullName: fullName,
+            email: email,
+            phone: phone || null,
+            location: location || null,
+            role: currentRole,
+            createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+          });
+
+        // If the user is a tailor, also add their data to the 'tailors' collection
         if (currentRole === "tailor") {
-          const servicesRaw = servicesInput.value.trim();
-          if (!servicesRaw) {
-            errors.push("Services Offered are required for tailors.");
-            markInputIncorrect(servicesInput);
-          } else {
-            services = servicesRaw
-              .split(",")
-              .map((s) => s.trim())
-              .filter((s) => s !== "");
-            if (services.length === 0) {
-              errors.push("Please enter at least one service offered.");
-              markInputIncorrect(servicesInput);
-            }
-          }
+          await db
+            .collection("tailors")
+            .doc(user.uid)
+            .set({
+              name: fullName,
+              email: email,
+              phone: phone || null,
+              location: location || null,
+              services: services, // Array of services from input
+              isActive: true,
+              rating: 2.5,
+              reviews: 0,
+              profileImage: "https://example.com/default-image.jpg", // Use a real image URL
+              bio: "A dedicated tailor ready to bring your ideas to life.",
+              experience: "0 years",
+              price: "Price on request",
+              joinedAt: firebase.firestore.FieldValue.serverTimestamp(),
+            });
         }
 
-        if (errors.length > 0) {
-          displayMessage("error", errors.join(" "));
-          return;
-        }
+        displayMessage(
+          "success",
+          `Account created successfully! Redirecting to login...`
+        );
+        setTimeout(() => {
+          window.location.href = "login.html"; // Redirect after a short delay
+        }, 2000); // 2-second delay
+      } else {
+        displayMessage("error", "User creation failed. Please try again.");
+      }
+    } catch (error) {
+      console.error("Signup error:", error);
+      let userFacingMessage =
+        "An unexpected error occurred during signup. Please try again.";
 
-        // Disable button and show loader during submission
-        signupSubmitBtn.textContent = "Signing Up...";
-        signupSubmitBtn.disabled = true;
-        showLoader();
+      // More specific error messages for Firebase Auth errors
+      if (error.code === "auth/email-already-in-use") {
+        userFacingMessage =
+          "This email address is already registered. Please login or use a different email.";
+        markInputIncorrect(emailInput);
+      } else if (error.code === "auth/weak-password") {
+        userFacingMessage =
+          "The password is too weak. Please choose a stronger one (at least 6 characters).";
+        markInputIncorrect(passwordInput);
+      } else if (error.code === "auth/invalid-email") {
+        userFacingMessage = "The email address is not valid.";
+        markInputIncorrect(emailInput);
+      }
 
-        try {
-          // 1. Create user with Firebase Authentication
-          const userCredential = await auth.createUserWithEmailAndPassword(
-            email,
-            password
-          );
-          const user = userCredential.user;
+      displayMessage("error", userFacingMessage);
+    } finally {
+      hideLoader();
+      signupSubmitBtn.textContent = "Sign Up";
+      signupSubmitBtn.disabled = false;
+    }
+  };
 
-          // 2. Store user data in Firestore based on role
-          if (user) {
-            // Update user's profile display name in Firebase Auth
-            await user.updateProfile({ displayName: fullName });
+  // Check if user is a tailor, then initiate payment. Otherwise, proceed with signup directly.
+  if (currentRole === "tailor") {
+    const amount = 550000; // Amount in kobo for NGN 55.00
+    const paystackKey = "pk_test_974f6770c54d515f890dc5efa9741fd62e7faa88";
 
-            // Store in 'users' collection for both customers and tailors
-            await db
-              .collection("users")
-              .doc(user.uid)
-              .set({
-                fullName: fullName,
-                email: email,
-                phone: phone || null, // Store as null if empty
-                location: location || null, // Store as null if empty
-                role: currentRole,
-                createdAt: firebase.firestore.FieldValue.serverTimestamp(),
-              });
+    // Initiate Paystack payment
+    let handler = PaystackPop.setup({
+      key: paystackKey,
+      email: email,
+      amount: amount,
+      currency: "NGN",
+      metadata: {
+        custom_fields: [{
+          display_name: "Full Name",
+          variable_name: "full_name",
+          value: fullName,
+        }, ],
+      },
+      callback: function (response) {
+        console.log("Payment success ref:", response.reference);
+        // Call the main signup function only after successful payment
+        handleFirebaseSignup();
+      },
+      onClose: function () {
+        hideLoader();
+        signupSubmitBtn.textContent = "Sign Up";
+        signupSubmitBtn.disabled = false;
+        displayMessage(
+          "error",
+          "Payment window closed. Please try again to complete signup."
+        );
+      },
+    });
 
-            // If the user is a tailor, also add their data to the 'tailors' collection
-            if (currentRole === "tailor") {
-              await db
-                .collection("tailors")
-                .doc(user.uid)
-                .set({
-                  name: fullName,
-                  email: email,
-                  phone: phone || null,
-                  location: location || null,
-                  services: services, // Array of services from input
-                  isActive: true, // Tailors are active by default
-                  rating: 0, // Initial rating
-                  reviews: 0, // Initial review count
-                  profileImage:
-                    "https://firebasestorage.googleapis.com/v0/b/tailorlink-571d5.appspot.com/o/tailor-default-profile.png?alt=media&token=AIzaSyBVjsT4eVkdZaWaYfkgz_hoK00ZgmLWNR4", // Default image placeholder (replace with your actual image URL and token)
-                  bio: "A dedicated tailor ready to bring your ideas to life.", // Default bio
-                  experience: "0 years", // Default experience
-                  price: "Price on request", // Default price
-                  joinedAt: firebase.firestore.FieldValue.serverTimestamp(),
-                });
-            }
-
-            displayMessage("success", `Account created successfully! Redirecting to login...`);
-            setTimeout(() => {
-              window.location.href = "login.html"; // Redirect after a short delay
-            }, 2000); // 2-second delay
-          } else {
-            displayMessage("error", "User creation failed. Please try again.");
-          }
-        } catch (error) {
-          console.error("Signup error:", error);
-          let userFacingMessage = "An unexpected error occurred during signup. Please try again.";
-
-          // More specific error messages for Firebase Auth errors
-          if (error.code === "auth/email-already-in-use") {
-            userFacingMessage = "This email address is already registered. Please login or use a different email.";
-            markInputIncorrect(emailInput);
-          } else if (error.code === "auth/invalid-email") {
-            userFacingMessage = "The email address is not valid.";
-            markInputIncorrect(emailInput);
-          } else if (error.code === "auth/operation-not-allowed") {
-            userFacingMessage = "Email/password authentication is not enabled. Please contact support.";
-          } else if (error.code === "auth/weak-password") {
-            userFacingMessage = "The password is too weak. Please choose a stronger one (at least 6 characters).";
-            markInputIncorrect(passwordInput);
-          }
-          // Generic fallback for other errors
-          else if (error.message) {
-            userFacingMessage = `Error: ${error.message}`;
-          }
-
-          displayMessage("error", userFacingMessage);
-        } finally {
-          hideLoader();
-          signupSubmitBtn.textContent = "Sign Up";
-          signupSubmitBtn.disabled = false;
-        }
-      });
-
-      // Remove error styling when user starts typing
-      [
-        fullNameInput,
-        emailInput,
-        phoneInput,
-        locationInput,
-        passwordInput,
-        confirmPasswordInput,
-        servicesInput,
-      ].forEach((input) => {
-        input.addEventListener("input", () => {
-          clearInputError(input);
-          // Only clear the message container if the user is actively fixing an input
-          messageContainer.innerHTML = "";
-        });
-      });
-
-      // Initialize the role selection on page load
-      document.addEventListener("DOMContentLoaded", () => {
-        // Ensure customer is selected by default and tailor fields are hidden
-        customerRoleBtn.click();
-      });
+    handler.openIframe();
+  } else {
+    // If not a tailor, proceed directly with Firebase signup
+    await handleFirebaseSignup();
+  }
+});
     </script>
   </body>
 </html>

@@ -17,15 +17,10 @@
         box-sizing: border-box;
       }
 
-      :focus-visible {
-        outline: 2px solid #17911d;
-        outline-offset: 2px;
-      }
-
       body {
         font-family: "Inter", "Segoe UI", sans-serif;
         background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
-        color: #2c3e50;
+        color: #333333;
         line-height: 1.6;
         overflow-x: hidden;
       }
@@ -72,9 +67,22 @@
         }
       }
 
+      @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap');
+
+/* Apply the font to the body and other elements */
+body {
+    font-family: "Poppins", "Inter", "Segoe UI", sans-serif;
+}
+
+/* You can also specify different weights for headings */
+h1, h2, h3, h4, h5, h6 {
+    font-family: "Poppins", "Inter", "Segoe UI", sans-serif;
+    font-weight: 700; /* Bold for emphasis */
+}
+
       /* Navbar */
       .navbar {
-        background: rgba(23, 145, 29, 0.95);
+        background: #0A192F ;
         backdrop-filter: blur(10px);
         padding: 1rem 2rem;
         display: flex;
@@ -91,7 +99,7 @@
       .logo {
         font-size: 1.5rem;
         font-weight: 700;
-        color: white;
+        color: #CBAE61;
       }
 
       .logo-main {
@@ -145,7 +153,7 @@
 
       .nav-links a:hover,
       .nav-links button:hover {
-        background: rgba(255, 255, 255, 0.1);
+        background: #3a3a48;
         transform: translateY(-2px);
       }
 
@@ -156,14 +164,14 @@
         padding: 0.5rem 1rem;
         border-radius: 25px;
         transition: all 0.3s ease;
-        color: #17911d;
+        color: #0A192F;
         white-space: nowrap;
       }
 
       .btn {
         display: inline-block;
         padding: 0.7rem 1.5rem;
-        background: linear-gradient(45deg, #17911d, #27ae60);
+        background: #CBAE61;
         color: white;
         text-decoration: none;
         border-radius: 25px;
@@ -171,13 +179,13 @@
         transition: all 0.3s ease;
         border: none;
         cursor: pointer;
-        box-shadow: 0 4px 15px rgba(23, 145, 29, 0.3);
+        box-shadow: 0 4px 15px #c8e2fa;
       }
 
       .btn:hover {
         transform: translateY(-3px);
-        box-shadow: 0 8px 25px rgba(23, 145, 29, 0.4);
-        color: #17911d;
+        box-shadow: 0 8px 25px #CBAE61;
+        color: #0A192F;
         background: #fff;
       }
 
@@ -224,7 +232,7 @@
           display: flex !important; /* Show the hamburger on mobile */
           position: relative;
           z-index: 1001;
-          background: rgba(23, 145, 29, 0.95);
+          background: #0A192F;
           border-radius: 50%;
           padding: 10px;
           box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
@@ -232,7 +240,9 @@
         }
 
         .hamburger:hover {
-          background: rgba(23, 145, 29, 0.85);
+          background: #0A192F;
+          transform: scale(1.1);
+          border: 0.6px solid #CBAE61;
         }
 
         /* Hide the nav links container by default on mobile */
@@ -245,7 +255,7 @@
           top: 70px;
           left: 0;
           padding: 20px 0;
-          background: rgba(23, 145, 29, 0.95);
+          background: #0A192F;
           backdrop-filter: blur(10px);
           z-index: 900;
           gap: 1.5rem;
@@ -291,86 +301,75 @@
 
       /* Hero Section */
       .hero {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
+        background:linear-gradient( #c8e2fa 0%, #ffffff 100%);
+          display: flex;
+          align-items: center;
+          min-height: 500px;
+          gap: 40px;
+          padding: 60px 40px;
+          border-radius: 0 0 12px 12px;
+          margin-bottom: 40px;
+          box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        animation: slideInUp 0.8s ease-out;
         padding: 8rem 2rem 4rem;
-        min-height: 80vh;
-        position: relative;
-        overflow: hidden;
-        background: url("./img/two-african-dressmaker-woman-sews-clothes-sewing-machine-tailor-office-black-seamstress-girls.jpg")
-          no-repeat center center / cover;
-        color: white;
-        text-align: center;
-      }
-      .hero::before {
-        content: "";
-        position: absolute;
-        top: 0;
-        left: 0;
-        right: 0;
-        bottom: 0;
-        background: rgba(0, 0, 0, 0.4);
-        z-index: 1;
+        background-image: url('img/two-african-dressmaker-woman-sews-clothes-sewing-machine-tailor-office-black-seamstress-girls.jpg'); 
+        background-size: cover center;
       }
       .hero-text {
-        flex: none;
+        flex: 1;
         max-width: 700px;
-        margin-bottom: 2rem;
-        animation: slideInLeft 1s ease-out;
-        position: relative;
-        z-index: 2;
-        color: white;
-        background: rgba(255, 255, 255, 0.15);
-        backdrop-filter: blur(4px);
-        border-radius: 15px;
-        padding: 2% 2rem;
       }
       .hero-text h1 {
+        color: #1e3a5f;
         font-size: 3.5rem;
-        margin-bottom: 1rem;
         font-weight: 700;
-        color: #fff;
-        line-height: 1.2;
+        line-height: 1.1;
+        margin-bottom: 24px;
       }
       .hero-text p {
-        margin-bottom: 2rem;
-        font-size: 1.2rem;
-        text-wrap: balance;
-        opacity: 1;
-        color: rgba(255, 255, 255, 0.9);
+        color: #666;
+        font-size: 1.1rem;
+        line-height: 1.6;
+        margin-bottom: 30px;
+      }
+      .hero-image {
+        flex: 1;
+        text-align: center;
+        width: 500px;
+      }
+      .hero-image img {
+        max-width: 100%;
+        height: auto;
+        border-radius: 20px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        animation: slideInUp 0.8s ease-out;
+
+        &:hover {
+          transform: scale(1.05);
+          transition: transform 0.9s ease;
+        }
       }
       .cta-buttons {
-        display: flex;
-        gap: 1rem;
-        justify-content: center;
-        flex-wrap: wrap;
+        padding: 12px 24px;
+        border-radius: 6px;
+        text-decoration: none;
+        font-weight: 600;
+        transition: all 0.3s ease;
+        border: none;
+        cursor: pointer;
+        align-items: center;
+        text-align: center;
       }
-      @media (max-width: 768px) {
+      
+
+      @media (max-width: 1230px) {
         .hero {
-          padding: 6rem 1rem 3rem;
-          min-height: 70vh;
-        }
-        .hero-text h1 {
-          font-size: 2.5rem;
-        }
-        .hero-text p {
-          font-size: 1rem;
-        }
-        .navbar {
-          padding: 1rem;
-        }
-        .cta-buttons {
           flex-direction: column;
           align-items: center;
-        }
-      }
-
-      @media (max-width: 768px) {
-        .hero {
-          padding: 6rem 1rem 3rem;
-          min-height: 70vh;
+          text-align: center;
+          padding: 4rem 2rem;
+          min-height: 50vh;
+          padding: 8rem 2rem 2rem;
         }
         .hero-text h1 {
           font-size: 2.5rem;
@@ -385,7 +384,7 @@
           padding: 2rem 1rem;
         }
         .cta-buttons {
-          flex-direction: column;
+          flex-direction: row;
           align-items: center;
         }
       }
@@ -394,6 +393,13 @@
       .stats-section {
         padding: 4rem 2rem;
         background: white;
+        animation: slideInUp 0.8s ease-out;
+      }
+      .stats-section h2 {
+        text-align: center;
+        font-size: 2.5rem;
+        margin-bottom: 3rem;
+        color: #333333;
         animation: slideInUp 0.8s ease-out;
       }
 
@@ -409,7 +415,7 @@
         text-align: center;
         padding: 2rem;
         border-radius: 15px;
-        background: linear-gradient(45deg, #27ae60 0%, #5cf557 100%);
+        background: linear-gradient(45deg, #c8e2fa 0%, #0A192F 100%);
         color: white;
         transform: translateY(20px);
         opacity: 0;
@@ -431,14 +437,14 @@
       /* Features Section */
       .features-section {
         padding: 4rem 2rem;
-        background: linear-gradient(135deg, #e3e3e3 0%, #efefef 100%);
+        background: linear-gradient(135deg, #1d2b41 0%, #c8e2fa 100%);
       }
 
       .features-section h2 {
         text-align: center;
         font-size: 2.5rem;
         margin-bottom: 3rem;
-        color: #2c3e50;
+        color: #333333;
         animation: slideInUp 0.8s ease-out;
       }
 
@@ -464,7 +470,7 @@
       }
 
       .feature-card p {
-        color: #1a1a1a;
+        color: #333333;
       }
 
       .feature-card:hover {
@@ -479,7 +485,7 @@
       }
 
       .feature-card h3 {
-        color: #17911d;
+        color: #0A192F;
         margin-bottom: 1rem;
         font-size: 1.5rem;
       }
@@ -494,7 +500,7 @@
         margin-bottom: 3rem;
         font-size: 2.5rem;
         text-align: center;
-        color: #2c3e50;
+        color: #333333;
         animation: slideInUp 0.8s ease-out;
       }
 
@@ -544,7 +550,7 @@
 
       .tailor-card h3 {
         margin: 1rem 0 0.5rem;
-        color: #2c3e50;
+        color: #333333;
         font-size: 1.3rem;
       }
 
@@ -564,14 +570,14 @@
       /* Testimonials */
       .testimonials-section {
         padding: 80px 5%;
-        background-color: #f9f9f9;
+        background: linear-gradient(135deg, #1d2b41 0%, #c8e2fa 100%);
         text-align: center;
       }
 
       .testimonials-section h2 {
         font-family: "Poppins", sans-serif;
         font-size: 2.5rem;
-        color: #17911d;
+        color: #0A192F;
         margin-bottom: 50px;
       }
 
@@ -604,21 +610,21 @@
         border-radius: 50%;
         object-fit: cover;
         margin-bottom: 20px;
-        border: 3px solid #17911d;
+        border: 3px solid #0A192F;
         box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
       }
 
       .testimonial-card p.quote {
         font-size: 1.15rem;
         font-style: italic;
-        color: #333;
+        color: #333333;
         margin-bottom: 25px;
         line-height: 1.8;
       }
 
       .testimonial-card p.author {
         font-weight: 600;
-        color: #17911d;
+        color: #000000;
         font-size: 1rem;
       }
 
@@ -687,14 +693,48 @@
         }
       }
 
+      .fade-in-up {
+  opacity: 0;
+  transform: translateY(30px);
+  transition: all 0.8s ease-out;
+}
+
+.fade-in-up.show {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.card:hover {
+  transform: scale(1.03) rotateZ(-0.3deg);
+  transition: transform 0.3s ease;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+}
+
+.hero-title {
+  overflow: hidden;
+  border-right: 2px solid #fff;
+  white-space: nowrap;
+  animation: typing 2.5s steps(30, end), blink 0.75s step-end infinite;
+}
+
+@keyframes typing {
+  from { width: 0 }
+  to { width: 100% }
+}
+
+@keyframes blink {
+  50% { border-color: transparent }
+}
+
+
       /* CTA Section */
       .cta-section {
         padding: 4rem 2rem;
         background: linear-gradient(
           45deg,
-          #87d0e9 0%,
-          #93a2e4 50%,
-          #c6dbfe 100%
+          #eeeeee 0%,
+          #e0e0e0 50%,
+          #e7e7e7 100%
         );
         text-align: center;
         animation: slideInUp 0.8s ease-out;
@@ -703,7 +743,7 @@
       .cta-section h2 {
         font-size: 2.5rem;
         margin-bottom: 1rem;
-        color: #2c3e50;
+        color: #333333;
       }
 
       .cta-section p {
@@ -721,7 +761,7 @@
 
       /* Footer */
       .footer {
-        background: linear-gradient(135deg, #2c3e50 0%, #17911d 100%);
+        background: #0A192F;
         color: white;
         padding: 3rem 2rem 1rem;
         animation: fadeIn 1s ease-out;
@@ -739,7 +779,7 @@
       .footer-brand h3 {
         font-size: 1.8rem;
         margin-bottom: 1rem;
-        background: linear-gradient(45deg, #fff, #a8e6cf);
+        background: linear-gradient(45deg, #fff, #CBAE61);
         -webkit-background-clip: text;
         -webkit-text-fill-color: transparent;
         background-clip: text;
@@ -747,7 +787,7 @@
 
       .footer-content h4 {
         margin-bottom: 1rem;
-        color: #a8e6cf;
+        color: #CBAE61;
       }
 
       .footer-content ul {
@@ -766,7 +806,7 @@
       }
 
       .footer-content ul li a:hover {
-        color: #a8e6cf;
+        color: #CBAE61;
       }
 
       .footer-bottom {
@@ -775,69 +815,6 @@
         padding-top: 2rem;
         border-top: 1px solid rgba(255, 255, 255, 0.2);
         font-size: 0.9rem;
-      }
-
-      /* Dark Mode */
-      body.dark-mode {
-        background: linear-gradient(135deg, #1a1a1a 0%, #2d3748 100%);
-        color: #e2e8f0;
-      }
-
-      .dark-mode .navbar {
-        background: rgba(26, 26, 26, 0.95);
-      }
-
-      .dark-mode .btn {
-        background: #1a1a1a;
-        color: white;
-      }
-
-      .dark-mode .btn:hover {
-        background: #17911d;
-        color: white;
-      }
-
-      .dark-mode h2,
-      .dark-mode h3,
-      .dark-mode h4,
-      .dark-mode p {
-        color: #ffffff;
-      }
-
-      .dark-mode .stats-section,
-      .dark-mode .tailor-section {
-        background: #2d3748;
-      }
-
-      .dark-mode .features-section {
-        background: linear-gradient(135deg, #4a5568 0%, #2d3748 100%);
-      }
-
-      .dark-mode .tailor-card,
-      .dark-mode .feature-card,
-      .dark-mode .stat-card {
-        background: #1a202c;
-        color: #e2e8f0;
-      }
-
-      .dark-mode .cta-section {
-        background: linear-gradient(135deg, #2d3748 0%, #4a5568 100%);
-        color: #e2e8f0;
-      }
-
-      .dark-mode .cta-buttons a {
-        background: #ffffff;
-        color: #17911d;
-      }
-
-      .dark-mode .cta-buttons a:hover {
-        background: #17911d;
-        color: white;
-      }
-
-      .dark-mode .footer {
-        background: linear-gradient(135deg, #1a202c 0%, #2d3748 100%);
-        color: #e2e8f0;
       }
 
       /* Animation delays */
@@ -873,9 +850,55 @@
       .tailor-card:nth-child(3) {
         --delay: 0.3s;
       }
+
+      /* Full screen splash overlay */
+#splash-screen {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: #ffffff; 
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+  animation: fadeOut 1s ease forwards;
+  animation-delay: 2s; /* how long splash lasts */
+  visibility: visible;
+  opacity: 1;
+}
+
+/* Logo animation */
+.splash-logo {
+  animation: pulse 2s infinite;
+  width: 450px; /* Adjust size as needed */
+}
+
+/* Logo "breathing" effect */
+@keyframes pulse {
+  0%, 100% { transform: scale(1); opacity: 1; }
+  50% { transform: scale(1.1); opacity: 0.8; }
+}
+
+/* Splash fade away after delay */
+@keyframes fadeOut {
+  to {
+    opacity: 0;
+    visibility: hidden;
+  }
+}
     </style>
   </head>
   <body>
+
+    <!-- Splash Screen (shows on page load) -->
+<div id="splash-screen">
+  <img src="ChatGPT Image Aug 8, 2025, 09_36_23 PM.png" class="splash-logo" style="border-radius: 10%;">
+</div>
+
+<!-- Main Content (hidden at first) -->
+<div id="main-content" style="display: none;">
     <header class="navbar">
       <a href="index.html" class="logo-main">
         <div class="logo">
@@ -900,17 +923,10 @@
             <a href="index.html" class="nav-home">Home</a>
             <a href="about.html" class="nav-about">About</a>
             <a href="customer-bookings.html" class="nav-bookings"
-              >View My Bookings</a
+              >Booking</a
             >
             <a href="explore.html" class="nav-view">View Tailors</a>
             <button id="logout-btn" class="btn btn-small">Logout</button>
-            <button
-              id="toggleDarkMode"
-              class="btn btn-small"
-              aria-label="Toggle dark mode"
-            >
-              🌓
-            </button>
           </div>
 
           <div class="nav-links" id="visitor-links">
@@ -919,13 +935,6 @@
             <a href="explore.html" class="nav-view">View Tailors</a>
             <a href="login.html" class="btn btn-small">Login</a>
             <a href="signup.html" class="btn btn-small">Sign Up</a>
-            <button
-              id="toggleDarkMode"
-              class="btn btn-small"
-              aria-label="Toggle dark mode"
-            >
-              🌓
-            </button>
           </div>
         </div>
       </nav>
@@ -933,48 +942,62 @@
 
     <section class="hero">
       <div class="hero-text">
-        <h1>Find Trusted Tailors Near You</h1>
+        <h1 class="hero-title">Find Your trusted Tailors</h1>
         <p>
-          Book fittings, custom wears, and more—fast & easy with professional
-          tailors in your area.
+          Experience a seamless way to connect with skilled, verified tailors worldwide.  
+      From booking appointments to real-time chats and secure payments, TailorLink blends 
+      the elegance of fashion with cutting-edge technology — so every stitch, every detail, 
+      and every fit is made just for you.
         </p>
         <div class="cta-buttons">
           <a
             href="explore.html"
             class="btn"
-            style="background: #ffffff; color: #17911d"
+            style="background: #ffffff;"
             >Browse Tailors</a
           >
           <a href="login.html" class="btn">Sign Up Now</a>
         </div>
       </div>
+      <div class="hero-image">
+        <img
+          src="img/two-african-dressmaker-woman-sews-clothes-sewing-machine-tailor-office-black-seamstress-girls.jpg"
+          alt="Tailor working"
+          style="width: 100%; height: auto; border-radius: 20px"
+        />
     </section>
 
     <!-- stats, features, tailors, testimonials, CTA, footer (same as your original) -->
 
+    
+    <section class="fade-in-up">
     <section class="stats-section">
-      <div class="stats-grid">
-        <div class="stat-card">
-          <div class="stat-number">500+</div>
-          <div class="stat-label">Verified Tailors</div>
-        </div>
-        <div class="stat-card">
-          <div class="stat-number">10k+</div>
-          <div class="stat-label">Happy Customers</div>
-        </div>
-        <div class="stat-card">
-          <div class="stat-number">25+</div>
-          <div class="stat-label">Cities Covered</div>
-        </div>
-        <div class="stat-card">
-          <div class="stat-number">98%</div>
-          <div class="stat-label">Satisfaction Rate</div>
-        </div>
-      </div>
+  <h2>Our Achievements</h2>
+  <div class="stats-grid">
+    <div class="stat-card">
+      <div class="stat-number" data-val="12500">0</div>
+      <div class="stat-label">Happy Clients</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-number" data-val="567">0</div>
+      <div class="stat-label">Projects Completed</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-number" data-val="98">0</div>
+      <div class="stat-label">Awards Won</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-number" data-val="100">0%</div>
+      <div class="stat-label">Client Satisfaction</div>
+    </div>
+  </div>
+</section>
     </section>
 
+
+    <section class="fade-in-up">
     <section id="features-section" class="features-section">
-      <h2>Why Choose TailorLink🔗?</h2>
+      <h2 class="hero-title">Why Choose TailorLink🔗?</h2>
       <div class="features-grid">
         <div class="feature-card">
           <div class="feature-icon">🔍</div>
@@ -1002,9 +1025,11 @@
         </div>
       </div>
     </section>
+    </section>
 
+    <section class="fade-in-up">
     <section class="tailor-section" id="tailor">
-      <h2>Featured Tailors</h2>
+      <h2 class="hero-title">Featured Tailors</h2>
       <div class="tailor-grid">
         <div class="tailor-card">
           <img
@@ -1038,14 +1063,16 @@
         </div>
       </div>
     </section>
+    </section>
 
+<section class="fade-in-up">
     <section class="testimonials-section">
-      <h2>What Our Customers Say</h2>
+      <h2 class="hero-title">What Our Customers Say</h2>
       <div class="testimonial-slider-container">
         <div class="testimonial-slider" id="testimonialSlider">
           <!-- testimonial cards (same as original) -->
           <div class="testimonial-card">
-            <img src="data:image/png;base64,..." alt="Customer 1" />
+            <img src="data:image/jpeg;base64,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" alt="Customer 1" />
             <p class="quote">
               "TailorLink has revolutionized how I get my clothes fitted.
               Finding a skilled tailor nearby used to be a hassle, but now it's
@@ -1055,7 +1082,7 @@
             <p class="role">Fashion Enthusiast</p>
           </div>
           <div class="testimonial-card">
-            <img src="data:image/png;base64,..." alt="Customer 2" />
+            <img src="data:image/jpeg;base64,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" alt="Customer 2" />
             <p class="quote">
               "As a busy professional, I appreciate the convenience TailorLink
               offers. Booking appointments is super easy, and my tailor always
@@ -1065,7 +1092,7 @@
             <p class="role">Project Manager</p>
           </div>
           <div class="testimonial-card">
-            <img src="data:image/png;base64,..." alt="Customer 3" />
+            <img src="data:image/jpeg;base64,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" alt="Customer 3" />
             <p class="quote">
               "I needed an urgent alteration for an event, and TailorLink came
               to the rescue! Found a local tailor instantly who did an amazing
@@ -1079,9 +1106,11 @@
         <button class="slider-nav-btn next-slide">&#10095;</button>
       </div>
     </section>
+    </section>
 
+    <section class="fade-in-up">
     <section class="cta-section">
-      <h2>Ready to Get Started?</h2>
+      <h2 class="hero-title">Ready to Get Started?</h2>
       <p>
         Join thousands of satisfied customers who found their perfect tailor
         through TailorLink🔗
@@ -1090,6 +1119,7 @@
         <a href="explore.html" class="btn">Browse Tailors</a>
         <a href="login.html" class="btn">Sign Up Now</a>
       </div>
+    </section>
     </section>
 
     <footer class="footer">
@@ -1121,6 +1151,19 @@
         <p>&copy; 2025 TailorLink🔗. All rights reserved.</p>
       </div>
     </footer>
+</div>
+
+<script>
+  window.addEventListener('load', () => {
+    setTimeout(() => {
+      // hide splash
+      document.getElementById('splash-screen').style.display = 'none';
+      // show actual content
+      document.getElementById('main-content').style.display = 'block';
+    }, 2500); // 2 seconds delay
+  });
+</script>
+
 
     <script>
       // Firebase init
@@ -1159,53 +1202,63 @@
       });
 
       // Function to fetch user's first name from Firestore
-      async function fetchUserName(user) {
+      // Function to fetch user's first name from Firestore
+    async function fetchUserName(user) {
         if (user && user.uid) {
-          try {
-            const userDoc = await db.collection("users").doc(user.uid).get();
-            if (userDoc.exists) {
-              const userData = userDoc.data();
-              return userData.firstName || "User";
+            try {
+                const userDoc = await db.collection("users").doc(user.uid).get();
+                if (userDoc.exists) {
+                    const userData = userDoc.data();
+                    return userData.firstName || userData.name || "User";
+                }
+            } catch (error) {
+                console.error("Error fetching user data:", error);
             }
-          } catch (error) {
-            console.error("Error fetching user data:", error);
-          }
         }
         return "User";
-      }
+    }
 
-      // Auth state listener with flicker prevention
-      auth.onAuthStateChanged(async (user) => {
+// Auth state listener (consolidated)
+    auth.onAuthStateChanged(async (user) => {
+        closeMobileMenu(); // Ensure menu is closed on auth state change
+
         if (user) {
-          authenticatedNav.style.display = "flex";
-          visitorNav.style.display = "none";
-          authenticatedNav.classList.add("show-nav");
-          visitorNav.classList.remove("show-nav");
+            // User is logged in
+            if (authenticatedNav) authenticatedNav.style.display = "flex";
+            if (visitorNav) visitorNav.style.display = "none";
 
-          try {
-            const docRef = db.collection("users").doc(user.uid);
-            const docSnap = await docRef.get();
-            let name = "User";
-            if (docSnap.exists && docSnap.data()?.username) {
-              name = docSnap.data().username;
-            } else if (user.displayName) {
-              name = user.displayName;
-            } else if (user.email) {
-              name = user.email;
+            const userName = await fetchUserName(user);
+            if (welcomeMessage) {
+                welcomeMessage.textContent = `Welcome there 👋, ${userName}!`;
             }
-            welcomeMessage.textContent = formatWelcome(name);
-          } catch (error) {
-            console.error("Error fetching user data:", error);
-            const fallback = user.displayName || user.email || "User";
-            welcomeMessage.textContent = formatWelcome(fallback);
-          }
+            if (usernameDisplay) {
+                usernameDisplay.textContent = userName;
+            }
+
+            // Update hero CTA for logged-in users
+            if (heroCtaButtons) {
+                heroCtaButtons.innerHTML = `
+                <a href="explore.html" class="btn" style="background: #ffffff; color: #0A192F;">Browse Tailors</a>
+                <a href="customer-bookings.html" class="btn">View My Bookings</a>
+            `;
+            }
+
+            // Attach logout listener
+            logoutBtn?.addEventListener("click", handleLogout);
         } else {
-          authenticatedNav.style.display = "none";
-          visitorNav.style.display = "flex";
-          authenticatedNav.classList.remove("show-nav");
-          visitorNav.classList.add("show-nav");
+            // User is a visitor (logged out)
+            if (authenticatedNav) authenticatedNav.style.display = "none";
+            if (visitorNav) visitorNav.style.display = "flex";
+
+            // Reset hero CTA for visitors
+            if (heroCtaButtons) {
+                heroCtaButtons.innerHTML = `
+                <a href="explore.html" class="btn" style="background: #ffffff; color: #0A192F;">Browse Tailors</a>
+                <a href="signup.html" class="btn">Sign Up Now</a>
+            `;
+            }
         }
-      });
+    })
 
       // Function to handle logout
       const handleLogout = async () => {
@@ -1309,7 +1362,7 @@
           // Update hero CTA for logged-in users
           if (heroCtaButtons) {
             heroCtaButtons.innerHTML = `
-        <a href="explore.html" class="btn" style="background: #ffffff; color: #17911d;">Browse Tailors</a>
+        <a href="explore.html" class="btn" style="background: #ffffff; color: #0A192F;">Browse Tailors</a>
         <a href="customer-bookings.html" class="btn">View My Bookings</a>
       `;
           }
@@ -1324,7 +1377,7 @@
           // Reset hero CTA for visitors
           if (heroCtaButtons) {
             heroCtaButtons.innerHTML = `
-        <a href="explore.html" class="btn" style="background: #ffffff; color: #17911d;">Browse Tailors</a>
+        <a href="explore.html" class="btn" style="background: #ffffff; color: #0A192F;">Browse Tailors</a>
         <a href="signup.html" class="btn">Sign Up Now</a>
       `;
           }
@@ -1375,5 +1428,81 @@
         }
       });
     </script>
+
+    <script>
+  const observer = new IntersectionObserver(
+    (entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add("show");
+        }
+      });
+    },
+    {
+      threshold: 0.1,
+    }
+  );
+
+  document.querySelectorAll(".fade-in-up").forEach((el) => {
+    observer.observe(el);
+  });
+</script>
+
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const statsSection = document.querySelector('.stats-section');
+    const statNumbers = document.querySelectorAll('.stat-number');
+    let hasAnimated = false; // A flag to ensure the animation only runs once
+
+    const startCounter = () => {
+        statNumbers.forEach(numberElement => {
+            const finalValue = parseInt(numberElement.getAttribute('data-val'));
+            const duration = 2000; // Animation duration in milliseconds
+            let startTime = null;
+
+            const animateCount = (timestamp) => {
+                if (!startTime) startTime = timestamp;
+                const progress = timestamp - startTime;
+                const value = Math.min(progress / duration, 1);
+                const currentValue = Math.floor(value * finalValue);
+
+                // Add a comma for numbers over 1000 and handle the percentage sign
+                if (numberElement.textContent.includes('%')) {
+                    numberElement.textContent = currentValue + '%';
+                } else {
+                    numberElement.textContent = currentValue.toLocaleString();
+                }
+
+                if (value < 1) {
+                    window.requestAnimationFrame(animateCount);
+                } else {
+                    // Ensure the final value is exactly as specified
+                    if (numberElement.textContent.includes('%')) {
+                        numberElement.textContent = finalValue + '%';
+                    } else {
+                        numberElement.textContent = finalValue.toLocaleString();
+                    }
+                }
+            };
+            window.requestAnimationFrame(animateCount);
+        });
+    };
+
+    const observer = new IntersectionObserver(entries => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting && !hasAnimated) {
+                startCounter();
+                hasAnimated = true;
+                observer.unobserve(statsSection); // Stop observing after animation runs once
+            }
+        });
+    }, {
+        threshold: 0.5 // Trigger when 50% of the section is visible
+    });
+
+    observer.observe(statsSection);
+});
+</script>
+
   </body>
 </html>

@@ -21,7 +21,7 @@
     <style>
       /* Root variables for colors */
       :root {
-        --primary-color: #17911d; /* Your specified primary color */
+        --primary-color: #0a192f; /* Your specified primary color */
         --primary-light: #27ae60;
         --primary-dark: #0f6e16;
         --background-color: #f0f2f5; /* Light subtle background */
@@ -877,7 +877,9 @@
           : new Date();
 
         bookingCard.innerHTML = `
-          <span class="booking-status status-${booking.status}">${booking.status}</span>
+          <span class="booking-status status-${booking.status}">${
+          booking.status
+        }</span>
           <h3>Booking with <span style="color:var(--primary-color)">${
             booking.tailorName || "Unknown Tailor" // Display tailor's name
           }</span></h3>
@@ -900,7 +902,7 @@
           <div class="booking-actions">
               ${
                 // Customer can cancel if status is pending or confirmed
-                (booking.status === "pending" || booking.status === "confirmed")
+                booking.status === "pending" || booking.status === "confirmed"
                   ? `<button class="btn btn-cancel" data-action="cancel">Cancel Booking</button>`
                   : ""
               }
@@ -916,7 +918,9 @@
         bookingsContainer.appendChild(bookingCard);
 
         // Add event listeners for action buttons
-        const actionButtons = bookingCard.querySelectorAll(".booking-actions .btn");
+        const actionButtons = bookingCard.querySelectorAll(
+          ".booking-actions .btn"
+        );
         actionButtons.forEach((button) => {
           button.addEventListener("click", () =>
             handleCustomerBookingAction(bookingId, button.dataset.action)
@@ -957,12 +961,21 @@
             status: newStatus,
             updatedAt: firebase.firestore.FieldValue.serverTimestamp(),
           });
-          displayMessage("success", `Booking status updated to '${newStatus}'.`);
+          displayMessage(
+            "success",
+            `Booking status updated to '${newStatus}'.`
+          );
           // Re-fetch and display bookings to update the UI
           fetchAndDisplayCustomerBookings();
         } catch (error) {
-          console.error(`Error updating booking status to ${newStatus}:`, error);
-          displayMessage("error", `Failed to update booking status. ${error.message}`);
+          console.error(
+            `Error updating booking status to ${newStatus}:`,
+            error
+          );
+          displayMessage(
+            "error",
+            `Failed to update booking status. ${error.message}`
+          );
         } finally {
           hideLoader();
         }
