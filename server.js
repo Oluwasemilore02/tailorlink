@@ -17,7 +17,7 @@ admin.initializeApp({
 });
 
 // Paystack secret key
-const PAYSTACK_SECRET = "sk_test_c5931345a9dda4a6c18ab89bec8105e19a3441a2"; // Your Paystack secret key
+process.env.PAYSTACK_SECRET_KEY;
 
 // Paystack webhook endpoint
 app.post("/webhook", async (req, res) => {
